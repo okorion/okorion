@@ -1,4 +1,4 @@
-![header](https://capsule-render.vercel.app/api?type=waving&color=0:000000,100:000000&height=170&section=header&text=okorion&&fontColor=ffffff&fontSize=30&fontAlign=85&fontAlignY=30&animation=twinkling)
+![header](https://capsule-render.vercel.app/api?type=waving&color=0:EEFF00,100:a82da8&height=170&section=header&text=okorion&&fontColor=ffffff&fontSize=30&fontAlign=85&fontAlignY=30&animation=twinkling)
 
 
 <!--
