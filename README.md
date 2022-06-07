@@ -20,7 +20,16 @@
 </div>
 
 <hr></hr>
+<div align="center">
+<h3>Baekjoon Online Judge Tier</h3>
+ 
+[![Solved.ac
+프로필](http://mazassumnida.wtf/api/v2/generate_badge?boj=orion0)](https://solved.ac/orion0)
+ 
+</div>
 
+  <h2></h2> 
+ 
  <div align="center">
   <a href="https://github.com/okorion">
     <img align="center" src="https://github-readme-stats.vercel.app/api/top-langs/?username=okorion" />
@@ -29,17 +38,7 @@
     <img align="center" src="https://github-readme-stats.vercel.app/api?username=okorion" />
   </a>
  </div>
-  
-<hr></hr>  
 
-<div align="center">
-<h3>Baekjoon Online Judge Tier</h3>
- 
-[![Solved.ac
-프로필](http://mazassumnida.wtf/api/v2/generate_badge?boj=orion0)](https://solved.ac/orion0)
- 
-</div>
- 
 <hr></hr>   
   
 ![footer](https://capsule-render.vercel.app/api?type=waving&color=0:003458,100:000000&height=170&section=footer&animation=twinkling)
