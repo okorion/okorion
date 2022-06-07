@@ -19,7 +19,7 @@
 <hr></hr>
 <!-- <br></br> -->
 
- <div align-content="space-evenly">
+ <div align="center">
   <a href="https://github.com/okorion">
     <img align="center" src="https://github-readme-stats.vercel.app/api/top-langs/?username=okorion" />
   </a>
