@@ -30,6 +30,13 @@
   </a>
  </div>
   
+<hr></hr>  
+  
+  
+![footer](https://capsule-render.vercel.app/api?type=waving&color=0:000000,100:000080&height=170&section=footer&animation=twinkling)
+
+
+
 <!--
 **okorion/okorion** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
 
