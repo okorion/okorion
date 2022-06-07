@@ -33,7 +33,7 @@
 <hr></hr>  
   
   
-![footer](https://capsule-render.vercel.app/api?type=waving&color=0:000000,100:000080&height=170&section=footer&animation=twinkling)
+![footer](https://capsule-render.vercel.app/api?type=waving&color=0:003458,100:000000&height=170&section=footer&animation=twinkling)
 
 
 
