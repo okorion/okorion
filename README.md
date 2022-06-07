@@ -1,5 +1,8 @@
 ![header](https://capsule-render.vercel.app/api?type=waving&color=0:000000,100:000080&height=170&section=header&text=okorion&&fontColor=ffffff&fontSize=30&fontAlign=85&fontAlignY=35&animation=twinkling)
 
+<img src="https://user-images.githubusercontent.com/97646070/172461656-e6ebc0a1-a9c2-494d-8965-93f41360f23d.gif" style="height:350px"/>
+
+
 <div align="center">
  <hr></hr>
  <h3> List of Studies </h3> 
