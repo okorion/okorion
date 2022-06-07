@@ -17,17 +17,13 @@
 </div>
  
 
- <div>
-<p>
+ <div align="center">
   <a href="https://github.com/okorion">
     <img align="center" src="https://github-readme-stats.vercel.app/api/top-langs/?username=okorion" />
   </a>
-</p>
-<p>
   <a href="https://github.com/okorion">
     <img align="center" src="https://github-readme-stats.vercel.app/api?username=okorion" />
   </a>
-</p>
  </div>
   
 <!--
