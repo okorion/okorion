@@ -33,9 +33,11 @@
 <hr></hr>  
 
 <div align="center">
-<h3>Solved.ac Tier</h3>
+<h3>Baekjoon Online Judge Tier</h3>
+ 
 [![Solved.ac
 프로필](http://mazassumnida.wtf/api/v2/generate_badge?boj=orion0)](https://solved.ac/orion0)
+ 
 </div>
  
 <hr></hr>   
