@@ -2,7 +2,7 @@
 
 <div align="center">
  <hr></hr>
- <strong> List of Studies </strong> 
+ <h2> List of Studies </h2> 
   <img src="https://img.shields.io/badge/Git-F05032?style=flat&logo=git&logoColor=white">
   <img src="https://img.shields.io/badge/Python-3776AB?style=flat&logo=python&logoColor=white"> 
   <img src="https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=html5&logoColor=white"> 
