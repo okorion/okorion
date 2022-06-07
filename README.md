@@ -1,8 +1,6 @@
 ![header](https://capsule-render.vercel.app/api?type=waving&color=0:000000,100:000080&height=170&section=header&text=okorion&&fontColor=ffffff&fontSize=30&fontAlign=85&fontAlignY=35&animation=twinkling)
 
 
-![ezgif-5-2e7d3c0ab3](https://user-images.githubusercontent.com/97646070/172463564-96278a30-35fb-408a-9ef5-e6e18c8a4ec7.gif)
-
 
 <div align="center">
  <hr></hr>
@@ -26,7 +24,7 @@
 <hr></hr>
 
 <div align="center">
-  <img align="center" src="https://user-images.githubusercontent.com/97646070/172461656-e6ebc0a1-a9c2-494d-8965-93f41360f23d.gif" style="height:350px" />
+  <img align="center" src="https://user-images.githubusercontent.com/97646070/172463564-96278a30-35fb-408a-9ef5-e6e18c8a4ec7.gif" style="height:350px" />
 </div>
 
 
