@@ -1,13 +1,5 @@
-### Hi there 👋
+![header](https://capsule-render.vercel.app/api?type=waving&color=0:4e4e4e,100:292929&height=170&section=header&text=okorion&fontSize=30&fontAlign=70&animation=blink)
 
-![header](https://capsule-render.vercel.app/api?type=waving&color=auto&height=200&section=header&text=텍스트&fontSize=50&animation=twinkling)
-
-// 내 옵션
-배경타입 : waving
-높이 : 200
-텍스트 : HelloWorld!%20!🥳
-글자크기 : 50
-텍스트효과 : twinkling
 
 <!--
 **okorion/okorion** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
