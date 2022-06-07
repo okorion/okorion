@@ -16,10 +16,10 @@
   <img src="https://img.shields.io/badge/Spring-6DB33F?style=flat&logo=spring&logoColor=white"> 
 </div>
  
-<!-- <hr></hr> -->
-<br></br>
+<hr></hr>
+<!-- <br></br> -->
 
- <div align="space-evenly">
+ <div align-content="space-evenly">
   <a href="https://github.com/okorion">
     <img align="center" src="https://github-readme-stats.vercel.app/api/top-langs/?username=okorion" />
   </a>
