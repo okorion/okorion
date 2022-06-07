@@ -1,6 +1,6 @@
 ![header](https://capsule-render.vercel.app/api?type=waving&color=0:000000,100:000080&height=170&section=header&text=okorion&&fontColor=ffffff&fontSize=30&fontAlign=85&fontAlignY=35&animation=twinkling)
 
-<div>
+<div align="center">
  <h2> List of studies </h2>
   <img src="https://img.shields.io/badge/Python-3776AB?style=flat&logo=python&logoColor=white"> 
   <img src="https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=html5&logoColor=white"> 
