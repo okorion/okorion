@@ -1,5 +1,6 @@
 ![header](https://capsule-render.vercel.app/api?type=waving&color=0:000000,100:000080&height=170&section=header&text=okorion&&fontColor=ffffff&fontSize=30&fontAlign=85&fontAlignY=35&animation=twinkling)
 
+  <img src="https://img.shields.io/badge/python-3776AB?style=for-the-badge&logo=python&logoColor=white"> 
 
 <!--
 **okorion/okorion** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
