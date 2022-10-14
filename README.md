@@ -12,9 +12,18 @@
   <img src="https://img.shields.io/badge/Bootstrap-7952B3?style=flat&logo=bootstrap&logoColor=white">
   <img src="https://img.shields.io/badge/Django-092E20?style=flat&logo=django&logoColor=white">
   <img src="https://img.shields.io/badge/Vue.js-4FC08D?style=flat&logo=vue.js&logoColor=white">
-  <img src="https://img.shields.io/badge/-Figma-f24e1e?style=flat&logo=Figma&logoColor=white">
+  <img src="https://img.shields.io/badge/-Figma-white?style=flat&logo=Figma&logoColor=f24e1e">
   <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black"> 
-  <img src="https://img.shields.io/badge/React-61DAFB?style=flat&logo=react&logoColor=black"> 
+  <img src="https://img.shields.io/badge/React-black?style=flat&logo=react&logoColor=61DAFB">
+  
+  <br>
+  
+  <img src="https://img.shields.io/badge/C-white?style=flat&logo=C&logoColor=A8B9CC"> 
+  <img src="https://img.shields.io/badge/-C++-white?style=flat&logo=C%2B%2B&logoColor=00599C">
+  <img src="https://img.shields.io/badge/JAVA-white?style=flat&logo=java&logoColor=61DAFB"> 
+  <img src="https://img.shields.io/badge/Unity-FFFFFF?style=flat&logo=Unity&logoColor=black"> 
+  <img src="https://img.shields.io/badge/-C%23-white?style=flat&logo=CSharp&logoColor=239120">
+  <img src="https://img.shields.io/badge/TypeScript-white?style=flat&logo=TypeScript&logoColor=3178C6"> 
   <h2></h2>
   
  <h3> List of Interests </h3> 
