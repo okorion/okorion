@@ -65,7 +65,6 @@
 ![footer](https://capsule-render.vercel.app/api?type=waving&color=0:003458,100:000000&height=170&section=footer&animation=twinkling)
 
 
-
 <!--
 **okorion/okorion** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
 
