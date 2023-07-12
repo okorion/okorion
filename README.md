@@ -6,14 +6,11 @@
  <hr></hr>
  <h3> List of Studies </h3> 
   <img src="https://img.shields.io/badge/Git-F05032?style=flat&logo=git&logoColor=white">
-  <img src="https://img.shields.io/badge/Python-3776AB?style=flat&logo=python&logoColor=white"> 
   <img src="https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=html5&logoColor=white"> 
   <img src="https://img.shields.io/badge/CSS3-1572B6?style=flat&logo=css3&logoColor=white">
   <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black"> 
   <img src="https://img.shields.io/badge/React-black?style=flat&logo=react&logoColor=61DAFB">
-  <img src="https://img.shields.io/badge/JAVA-white?style=flat&logo=java&logoColor=61DAFB"> 
-  <img src="https://img.shields.io/badge/Spring-6DB33F?style=flat&logo=spring&logoColor=white">
-  <img src="https://img.shields.io/badge/TypeScript-white?style=flat&logo=TypeScript&logoColor=3178C6">
+  <img src="https://img.shields.io/badge/Three.js-FFFFFF?style=flat&logo=threedotjs&logoColor=black">
   
   <br>
 
@@ -21,14 +18,20 @@
   
   <h3> List of Interests </h3> 
  
-  <img src="https://img.shields.io/badge/Vue.js-4FC08D?style=flat&logo=vue.js&logoColor=white">
-  <img src="https://img.shields.io/badge/Bootstrap-7952B3?style=flat&logo=bootstrap&logoColor=white">
-  <img src="https://img.shields.io/badge/Django-092E20?style=flat&logo=django&logoColor=white">
+  <img src="https://img.shields.io/badge/JAVA-white?style=flat&logo=java&logoColor=61DAFB"> 
+  <img src="https://img.shields.io/badge/TypeScript-white?style=flat&logo=TypeScript&logoColor=3178C6">
   <img src="https://img.shields.io/badge/C-white?style=flat&logo=C&logoColor=A8B9CC"> 
   <img src="https://img.shields.io/badge/-C++-white?style=flat&logo=C%2B%2B&logoColor=00599C">
   <img src="https://img.shields.io/badge/Unity-FFFFFF?style=flat&logo=Unity&logoColor=black"> 
   <img src="https://img.shields.io/badge/-C%23-white?style=flat&logo=CSharp&logoColor=239120">
-  <img src="https://img.shields.io/badge/Three.js-FFFFFF?style=flat&logo=threedotjs&logoColor=black">
+
+<br>
+  
+  <img src="https://img.shields.io/badge/Python-3776AB?style=flat&logo=python&logoColor=white"> 
+  <img src="https://img.shields.io/badge/Spring-6DB33F?style=flat&logo=spring&logoColor=white">
+  <img src="https://img.shields.io/badge/Vue.js-4FC08D?style=flat&logo=vue.js&logoColor=white">
+  <img src="https://img.shields.io/badge/Bootstrap-7952B3?style=flat&logo=bootstrap&logoColor=white">
+  <img src="https://img.shields.io/badge/Django-092E20?style=flat&logo=django&logoColor=white">
   <img src="https://img.shields.io/badge/Svelte-FF3E00?style=flat&logo=svelte&logoColor=white">
 
 </div>
