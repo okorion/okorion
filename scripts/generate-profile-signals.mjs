@@ -71,7 +71,7 @@ const repositoryByName = new Map(
 
 const featured = [
   { name: "localmesh-studio", label: "localmesh-studio", x: 86, y: 116, width: 190, accent: "cyan" },
-  { name: "ChatGPT-Question-Navigator-Stable", label: "chatgpt-navigator", x: 292, y: 54, width: 190, accent: "blue" },
+  { name: "tech-blog", label: "tech-blog", x: 312, y: 54, width: 150, accent: "violet" },
   { name: "vizport-studio", label: "vizport-studio", x: 318, y: 252, width: 164, accent: "blue" },
   { name: "mermaid-sky-exporter", label: "mermaid-sky-exporter", x: 744, y: 58, width: 214, accent: "violet" },
   { name: "codex-app-telegram-monitor", label: "codex-telegram-monitor", x: 926, y: 150, width: 222, accent: "amber" },
