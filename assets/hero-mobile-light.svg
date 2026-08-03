@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="420" viewBox="0 0 720 420" role="img" aria-labelledby="title desc">
+  <title id="title">Hyounkyu Oh</title>
+  <desc id="desc">Local-first AI, visual systems, and developer automation</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f8fbff"/><stop offset=".58" stop-color="#f1f7ff"/><stop offset="1" stop-color="#f7f3ff"/></linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#2563eb"/><stop offset=".5" stop-color="#06b6d4"/><stop offset="1" stop-color="#8b5cf6"/></linearGradient>
+    <pattern id="grid" width="28" height="28" patternUnits="userSpaceOnUse"><path d="M28 0H0V28" fill="none" stroke="#2563eb" stroke-opacity=".08"/></pattern>
+    <clipPath id="frame"><rect width="720" height="420" rx="28"/></clipPath>
+    <style>text{font-family:Inter,Segoe UI,Arial,sans-serif}.pulse{transform-box:fill-box;transform-origin:center;animation:pulse 3s ease-in-out infinite}@keyframes pulse{0%,100%{opacity:.65}50%{opacity:1;transform:scale(1.14)}}@media(prefers-reduced-motion:reduce){.pulse{animation:none}}</style>
+  </defs>
+  <g clip-path="url(#frame)">
+    <rect width="720" height="420" fill="url(#bg)"/><rect width="720" height="420" fill="url(#grid)"/>
+    <circle cx="690" cy="35" r="180" fill="#8b5cf6" opacity=".07"/><circle cx="620" cy="400" r="210" fill="#06b6d4" opacity=".07"/>
+    <path d="M0 366c142-53 228 27 371-22 124-42 223-80 349-51" fill="none" stroke="url(#accent)" stroke-width="2" opacity=".25"/>
+    <g transform="translate(38 36)">
+      <rect width="272" height="34" rx="17" fill="#ffffff" stroke="#dbeafe"/><circle cx="18" cy="17" r="4" fill="#10b981" class="pulse"/>
+      <text x="32" y="22" font-size="12" font-weight="700" letter-spacing="1.7" fill="#475569">OKORION / VISUAL SYSTEMS LAB</text>
+      <text y="113" font-size="50" font-weight="800" letter-spacing="-1.8" fill="#0f172a">HYOUNKYU OH</text>
+      <rect y="132" width="385" height="5" rx="2.5" fill="url(#accent)"/>
+      <text y="181" font-size="25" font-weight="650" fill="#334155">I build tools that think,</text>
+      <text y="216" font-size="25" font-weight="650" fill="#334155">render, and collaborate.</text>
+      <text y="254" font-size="15" fill="#64748b">Local-first AI · Visual Computing</text>
+      <text y="278" font-size="15" fill="#64748b">Developer Automation</text>
+      <g transform="translate(0 312)">
+        <g><rect width="128" height="34" rx="17" fill="#eff6ff" stroke="#bfdbfe"/><text x="64" y="22" text-anchor="middle" font-size="11.5" font-weight="700" fill="#1d4ed8">LOCAL-FIRST AI</text></g>
+        <g transform="translate(140)"><rect width="102" height="34" rx="17" fill="#ecfeff" stroke="#a5f3fc"/><text x="51" y="22" text-anchor="middle" font-size="11.5" font-weight="700" fill="#0e7490">WEBGPU</text></g>
+      </g>
+    </g>
+    <g transform="translate(576 242)">
+      <circle r="76" fill="#ffffff" stroke="#bfdbfe" stroke-width="3"/>
+      <circle r="55" fill="none" stroke="#8b5cf6" stroke-dasharray="5 8" opacity=".55"/>
+      <path d="M-27 4l24-23 27 9-20 13 24 9-33 20z" fill="url(#accent)"/>
+      <circle cx="-66" cy="-50" r="8" fill="#2563eb" class="pulse"/><circle cx="68" cy="-29" r="7" fill="#8b5cf6" class="pulse"/><circle cx="50" cy="61" r="7" fill="#06b6d4" class="pulse"/>
+    </g>
+  </g>
+</svg>
