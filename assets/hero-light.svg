@@ -60,7 +60,7 @@
       <circle cx="163" cy="58" r="8" fill="#06b6d4" class="pulse"/>
       <circle cx="-75" cy="131" r="7" fill="#10b981" class="pulse pulse-delay"/>
       <g fill="#475569" font-size="11" font-weight="700" letter-spacing="1">
-        <text x="-222" y="-52">YJS</text><text x="139" y="-91">WEBLLM</text><text x="175" y="82">THREE.JS</text><text x="-107" y="153">REACT</text>
+        <text x="-270" y="-52">TYPESCRIPT</text><text x="139" y="-91">WEBLLM</text><text x="175" y="82">THREE.JS</text><text x="-107" y="153">REACT</text>
       </g>
     </g>
   </g>

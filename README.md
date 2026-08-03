@@ -27,11 +27,11 @@ I build tools that keep data close to the user, make complex systems visible, an
 
 ### 01 — [LocalMesh Studio](https://github.com/okorion/localmesh-studio)
 
-**Local AI meets collaborative 3D editing.** 브라우저에서 3D 장면을 편집하고, 로컬 LLM에게 자연어로 오브젝트 생성을 요청하며, 하나의 Yjs 문서를 여러 사용자와 동기화하는 로컬 우선 에디터입니다.
+**Local AI meets collaborative 3D editing.** 브라우저의 3D 편집, 로컬 LLM 기반 오브젝트 생성, Yjs 기반 동기화 흐름을 한데 조합해 아이디어를 검증한 실험형 Studio 사이드 프로젝트입니다.
 
-[![LocalMesh Studio — Local AI, WebGPU, and Yjs](https://raw.githubusercontent.com/okorion/localmesh-studio/main/public/og.png)](https://localmesh-studio.okorion.chatgpt.site)
+[![LocalMesh Studio — local AI and collaborative 3D editing](https://raw.githubusercontent.com/okorion/localmesh-studio/main/public/og.png)](https://localmesh-studio.okorion.chatgpt.site)
 
-`Three.js` · `WebGPU` · `WebLLM` · `Yjs` · `Hocuspocus` · `IndexedDB`
+`TypeScript` · `React` · `Three.js` · `WebGPU` · `WebLLM` · `Yjs` · `Hocuspocus` · `IndexedDB`
 
 [Live demo](https://localmesh-studio.okorion.chatgpt.site) · [Source](https://github.com/okorion/localmesh-studio)
 
@@ -64,9 +64,11 @@ I build tools that keep data close to the user, make complex systems visible, an
 
 <sub>주요 공개 저장소와 최근 기여 활동을 이 저장소의 GitHub Actions가 직접 SVG로 생성합니다. 외부 통계 카드 서비스에 의존하지 않습니다.</sub>
 
-## Toolbox
+## Core & Experiments
 
-`React` · `TypeScript` · `Next.js` · `Three.js` · `WebGPU` · `WebLLM` · `Yjs` · `ECharts` · `Python` · `PowerShell` · `GitHub Actions`
+**Core** — `TypeScript` · `React` · `Next.js` · `ECharts` · `Python` · `PowerShell` · `GitHub Actions`
+
+**Exploring** — `Three.js` · `WebGPU` · `WebLLM` · `Local-first systems` · `Real-time collaboration`
 
 ## Principles
 
