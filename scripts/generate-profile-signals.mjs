@@ -42,6 +42,8 @@ const query = `
 
 const response = await fetch("https://api.github.com/graphql", {
   method: "POST",
+  redirect: "error",
+  signal: AbortSignal.timeout(15_000),
   headers: {
     Accept: "application/vnd.github+json",
     Authorization: `Bearer ${token}`,
@@ -55,6 +57,11 @@ if (!response.ok) {
   throw new Error(`GitHub GraphQL request failed: ${response.status}`);
 }
 
+const contentType = response.headers.get("content-type")?.toLowerCase() ?? "";
+if (!contentType.includes("application/json")) {
+  throw new Error("GitHub GraphQL response was not JSON");
+}
+
 const payload = await response.json();
 if (payload.errors?.length) {
   throw new Error(payload.errors.map((error) => error.message).join("; "));
@@ -65,8 +72,20 @@ if (!user) {
   throw new Error(`GitHub user not found: ${username}`);
 }
 
+const repositories = user.repositories?.nodes;
+const calendar = user.contributionsCollection?.contributionCalendar;
+if (!Array.isArray(repositories) || !Array.isArray(calendar?.weeks)) {
+  throw new Error("GitHub GraphQL response did not match the expected profile shape");
+}
+
+const normalizeCount = (value) => {
+  const count = Number(value);
+  return Number.isSafeInteger(count) && count >= 0 ? count : 0;
+};
+const totalContributions = normalizeCount(calendar.totalContributions);
+
 const repositoryByName = new Map(
-  user.repositories.nodes.map((repository) => [repository.name.toLowerCase(), repository]),
+  repositories.map((repository) => [repository.name.toLowerCase(), repository]),
 );
 
 const featured = [
@@ -81,16 +100,16 @@ const featured = [
   repository: repositoryByName.get(entry.name.toLowerCase()),
 }));
 
-const calendar = user.contributionsCollection.contributionCalendar;
-const weeks = calendar.weeks.slice(-26).map((week) =>
-  week.contributionDays.reduce((sum, day) => sum + day.contributionCount, 0),
-);
+const weeks = calendar.weeks.slice(-26).map((week) => {
+  const days = Array.isArray(week?.contributionDays) ? week.contributionDays : [];
+  return days.reduce((sum, day) => sum + normalizeCount(day?.contributionCount), 0);
+});
 const maxWeek = Math.max(...weeks, 1);
 const activeDays = calendar.weeks
-  .flatMap((week) => week.contributionDays)
-  .filter((day) => day.contributionCount > 0);
+  .flatMap((week) => Array.isArray(week?.contributionDays) ? week.contributionDays : [])
+  .filter((day) => normalizeCount(day?.contributionCount) > 0 && typeof day?.date === "string");
 const latestContribution = activeDays.at(-1)?.date;
-const latestRepositoryUpdate = user.repositories.nodes[0]?.updatedAt?.slice(0, 10);
+const latestRepositoryUpdate = repositories.at(0)?.updatedAt?.slice(0, 10);
 const dataThrough = [latestContribution, latestRepositoryUpdate].filter(Boolean).sort().at(-1) ?? "—";
 
 const themes = {
@@ -169,7 +188,9 @@ function repositoryNode(entry, theme) {
   const repository = entry.repository;
   const [fill, accent] = accentColors(theme, entry.accent);
   const language = repository?.primaryLanguage?.name ?? "Public project";
-  const updatedAt = repository?.updatedAt?.slice(0, 10) ?? "—";
+  const updatedAt = typeof repository?.updatedAt === "string"
+    ? repository.updatedAt.slice(0, 10)
+    : "—";
   const stars = repository?.stargazerCount ? ` · ★ ${repository.stargazerCount}` : "";
 
   return `
@@ -177,7 +198,7 @@ function repositoryNode(entry, theme) {
       <rect width="${entry.width}" height="66" rx="15" fill="${fill}" stroke="${accent}" stroke-opacity=".55"/>
       <circle cx="18" cy="20" r="5" fill="${accent}" class="pulse"/>
       <text x="31" y="25" font-size="13" font-weight="700" fill="${theme.text}">${escapeXml(entry.label)}</text>
-      <text x="16" y="47" font-size="10.5" fill="${theme.muted}">${escapeXml(language)}${escapeXml(stars)} · ${updatedAt}</text>
+      <text x="16" y="47" font-size="10.5" fill="${theme.muted}">${escapeXml(language)}${escapeXml(stars)} · ${escapeXml(updatedAt)}</text>
     </g>`;
 }
 
@@ -204,7 +225,7 @@ function render(themeName) {
   <rect width="1200" height="450" rx="24" fill="${theme.background}"/>
   <rect width="1200" height="450" rx="24" fill="url(#grid)"/>
   <text x="40" y="39" font-size="12" font-weight="800" letter-spacing="2" fill="${theme.muted}">PUBLIC REPOSITORY CONSTELLATION</text>
-  <text x="1160" y="39" text-anchor="end" font-size="11" fill="${theme.muted}">DATA THROUGH ${dataThrough}</text>
+  <text x="1160" y="39" text-anchor="end" font-size="11" fill="${theme.muted}">DATA THROUGH ${escapeXml(dataThrough)}</text>
   ${connections}
   <g transform="translate(600 178)" filter="url(#glow)">
     <circle r="70" fill="${theme.panel}" stroke="${theme.center}" stroke-width="2"/>
@@ -216,7 +237,7 @@ function render(themeName) {
   <g>
     <rect x="40" y="348" width="1120" height="78" rx="16" fill="${theme.panel}" stroke="${theme.panelBorder}"/>
     <text x="64" y="378" font-size="11" font-weight="800" letter-spacing="1.7" fill="${theme.muted}">26-WEEK CONTRIBUTION PULSE</text>
-    <text x="64" y="406" font-size="24" font-weight="800" fill="${theme.text}">${calendar.totalContributions}</text>
+    <text x="64" y="406" font-size="24" font-weight="800" fill="${theme.text}">${totalContributions}</text>
     <text x="125" y="405" font-size="11" fill="${theme.muted}">CONTRIBUTIONS / LAST YEAR</text>
     ${bars}
     <text x="1134" y="406" text-anchor="end" font-size="10.5" fill="${theme.muted}">RECENT →</text>
