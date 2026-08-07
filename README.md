@@ -7,21 +7,22 @@
 </picture>
 
 <p align="center">
-  <strong>브라우저 안에서 생각하고, 그리며, 협업하는 도구를 만듭니다.</strong><br />
-  Local-first AI · Visual Computing · Developer Automation
+  <strong>Editor·Builder의 복잡한 상태를 저장·Runtime·서버까지 연결합니다.</strong><br />
+  Product / Application Engineer · React · TypeScript · Three.js
 </p>
 
 <p align="center">
-  <a href="#selected-work">Selected Work</a> ·
-  <a href="#signals-from-the-lab">Lab Signals</a> ·
-  <a href="https://okorion.github.io">Blog</a>
+  <a href="https://okorion.github.io">Portfolio</a> ·
+  <a href="#selected-work">Public Builds</a> ·
+  <a href="https://okorion.github.io/?view=3d">3D Lab</a> ·
+  <a href="https://okorion.github.io/tech-blog/">Tech Blog</a>
 </p>
 
 ## About
 
-사용자 가까이에서 동작하는 소프트웨어를 좋아합니다. 브라우저의 GPU에서 실행되는 로컬 AI부터 실시간 협업 3D 편집기, 데이터 시각화 도구, 개인 개발 자동화까지 아이디어를 실제로 사용할 수 있는 제품으로 만듭니다.
+React·TypeScript·Three.js 기반의 2D·3D Editor·Builder와 지도 제품을 개발해 왔습니다. 편집 상태와 command·event, 저장 모델, Runtime 실행의 의미를 맞추고 모바일·현장·운영 환경에서 실제 동작을 검증합니다.
 
-I build tools that keep data close to the user, make complex systems visible, and automate repetitive work without removing human judgment.
+공개 프로젝트에서는 local-first AI, 3D·데이터 시각화와 개발 자동화 도구를 실험합니다. 현업 제품과 개인 공개 프로젝트의 책임 범위는 구분해 기록합니다.
 
 ## Selected Work
 
@@ -66,19 +67,20 @@ I build tools that keep data close to the user, make complex systems visible, an
 
 ## Core & Experiments
 
-**Core** — `TypeScript` · `React` · `Next.js` · `ECharts` · `Python` · `PowerShell` · `GitHub Actions`
+**Core** — `TypeScript` · `React` · `MobX` · `Three.js` · `Web Editor / Builder` · `Runtime Integration`
 
-**Exploring** — `Three.js` · `WebGPU` · `WebLLM` · `Local-first systems` · `Real-time collaboration`
+**Exploring** — `Next.js` · `WebGPU` · `WebLLM` · `Local-first systems` · `Developer automation`
 
 ## Principles
 
-- **Local-first by default** — 데이터와 실행을 가능한 한 사용자 가까이에 둡니다.
-- **Make systems visible** — 복잡한 흐름을 시각화하고 설명 가능한 구조로 만듭니다.
-- **Automate with review gates** — 반복 작업은 자동화하되 중요한 결정에는 사람의 판단을 남깁니다.
+- **Align state meaning first** — 화면, 저장 모델, Runtime과 서버가 같은 사용자 의도를 가리키게 합니다.
+- **Verify in the real environment** — 저장·재진입·모바일·현장·운영 환경에서 실제 동작을 확인합니다.
+- **Keep judgment visible** — 자동화와 AI에는 검증 가능한 경계와 사람의 승인 지점을 남깁니다.
 
 ---
 
 <p align="center">
+  <a href="https://okorion.github.io">Portfolio</a> ·
   <a href="https://github.com/okorion?tab=repositories">Repositories</a> ·
-  <a href="https://okorion.github.io">Tech Blog</a>
+  <a href="https://okorion.github.io/tech-blog/">Tech Blog</a>
 </p>
