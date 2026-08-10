@@ -28,9 +28,9 @@ React·TypeScript·Three.js 기반의 2D·3D Editor·Builder와 지도 제품을
 
 ### 01 — [LocalMesh Studio](https://github.com/okorion/localmesh-studio)
 
-**Local AI meets collaborative 3D editing.** 브라우저의 3D 편집, 로컬 LLM 기반 오브젝트 생성, Yjs 기반 동기화 흐름을 한데 조합해 아이디어를 검증한 실험형 Studio 사이드 프로젝트입니다.
+**Local AI meets collaborative 3D editing.** 오브젝트 선택·강조, 이동·회전·크기 기즈모와 기본 편집 단축키를 로컬 LLM 명령·브라우저 저장과 하나의 `SceneCommand`·Yjs 문서 흐름으로 연결한 local-first 3D Studio입니다. Transform은 변경 축만 기록해 서로 다른 축의 동시 편집과 Undo/Redo를 보존합니다.
 
-[![LocalMesh Studio — local AI and collaborative 3D editing](https://raw.githubusercontent.com/okorion/localmesh-studio/main/public/og.png)](https://localmesh-studio.okorion.chatgpt.site)
+[![LocalMesh Studio 브랜드 그래픽 — Local AI · WebGPU · Yjs](https://raw.githubusercontent.com/okorion/localmesh-studio/main/public/og.png)](https://localmesh-studio.okorion.chatgpt.site)
 
 `TypeScript` · `React` · `Three.js` · `WebGPU` · `WebLLM` · `Yjs` · `Hocuspocus` · `IndexedDB`
 
