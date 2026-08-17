@@ -63,8 +63,8 @@ React·TypeScript·Three.js 기반의 2D·3D Editor·Builder와 지도 제품을
   기존 브라우저와 시크릿 모드를 비교해 오래된 조회수의 원인을 서비스워커 캐시로 좁힌 기록
 - **Implementation** — [🌆 GitHub.io 페이지 제작기 (2) - Points 컨셉의 3D Web 구현](https://velog.io/@okorion/GitHub.io-페이지-제작기-2-Points-web)  
   Points 기반 시각 효과와 카메라 인터랙션, 당시 확인한 절두체 컬링 이슈의 구현 기록
-- **Technical Judgment** — [2026년 React 프로젝트에서 라이브러리를 고르는 기준](https://velog.io/@okorion/2026년-React-프로젝트에서-라이브러리를-고르는-기준)  
-  기술 유행보다 제품 요구와 유지보수 비용을 기준으로 선택지를 좁히는 판단 기록
+- **Architecture Decision** — [URL 기반 다이어그램 공유 설계 및 구현 (완전 클라이언트 방식)](https://velog.io/@okorion/URL-기반-다이어그램-공유-설계-및-구현완전-클라이언트-방식)  
+  서버 저장소 없이 JSON 직렬화와 LZ-String 압축·복원으로 공유 URL을 설계하고, 버전 호환성·URL 길이·민감 정보 노출 한계를 정리한 기록
 
 [All posts on Velog](https://velog.io/@okorion)
 
