@@ -5,12 +5,14 @@ import {
   collectCareerExclusionDerivedUrls,
 } from "./career-exclusion-catalog-schema.mjs";
 
+// eslint-disable-next-line security/detect-non-literal-fs-filename -- This is a fixed repository-local file URL.
 export const careerExclusionCatalogSnapshotBytes = await readFile(
   new URL(
     "../config/career/github-lab-project-exclusions.generated.json",
     import.meta.url,
   ),
 );
+// eslint-disable-next-line security/detect-non-literal-fs-filename -- This is a fixed repository-local file URL.
 const metadataText = await readFile(
   new URL(
     "../config/career/github-lab-project-exclusions.metadata.json",

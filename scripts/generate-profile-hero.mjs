@@ -69,8 +69,18 @@ function sharedDefinitions(theme, width, height) {
   </defs>`;
 }
 
+function getTheme(themeName) {
+  if (themeName === "dark") {
+    return themes.dark;
+  }
+  if (themeName === "light") {
+    return themes.light;
+  }
+  throw new Error(`Unsupported profile hero theme (${themeName})`);
+}
+
 function desktopHero(themeName) {
-  const theme = themes[themeName];
+  const theme = getTheme(themeName);
   return `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="360" viewBox="0 0 1200 360" role="img" aria-labelledby="title desc">
   <title id="title">Hyounkyu Oh — Frontend / Application Engineer</title>
   <desc id="desc">Editor and Builder state connected through save, load, Runtime, and real-environment verification</desc>
@@ -119,7 +129,7 @@ function desktopHero(themeName) {
 }
 
 function mobileHero(themeName) {
-  const theme = themes[themeName];
+  const theme = getTheme(themeName);
   return `<svg xmlns="http://www.w3.org/2000/svg" width="720" height="420" viewBox="0 0 720 420" role="img" aria-labelledby="title desc">
   <title id="title">Hyounkyu Oh — Frontend / Application Engineer</title>
   <desc id="desc">Editor and Builder state connected through save, load, Runtime, and real-environment verification</desc>

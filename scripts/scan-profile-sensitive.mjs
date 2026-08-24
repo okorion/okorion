@@ -29,6 +29,7 @@ const allowedEmails = new Set([
 ]);
 
 async function collectFiles(directory, files) {
+  // eslint-disable-next-line security/detect-non-literal-fs-filename -- Recursive paths originate from the fixed repository root.
   for (const entry of await readdir(directory, { withFileTypes: true })) {
     if (entry.name === ".git") {
       continue;
@@ -55,6 +56,7 @@ for (const filePath of await collectFiles(repositoryRoot, [])) {
   ) {
     continue;
   }
+  // eslint-disable-next-line security/detect-non-literal-fs-filename -- filePath was collected beneath the fixed repository root.
   const content = await readFile(filePath, "utf8");
   for (const [label, pattern] of forbiddenPatterns) {
     pattern.lastIndex = 0;

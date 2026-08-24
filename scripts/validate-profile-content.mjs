@@ -20,6 +20,7 @@ function assertExcludes(content, unexpected, label) {
 }
 
 async function readRepositoryFile(relativePath) {
+  // eslint-disable-next-line security/detect-non-literal-fs-filename -- Callers provide fixed repository-relative validation targets.
   return readFile(join(profileRepositoryRoot, relativePath), "utf8");
 }
 
@@ -35,15 +36,35 @@ const signalAssets = [
 ];
 const allSvgAssets = [...heroAssets, ...signalAssets];
 
-const [readme, workflow, packageText, ...svgContents] = await Promise.all([
+const [
+  readme,
+  workflow,
+  packageText,
+  heroLightSvg,
+  heroDarkSvg,
+  heroMobileLightSvg,
+  heroMobileDarkSvg,
+  signalLightSvg,
+  signalDarkSvg,
+] = await Promise.all([
   readRepositoryFile("README.md"),
   readRepositoryFile(".github/workflows/update-profile-signals.yml"),
   readRepositoryFile("package.json"),
-  ...allSvgAssets.map((relativePath) => readRepositoryFile(relativePath)),
+  readRepositoryFile("assets/hero-light.svg"),
+  readRepositoryFile("assets/hero-dark.svg"),
+  readRepositoryFile("assets/hero-mobile-light.svg"),
+  readRepositoryFile("assets/hero-mobile-dark.svg"),
+  readRepositoryFile("assets/lab-signal-light.svg"),
+  readRepositoryFile("assets/lab-signal-dark.svg"),
 ]);
-const svgByPath = new Map(
-  allSvgAssets.map((relativePath, index) => [relativePath, svgContents[index]]),
-);
+const svgByPath = new Map([
+  ["assets/hero-light.svg", heroLightSvg],
+  ["assets/hero-dark.svg", heroDarkSvg],
+  ["assets/hero-mobile-light.svg", heroMobileLightSvg],
+  ["assets/hero-mobile-dark.svg", heroMobileDarkSvg],
+  ["assets/lab-signal-light.svg", signalLightSvg],
+  ["assets/lab-signal-dark.svg", signalDarkSvg],
+]);
 
 assertNoBlockedProfileContent(
   await loadProfileSurfaces(),
@@ -171,6 +192,7 @@ for (const signalAsset of signalAssets) {
 }
 
 const packageJson = JSON.parse(packageText);
+const packageScripts = new Set(Object.keys(packageJson.scripts ?? {}));
 for (const scriptName of [
   "check:career-catalog",
   "generate:hero",
@@ -178,7 +200,7 @@ for (const scriptName of [
   "check:profile",
   "test",
 ]) {
-  if (!packageJson.scripts?.[scriptName]) {
+  if (!packageScripts.has(scriptName)) {
     throw new Error(`package.json: required script is missing (${scriptName})`);
   }
 }

@@ -56,7 +56,7 @@ for (const alias of catalogBlockedProfileAliases) {
     `README alias regression (${alias})`,
   );
   expectBlocked(
-    [["assets/profile.css", `.card{background:url(\"https://${alias}\")}`]],
+    [["assets/profile.css", `.card{background:url("https://${alias}")}`]],
     `CSS alias regression (${alias})`,
   );
   expectBlocked(
@@ -94,7 +94,7 @@ for (const alias of catalogBlockedProfileAliases) {
 
 for (const rawAssetUrl of catalogDerivedProfileUrls) {
   expectBlocked(
-    [["assets/profile.css", `.card{background:url(\"https://${rawAssetUrl}/main/public/og.png\")}`]],
+    [["assets/profile.css", `.card{background:url("https://${rawAssetUrl}/main/public/og.png")}`]],
     `derived raw asset URL regression (${rawAssetUrl})`,
   );
 }

@@ -1,5 +1,6 @@
 import { readFile } from "node:fs/promises";
 
+// eslint-disable-next-line security/detect-non-literal-fs-filename -- This is a fixed repository-local file URL.
 const readme = await readFile(new URL("../README.md", import.meta.url), "utf8");
 const links = new Set();
 

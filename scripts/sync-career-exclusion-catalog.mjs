@@ -45,6 +45,7 @@ async function readSourceCatalog(sourcePath) {
   if (extname(resolvedSourcePath).toLowerCase() !== ".json") {
     throw new Error("career catalog source must be a JSON file");
   }
+  // eslint-disable-next-line security/detect-non-literal-fs-filename -- The operator-supplied source is restricted to a JSON file and parsed before use.
   return readFile(resolvedSourcePath);
 }
 
@@ -66,7 +67,9 @@ function createMetadata(sourceHash) {
 }
 
 async function readRepositorySnapshot() {
+  // eslint-disable-next-line security/detect-non-literal-fs-filename -- This is a fixed repository-local file URL.
   const snapshotBytes = await readFile(snapshotUrl);
+  // eslint-disable-next-line security/detect-non-literal-fs-filename -- This is a fixed repository-local file URL.
   const metadata = JSON.parse(await readFile(metadataUrl, "utf8"));
   return { metadata, snapshotBytes };
 }
@@ -74,7 +77,9 @@ async function readRepositorySnapshot() {
 async function writeRepositorySnapshot(sourceBytes) {
   parseCareerExclusionCatalog(sourceBytes, "installed source catalog");
   const metadata = createMetadata(sha256Hex(sourceBytes));
+  // eslint-disable-next-line security/detect-non-literal-fs-filename -- This is a fixed repository-local file URL.
   await writeFile(snapshotUrl, sourceBytes);
+  // eslint-disable-next-line security/detect-non-literal-fs-filename -- This is a fixed repository-local file URL.
   await writeFile(
     metadataUrl,
     `${JSON.stringify(metadata, null, 2)}\n`,

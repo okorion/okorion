@@ -4,7 +4,6 @@ import {
   isAbsolute,
   join,
   relative,
-  resolve,
   sep,
 } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -168,6 +167,7 @@ function assertPathInsideRoot(root, candidatePath) {
 
 async function readSurfaceContent(root, filePath) {
   const safeFilePath = assertPathInsideRoot(root, filePath);
+  // eslint-disable-next-line security/detect-non-literal-fs-filename -- The resolved path is constrained to the explicitly scanned root.
   const bytes = await readFile(safeFilePath);
   if (textExtensions.has(extname(filePath).toLowerCase())) {
     return bytes.toString("utf8");
@@ -179,6 +179,7 @@ async function readSurfaceContent(root, filePath) {
 
 async function collectTree(root, directory, surfaces) {
   const safeDirectory = assertPathInsideRoot(root, directory);
+  // eslint-disable-next-line security/detect-non-literal-fs-filename -- The resolved directory is constrained to the explicitly scanned root.
   for (const entry of await readdir(safeDirectory, { withFileTypes: true })) {
     const filePath = join(safeDirectory, entry.name);
     if (entry.isDirectory()) {
