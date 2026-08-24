@@ -157,21 +157,7 @@ export function sha256Hex(value) {
   return createHash("sha256").update(value).digest("hex");
 }
 
-export function assertValidCareerExclusionCatalog(catalog) {
-  assertPlainObject(catalog, "catalog");
-  assertExactKeys(
-    catalog,
-    [
-      "schemaVersion",
-      "policyId",
-      "decision",
-      "blockedSurfaceScope",
-      "blockedSurfaces",
-      "applicationInputUrlExceptions",
-      "projects",
-    ],
-    "catalog",
-  );
+function validateCatalogIdentity(catalog) {
   assertExact(
     catalog.schemaVersion,
     expectedCatalogSchemaVersion,
@@ -188,12 +174,18 @@ export function assertValidCareerExclusionCatalog(catalog) {
   if (!catalog.blockedSurfaces.includes("okorion.github.io")) {
     fail("blockedSurfaces must include okorion.github.io");
   }
+}
+
+function validateCatalogApplicationExceptions(catalog) {
   if (!Array.isArray(catalog.applicationInputUrlExceptions)) {
     fail("applicationInputUrlExceptions must be an array");
   }
   for (const [index, exception] of catalog.applicationInputUrlExceptions.entries()) {
     validateApplicationInputUrlException(exception, index);
   }
+}
+
+function validateCatalogProjects(catalog) {
   if (!Array.isArray(catalog.projects) || catalog.projects.length === 0) {
     fail("projects must be a non-empty array");
   }
@@ -222,6 +214,26 @@ export function assertValidCareerExclusionCatalog(catalog) {
   ) {
     fail("confirmed canonical project IDs do not match the trusted Career OS release");
   }
+}
+
+export function assertValidCareerExclusionCatalog(catalog) {
+  assertPlainObject(catalog, "catalog");
+  assertExactKeys(
+    catalog,
+    [
+      "schemaVersion",
+      "policyId",
+      "decision",
+      "blockedSurfaceScope",
+      "blockedSurfaces",
+      "applicationInputUrlExceptions",
+      "projects",
+    ],
+    "catalog",
+  );
+  validateCatalogIdentity(catalog);
+  validateCatalogApplicationExceptions(catalog);
+  validateCatalogProjects(catalog);
   return catalog;
 }
 

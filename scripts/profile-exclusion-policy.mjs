@@ -1,11 +1,5 @@
 import { lstat, readFile, readdir } from "node:fs/promises";
-import {
-  extname,
-  isAbsolute,
-  join,
-  relative,
-  sep,
-} from "node:path";
+import { extname, isAbsolute, join, relative, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   careerExclusionAliases,
@@ -18,36 +12,19 @@ const repositoryRoot = fileURLToPath(new URL("../", import.meta.url));
 // or the previous hero. They are profile-surface extensions of the catalog,
 // not replacements for its authoritative aliases.
 const blockedDerivedProfileContent = [
-  "local-first",
-  "local first",
-  "local AI",
-  "WebGPU",
-  "WebLLM",
-  "ECharts",
-  "Yjs",
-  "Hocuspocus",
-  "IndexedDB",
-  "VizSpec",
-  "SceneCommand",
-  "Visual Systems Lab",
-  "Visual Computing",
-  "tools that think, render, and collaborate",
-  "collaborative 3D editing",
-  "explainable visualization and portable code",
-  "data to visualization and code",
-  "로컬 LLM 명령",
-  "변경 축만 기록",
-  "CSV·JSON을 브라우저에서 분석하고 적합한 차트를 추천",
-  "LLM 프롬프트",
+  "local-first", "local first", "local AI", "WebGPU", "WebLLM",
+  "ECharts", "Yjs", "Hocuspocus", "IndexedDB", "VizSpec", "SceneCommand",
+  "Visual Systems Lab", "Visual Computing",
+  "tools that think, render, and collaborate", "collaborative 3D editing",
+  "explainable visualization and portable code", "data to visualization and code",
+  "로컬 LLM 명령", "변경 축만 기록",
+  "CSV·JSON을 브라우저에서 분석하고 적합한 차트를 추천", "LLM 프롬프트",
 ];
 
-export const blockedProfileContent = [
-  ...new Set([
-    ...careerExclusionAliases,
-    ...careerExclusionDerivedUrls,
-    ...blockedDerivedProfileContent,
-  ]),
-];
+export const blockedProfileContent = [...new Set([
+  ...careerExclusionAliases, ...careerExclusionDerivedUrls,
+  ...blockedDerivedProfileContent,
+])];
 
 export const catalogBlockedProfileAliases = [...careerExclusionAliases];
 export const catalogDerivedProfileUrls = [...careerExclusionDerivedUrls];
@@ -57,82 +34,37 @@ export const blockedProfileDerivedContent = [...blockedDerivedProfileContent];
 // current profile-specific decision. This does not permit any catalog project
 // alias, repository URL, demo URL, image, technology, or outcome to return.
 export const retainedCleanPortfolioUrls = [
-  "https://okorion.github.io/",
-  "https://okorion.github.io/?view=3d",
+  "https://okorion.github.io/", "https://okorion.github.io/?view=3d",
 ];
 
-const textExtensions = new Set([
-  ".adoc",
-  ".asciidoc",
-  ".cjs",
-  ".css",
-  ".cts",
-  ".htm",
-  ".html",
-  ".js",
-  ".json",
-  ".jsx",
-  ".md",
-  ".mjs",
-  ".mts",
-  ".ps1",
-  ".py",
-  ".rst",
-  ".sh",
-  ".svg",
-  ".toml",
-  ".ts",
-  ".tsx",
-  ".txt",
-  ".xml",
-  ".yaml",
-  ".yml",
-]);
-const executableTextExtensions = new Set([
-  ".cjs",
-  ".cts",
-  ".js",
-  ".jsx",
-  ".mjs",
-  ".mts",
-  ".ps1",
-  ".py",
-  ".sh",
-  ".ts",
-  ".tsx",
-]);
-
-const activeSurfaceDirectories = new Set([
-  ".github",
-  "assets",
-  "docs",
-  "public",
-  "scripts",
-  "static",
-  "styles",
-]);
+const textExtensions = new Set(
+  ".adoc .asciidoc .cjs .css .cts .htm .html .js .json .jsx .md .mjs .mts .ps1 .py .rst .sh .svg .toml .ts .tsx .txt .xml .yaml .yml".split(
+    " ",
+  ),
+);
+const executableTextExtensions = new Set(
+  ".cjs .cts .js .jsx .mjs .mts .ps1 .py .sh .ts .tsx".split(" "),
+);
+const activeSurfaceDirectories = new Set(
+  ".github assets docs public scripts static styles".split(" "),
+);
 const skippedRepositoryDirectories = new Set([".git", "node_modules"]);
 const policyOnlyPaths = new Set([
-  "scripts/career-exclusion-catalog-schema.mjs",
-  "scripts/profile-exclusion-policy.mjs",
+  "scripts/career-exclusion-catalog-schema.mjs", "scripts/profile-exclusion-policy.mjs",
 ]);
 export const profileEvidenceDirectory =
   "docs/pr-evidence/github-profile-career-exclusions";
 export const profileEvidenceOnlyPaths = Object.freeze([
-  `${profileEvidenceDirectory}/README.md`,
-  `${profileEvidenceDirectory}/hero-before.png`,
+  `${profileEvidenceDirectory}/README.md`, `${profileEvidenceDirectory}/hero-before.png`,
   `${profileEvidenceDirectory}/hero-after.png`,
   `${profileEvidenceDirectory}/selected-work-before.png`,
   `${profileEvidenceDirectory}/selected-work-after.png`,
 ]);
 const evidenceOnlyPaths = new Set(profileEvidenceOnlyPaths);
 const allowedProfileImageTargets = new Set([
-  "assets/hero-light.svg",
-  "assets/hero-dark.svg",
-  "assets/hero-mobile-light.svg",
-  "assets/hero-mobile-dark.svg",
-  "assets/lab-signal-light.svg",
-  "assets/lab-signal-dark.svg",
+  "assets/hero-light.svg", "assets/hero-dark.svg",
+  "assets/hero-mobile-light.svg", "assets/hero-mobile-dark.svg",
+  "assets/lab-signal-light.svg", "assets/lab-signal-dark.svg",
 ]);
 
 function decodeCssEscapes(value) {
@@ -259,8 +191,22 @@ function repositoryRelativePath(root, filePath) {
 }
 
 function isRootReadme(relativePath) {
-  if (relativePath.includes("/") || !/^readme(?:\.[a-z0-9_-]+)?$/iu.test(relativePath)) {
+  if (relativePath.includes("/")) {
     return false;
+  }
+  const normalizedName = relativePath.toLocaleLowerCase("en-US");
+  if (normalizedName !== "readme" && !normalizedName.startsWith("readme.")) {
+    return false;
+  }
+  const suffix = normalizedName.slice("readme.".length);
+  const supportedName =
+    normalizedName === "readme" ||
+    (suffix.length > 0 &&
+      [...suffix].every(
+        (character) => /[a-z0-9_-]/u.test(character),
+      ));
+  if (!supportedName) {
+    throw new Error(`README surface path is unsupported (${relativePath})`);
   }
   const extension = extname(relativePath).toLocaleLowerCase("en-US");
   if (extension && !textExtensions.has(extension)) {
@@ -269,13 +215,44 @@ function isRootReadme(relativePath) {
   return true;
 }
 
+function classifyEvidenceSurfacePath(relativePath) {
+  if (!relativePath.startsWith(`${profileEvidenceDirectory}/`)) {
+    return null;
+  }
+  if (!evidenceOnlyPaths.has(relativePath)) {
+    throw new Error(`profile evidence entry is not allowlisted (${relativePath})`);
+  }
+  return "evidence-only";
+}
+
+function classifyOutsideActiveDirectories(relativePath, topLevelDirectory) {
+  if (activeSurfaceDirectories.has(topLevelDirectory)) {
+    return null;
+  }
+  const extension = extname(relativePath).toLocaleLowerCase("en-US");
+  return executableTextExtensions.has(extension) ? "active" : "inactive";
+}
+
+function classifyGithubSurfacePath(relativePath, topLevelDirectory) {
+  if (topLevelDirectory !== ".github") {
+    return null;
+  }
+  const pathSegments = relativePath.split("/");
+  if (pathSegments.at(1) !== "workflows") {
+    return "inactive";
+  }
+  const extension = extname(relativePath).toLocaleLowerCase("en-US");
+  if (pathSegments.length !== 3 || (extension !== ".yml" && extension !== ".yaml")) {
+    throw new Error(`workflow surface path is unsupported (${relativePath})`);
+  }
+  return null;
+}
+
 export function classifyProfileSurfacePath(candidatePath) {
   const relativePath = assertSafeProfileRelativePath(candidatePath);
-  if (relativePath.startsWith(`${profileEvidenceDirectory}/`)) {
-    if (!evidenceOnlyPaths.has(relativePath)) {
-      throw new Error(`profile evidence entry is not allowlisted (${relativePath})`);
-    }
-    return "evidence-only";
+  const evidenceClassification = classifyEvidenceSurfacePath(relativePath);
+  if (evidenceClassification) {
+    return evidenceClassification;
   }
   if (policyOnlyPaths.has(relativePath)) {
     return "policy-only";
@@ -285,20 +262,19 @@ export function classifyProfileSurfacePath(candidatePath) {
   }
 
   const [topLevelDirectory] = relativePath.split("/");
-  if (!activeSurfaceDirectories.has(topLevelDirectory)) {
-    return executableTextExtensions.has(
-      extname(relativePath).toLocaleLowerCase("en-US"),
-    )
-      ? "active"
-      : "inactive";
+  const outsideClassification = classifyOutsideActiveDirectories(
+    relativePath,
+    topLevelDirectory,
+  );
+  if (outsideClassification) {
+    return outsideClassification;
   }
-  if (topLevelDirectory === ".github") {
-    if (!relativePath.startsWith(".github/workflows/")) {
-      return "inactive";
-    }
-    if (!/^\.github\/workflows\/[^/]+\.ya?ml$/iu.test(relativePath)) {
-      throw new Error(`workflow surface path is unsupported (${relativePath})`);
-    }
+  const githubClassification = classifyGithubSurfacePath(
+    relativePath,
+    topLevelDirectory,
+  );
+  if (githubClassification) {
+    return githubClassification;
   }
   if (!textExtensions.has(extname(relativePath).toLocaleLowerCase("en-US"))) {
     throw new Error(`active profile surface type is unsupported (${relativePath})`);
@@ -479,7 +455,7 @@ function collectAlternativeReadmeImageTargets(content, extension) {
       .map(([, target]) => target);
   }
   if (extension === ".adoc" || extension === ".asciidoc") {
-    return [...content.matchAll(/image::?([^\s\[]+)\[/giu)]
+    return [...content.matchAll(/image::?([^\s[]+)\[/giu)]
       .map(([, target]) => target);
   }
   return [];

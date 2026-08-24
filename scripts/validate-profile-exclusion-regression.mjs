@@ -38,13 +38,11 @@ function expectRejected(action, label) {
   throw new Error(`${label} was not rejected`);
 }
 
-async function expectDiscoveredSurfaceRejected(options, label) {
-  try {
-    assertProfileSurfacePolicy(await loadProfileSurfaces(options), label);
-  } catch {
-    return;
-  }
-  throw new Error(`${label} was not rejected`);
+function expectDiscoveredSurfaceRejected(options, label) {
+  return loadProfileSurfaces(options).then(
+    (surfaces) => expectBlocked(surfaces, label),
+    () => undefined,
+  );
 }
 
 function percentEncode(value) {
@@ -130,7 +128,7 @@ for (const alias of catalogBlockedProfileAliases) {
     `HTML named and CSS-encoded alias regression (${alias})`,
   );
   expectBlocked(
-    [[`assets/${alias}.svg`, "<svg></svg>"]],
+    [[`assets/${alias}.svg`, ""]],
     `static asset path alias regression (${alias})`,
   );
   await expectDiscoveredSurfaceRejected(
