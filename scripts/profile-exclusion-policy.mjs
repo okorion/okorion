@@ -190,26 +190,38 @@ function repositoryRelativePath(root, filePath) {
   );
 }
 
+function classifyReadmeName(normalizedName) {
+  if (normalizedName === "readme") {
+    return "supported";
+  }
+  if (!normalizedName.startsWith("readme.")) {
+    return "unrelated";
+  }
+  const suffix = normalizedName.slice("readme.".length);
+  return suffix.length > 0 &&
+    [...suffix].every((character) => /[a-z0-9_-]/u.test(character))
+    ? "supported"
+    : "unsupported";
+}
+
 function isRootReadme(relativePath) {
   if (relativePath.includes("/")) {
     return false;
   }
-  const normalizedName = relativePath.toLocaleLowerCase("en-US");
-  if (normalizedName !== "readme" && !normalizedName.startsWith("readme.")) {
+  const readmeClassification = classifyReadmeName(
+    relativePath.toLocaleLowerCase("en-US"),
+  );
+  if (readmeClassification === "unrelated") {
     return false;
   }
-  const suffix = normalizedName.slice("readme.".length);
-  const supportedName =
-    normalizedName === "readme" ||
-    (suffix.length > 0 &&
-      [...suffix].every(
-        (character) => /[a-z0-9_-]/u.test(character),
-      ));
-  if (!supportedName) {
+  if (readmeClassification === "unsupported") {
     throw new Error(`README surface path is unsupported (${relativePath})`);
   }
   const extension = extname(relativePath).toLocaleLowerCase("en-US");
-  if (extension && !textExtensions.has(extension)) {
+  if (!extension) {
+    return true;
+  }
+  if (!textExtensions.has(extension)) {
     throw new Error(`README surface type is unsupported (${relativePath})`);
   }
   return true;
