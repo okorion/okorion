@@ -1,4 +1,4 @@
-import { readFile, readdir } from "node:fs/promises";
+import { lstat, readFile, readdir } from "node:fs/promises";
 import {
   extname,
   isAbsolute,
@@ -61,15 +61,12 @@ export const retainedCleanPortfolioUrls = [
   "https://okorion.github.io/?view=3d",
 ];
 
-const fixedTextSurfacePaths = [
-  "README.md",
-  ".github/workflows/update-profile-signals.yml",
-  "scripts/generate-profile-hero.mjs",
-  "scripts/generate-profile-signals.mjs",
-];
-
 const textExtensions = new Set([
+  ".adoc",
+  ".asciidoc",
+  ".cjs",
   ".css",
+  ".cts",
   ".htm",
   ".html",
   ".js",
@@ -77,20 +74,84 @@ const textExtensions = new Set([
   ".jsx",
   ".md",
   ".mjs",
+  ".mts",
+  ".ps1",
+  ".py",
+  ".rst",
+  ".sh",
   ".svg",
+  ".toml",
+  ".ts",
+  ".tsx",
   ".txt",
   ".xml",
   ".yaml",
   ".yml",
 ]);
+const executableTextExtensions = new Set([
+  ".cjs",
+  ".cts",
+  ".js",
+  ".jsx",
+  ".mjs",
+  ".mts",
+  ".ps1",
+  ".py",
+  ".sh",
+  ".ts",
+  ".tsx",
+]);
+
+const activeSurfaceDirectories = new Set([
+  ".github",
+  "assets",
+  "docs",
+  "public",
+  "scripts",
+  "static",
+  "styles",
+]);
+const skippedRepositoryDirectories = new Set([".git", "node_modules"]);
+const policyOnlyPaths = new Set([
+  "scripts/career-exclusion-catalog-schema.mjs",
+  "scripts/profile-exclusion-policy.mjs",
+]);
+export const profileEvidenceDirectory =
+  "docs/pr-evidence/github-profile-career-exclusions";
+export const profileEvidenceOnlyPaths = Object.freeze([
+  `${profileEvidenceDirectory}/README.md`,
+  `${profileEvidenceDirectory}/hero-before.png`,
+  `${profileEvidenceDirectory}/hero-after.png`,
+  `${profileEvidenceDirectory}/selected-work-before.png`,
+  `${profileEvidenceDirectory}/selected-work-after.png`,
+]);
+const evidenceOnlyPaths = new Set(profileEvidenceOnlyPaths);
+const allowedProfileImageTargets = new Set([
+  "assets/hero-light.svg",
+  "assets/hero-dark.svg",
+  "assets/hero-mobile-light.svg",
+  "assets/hero-mobile-dark.svg",
+  "assets/lab-signal-light.svg",
+  "assets/lab-signal-dark.svg",
+]);
 
 function decodeCssEscapes(value) {
-  return value.replace(/\\([0-9a-f]{1,6})\s?/giu, (_, hexadecimal) => {
-    const codePoint = Number.parseInt(hexadecimal, 16);
-    return codePoint > 0 && codePoint <= 0x10ffff
-      ? String.fromCodePoint(codePoint)
-      : "";
-  });
+  return value.replace(
+    /\\(?:\r\n|[\n\r\f])|\\([0-9a-f]{1,6})[\t\n\f\r ]?|\\([^\n\r\f])/giu,
+    (_, hexadecimal, simpleEscape) => {
+      if (hexadecimal) {
+        const codePoint = Number.parseInt(hexadecimal, 16);
+        return codePoint > 0 && codePoint <= 0x10ffff
+          ? String.fromCodePoint(codePoint)
+          : "";
+      }
+      return simpleEscape ?? "";
+    },
+  );
+}
+
+function stripCssComments(value) {
+  return value.replace(/\/\*[\s\S]*?\*\//gu, "");
 }
 
 function decodeHtmlEntities(value) {
@@ -105,6 +166,8 @@ function decodeHtmlEntities(value) {
     .replaceAll("&sol;", "/")
     .replaceAll("&period;", ".")
     .replaceAll("&hyphen;", "-")
+    .replaceAll("&bsol;", "\\")
+    .replaceAll("&backslash;", "\\")
     .replaceAll("&amp;", "&");
 }
 
@@ -125,9 +188,19 @@ function decodeUrlLayers(value) {
 }
 
 export function normalizeProfileSurface(value) {
-  return decodeUrlLayers(decodeHtmlEntities(decodeCssEscapes(String(value))))
-    .normalize("NFKC")
-    .toLocaleLowerCase("en-US");
+  let normalized = String(value);
+  for (let layer = 0; layer < 6; layer += 1) {
+    const next = decodeCssEscapes(
+      decodeHtmlEntities(decodeUrlLayers(stripCssComments(normalized))),
+    )
+      .replace(/\p{Cf}/gu, "")
+      .normalize("NFKC");
+    if (next === normalized) {
+      break;
+    }
+    normalized = next;
+  }
+  return normalized.toLocaleLowerCase("en-US");
 }
 
 function compactProfileSurface(value) {
@@ -149,10 +222,6 @@ function includesBlockedValue(surfaceValue, blockedValue) {
   );
 }
 
-function normalizePath(filePath) {
-  return relative(repositoryRoot, filePath).split(sep).join("/");
-}
-
 function assertPathInsideRoot(root, candidatePath) {
   const relativePath = relative(root, candidatePath);
   const escapesRoot =
@@ -165,16 +234,92 @@ function assertPathInsideRoot(root, candidatePath) {
   return candidatePath;
 }
 
+export function assertSafeProfileRelativePath(candidatePath) {
+  if (typeof candidatePath !== "string" || candidatePath.length === 0) {
+    throw new Error("profile surface path must be a non-empty string");
+  }
+  const normalizedPath = candidatePath.split("\\").join("/");
+  const pathSegments = normalizedPath.split("/");
+  if (
+    isAbsolute(candidatePath) ||
+    /^[a-z]:\//iu.test(normalizedPath) ||
+    normalizedPath.startsWith("/") ||
+    normalizedPath.includes("\0") ||
+    pathSegments.some((segment) => segment === "" || segment === "." || segment === "..")
+  ) {
+    throw new Error(`profile surface path is unsafe (${candidatePath})`);
+  }
+  return normalizedPath;
+}
+
+function repositoryRelativePath(root, filePath) {
+  return assertSafeProfileRelativePath(
+    relative(root, filePath).split(sep).join("/"),
+  );
+}
+
+function isRootReadme(relativePath) {
+  if (relativePath.includes("/") || !/^readme(?:\.[a-z0-9_-]+)?$/iu.test(relativePath)) {
+    return false;
+  }
+  const extension = extname(relativePath).toLocaleLowerCase("en-US");
+  if (extension && !textExtensions.has(extension)) {
+    throw new Error(`README surface type is unsupported (${relativePath})`);
+  }
+  return true;
+}
+
+export function classifyProfileSurfacePath(candidatePath) {
+  const relativePath = assertSafeProfileRelativePath(candidatePath);
+  if (relativePath.startsWith(`${profileEvidenceDirectory}/`)) {
+    if (!evidenceOnlyPaths.has(relativePath)) {
+      throw new Error(`profile evidence entry is not allowlisted (${relativePath})`);
+    }
+    return "evidence-only";
+  }
+  if (policyOnlyPaths.has(relativePath)) {
+    return "policy-only";
+  }
+  if (relativePath === "package.json" || isRootReadme(relativePath)) {
+    return "active";
+  }
+
+  const [topLevelDirectory] = relativePath.split("/");
+  if (!activeSurfaceDirectories.has(topLevelDirectory)) {
+    return executableTextExtensions.has(
+      extname(relativePath).toLocaleLowerCase("en-US"),
+    )
+      ? "active"
+      : "inactive";
+  }
+  if (topLevelDirectory === ".github") {
+    if (!relativePath.startsWith(".github/workflows/")) {
+      return "inactive";
+    }
+    if (!/^\.github\/workflows\/[^/]+\.ya?ml$/iu.test(relativePath)) {
+      throw new Error(`workflow surface path is unsupported (${relativePath})`);
+    }
+  }
+  if (!textExtensions.has(extname(relativePath).toLocaleLowerCase("en-US"))) {
+    throw new Error(`active profile surface type is unsupported (${relativePath})`);
+  }
+  return "active";
+}
+
+export function assertSupportedProfileEntry(entry, relativePath) {
+  if (entry.isSymbolicLink()) {
+    throw new Error(`profile surface symlink is unsupported (${relativePath})`);
+  }
+  if (!entry.isDirectory() && !entry.isFile()) {
+    throw new Error(`profile surface filesystem entry is unsupported (${relativePath})`);
+  }
+}
+
 async function readSurfaceContent(root, filePath) {
   const safeFilePath = assertPathInsideRoot(root, filePath);
   // eslint-disable-next-line security/detect-non-literal-fs-filename -- The resolved path is constrained to the explicitly scanned root.
   const bytes = await readFile(safeFilePath);
-  if (textExtensions.has(extname(filePath).toLowerCase())) {
-    return bytes.toString("utf8");
-  }
-  // Binary metadata is still scanned as bytes; visual regression is handled
-  // separately by generated-asset and screenshot checks.
-  return `${bytes.toString("utf8")}\n${bytes.toString("latin1")}`;
+  return bytes.toString("utf8");
 }
 
 async function collectTree(root, directory, surfaces) {
@@ -182,59 +327,82 @@ async function collectTree(root, directory, surfaces) {
   // eslint-disable-next-line security/detect-non-literal-fs-filename -- The resolved directory is constrained to the explicitly scanned root.
   for (const entry of await readdir(safeDirectory, { withFileTypes: true })) {
     const filePath = join(safeDirectory, entry.name);
+    const relativePath = repositoryRelativePath(root, filePath);
+    if (
+      entry.isDirectory() &&
+      !relativePath.includes("/") &&
+      skippedRepositoryDirectories.has(relativePath)
+    ) {
+      continue;
+    }
+    assertSupportedProfileEntry(entry, relativePath);
     if (entry.isDirectory()) {
       await collectTree(root, filePath, surfaces);
       continue;
     }
-    if (!entry.isFile()) {
-      throw new Error(
-        `profile surface scan found an unsupported filesystem entry (${filePath})`,
-      );
+    if (classifyProfileSurfacePath(relativePath) !== "active") {
+      continue;
     }
     surfaces.push([
-      normalizePath(filePath),
+      relativePath,
       await readSurfaceContent(root, filePath),
     ]);
   }
   return surfaces;
 }
 
-export async function readProfileStaticTree(
-  root = repositoryRoot,
-  directory = join(root, "assets"),
-) {
-  return collectTree(root, directory, []);
+async function readDiscoveredProfileSurfaces(root) {
+  // eslint-disable-next-line security/detect-non-literal-fs-filename -- The caller-provided test root is validated before recursive discovery.
+  const rootEntry = await lstat(root);
+  if (rootEntry.isSymbolicLink() || !rootEntry.isDirectory()) {
+    throw new Error(`profile repository root must be a real directory (${root})`);
+  }
+  return collectTree(root, root, []);
 }
 
 export async function loadProfileSurfaces({
   root = repositoryRoot,
   contentMutations = new Map(),
+  contentReplacements = new Map(),
+  virtualFiles = new Map(),
 } = {}) {
-  if (!(contentMutations instanceof Map)) {
-    throw new Error("profile surface content mutations must be a Map");
-  }
-
-  const surfaces = [];
-  for (const relativePath of fixedTextSurfacePaths) {
-    const filePath = join(root, relativePath);
-    surfaces.push([relativePath, await readSurfaceContent(root, filePath)]);
-  }
-  surfaces.push(...(await readProfileStaticTree(root)));
-
-  const pendingMutations = new Set(contentMutations.keys());
-  const mutatedSurfaces = surfaces.map(([label, content]) => {
-    if (!contentMutations.has(label)) {
-      return [label, content];
+  for (const [label, value] of [
+    ["content mutations", contentMutations],
+    ["content replacements", contentReplacements],
+    ["virtual files", virtualFiles],
+  ]) {
+    if (!(value instanceof Map)) {
+      throw new Error(`profile surface ${label} must be a Map`);
     }
-    pendingMutations.delete(label);
-    return [label, `${content}\n${contentMutations.get(label)}`];
-  });
-  if (pendingMutations.size > 0) {
-    throw new Error(
-      `profile surface mutation target is missing (${[...pendingMutations].join(", ")})`,
-    );
   }
-  return mutatedSurfaces;
+
+  const surfaces = new Map(await readDiscoveredProfileSurfaces(root));
+  for (const [candidatePath, content] of virtualFiles) {
+    const relativePath = assertSafeProfileRelativePath(candidatePath);
+    if (classifyProfileSurfacePath(relativePath) !== "active") {
+      throw new Error(`virtual profile surface is not active (${relativePath})`);
+    }
+    if (surfaces.has(relativePath)) {
+      throw new Error(`virtual profile surface already exists (${relativePath})`);
+    }
+    surfaces.set(relativePath, String(content));
+  }
+
+  for (const [candidatePath, content] of contentReplacements) {
+    const relativePath = assertSafeProfileRelativePath(candidatePath);
+    if (!surfaces.has(relativePath)) {
+      throw new Error(`profile surface replacement target is missing (${relativePath})`);
+    }
+    surfaces.set(relativePath, String(content));
+  }
+  for (const [candidatePath, mutation] of contentMutations) {
+    const relativePath = assertSafeProfileRelativePath(candidatePath);
+    if (!surfaces.has(relativePath)) {
+      throw new Error(`profile surface mutation target is missing (${relativePath})`);
+    }
+    surfaces.set(relativePath, `${surfaces.get(relativePath)}\n${mutation}`);
+  }
+  return [...surfaces].sort(([left], [right]) => left.localeCompare(right));
 }
 
 export function assertNoBlockedProfileContent(surfaces, label) {
@@ -248,6 +416,133 @@ export function assertNoBlockedProfileContent(surfaces, label) {
       }
     }
   }
+}
+
+function assertAllowedProfileImageTarget(rawTarget, surfaceLabel, label) {
+  const target = normalizeProfileSurface(rawTarget)
+    .trim()
+    .replace(/^<|>$/gu, "");
+  if (/[?#]/u.test(target)) {
+    throw new Error(`${label}: image target must match exactly in ${surfaceLabel}`);
+  }
+  if (
+    target.startsWith("data:") ||
+    target.startsWith("http:") ||
+    target.startsWith("https:") ||
+    target.startsWith("//") ||
+    target.startsWith("/")
+  ) {
+    throw new Error(`${label}: external or embedded image is forbidden in ${surfaceLabel}`);
+  }
+  const relativeTarget = assertSafeProfileRelativePath(
+    target.startsWith("./") ? target.slice(2) : target,
+  );
+  if (!allowedProfileImageTargets.has(relativeTarget)) {
+    throw new Error(
+      `${label}: image target is not an approved generated asset in ${surfaceLabel} (${rawTarget})`,
+    );
+  }
+}
+
+function collectHtmlImageTargets(content) {
+  const targets = [];
+  for (const tag of content.match(/<(?:img|source)\b[^>]*>/giu) ?? []) {
+    for (const match of tag.matchAll(
+      /\b(src|srcset)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/giu,
+    )) {
+      const [, attribute, doubleQuoted, singleQuoted, unquoted] = match;
+      const value = doubleQuoted ?? singleQuoted ?? unquoted;
+      if (attribute.toLocaleLowerCase("en-US") === "srcset") {
+        for (const candidate of value.split(",")) {
+          const [target] = candidate.trim().split(/\s+/u);
+          if (target) {
+            targets.push(target);
+          }
+        }
+      } else {
+        targets.push(value.trim());
+      }
+    }
+  }
+  return targets;
+}
+
+function collectMarkdownImageTargets(content) {
+  return [...content.matchAll(/!\[[^\]]*\]\(\s*(?:<([^>]+)>|([^\s)]+))/gu)]
+    .map(([, bracketedTarget, target]) => bracketedTarget ?? target)
+    .filter(Boolean);
+}
+
+function collectAlternativeReadmeImageTargets(content, extension) {
+  if (extension === ".rst") {
+    return [...content.matchAll(/^\s*\.\.\s+(?:image|figure)::\s+(\S+)/gimu)]
+      .map(([, target]) => target);
+  }
+  if (extension === ".adoc" || extension === ".asciidoc") {
+    return [...content.matchAll(/image::?([^\s\[]+)\[/giu)]
+      .map(([, target]) => target);
+  }
+  return [];
+}
+
+export function assertSafeProfileImages(surfaces, label) {
+  const evidenceReference = normalizeProfileSurface(`${profileEvidenceDirectory}/`);
+  for (const [surfaceLabel, content] of surfaces) {
+    const normalizedContent = normalizeProfileSurface(content);
+    if (normalizedContent.includes(evidenceReference)) {
+      throw new Error(
+        `${label}: evidence-only path is referenced by active surface ${surfaceLabel}`,
+      );
+    }
+
+    const extension = extname(surfaceLabel).toLocaleLowerCase("en-US");
+    if (
+      extension === ".md" ||
+      extension === ".html" ||
+      extension === ".htm" ||
+      extension === ".rst" ||
+      extension === ".adoc" ||
+      extension === ".asciidoc"
+    ) {
+      for (const imageTarget of [
+        ...collectMarkdownImageTargets(content),
+        ...collectHtmlImageTargets(content),
+        ...collectAlternativeReadmeImageTargets(content, extension),
+      ]) {
+        assertAllowedProfileImageTarget(imageTarget, surfaceLabel, label);
+      }
+    }
+
+    if (extension === ".svg") {
+      if (/<\s*(?:image|use)\b/iu.test(normalizedContent)) {
+        throw new Error(`${label}: SVG image/use is forbidden in ${surfaceLabel}`);
+      }
+      if (/\b(?:xlink:)?href\s*=/iu.test(normalizedContent)) {
+        throw new Error(`${label}: SVG href is forbidden in ${surfaceLabel}`);
+      }
+      const withoutNamespace = normalizedContent.replace(
+        /xmlns=["']http:\/\/www\.w3\.org\/2000\/svg["']/giu,
+        "",
+      );
+      if (/data:image|https?:\/\//iu.test(withoutNamespace)) {
+        throw new Error(`${label}: SVG external/data image is forbidden in ${surfaceLabel}`);
+      }
+    }
+
+    if (extension === ".css") {
+      for (const match of content.matchAll(/url\(\s*(["']?)(.*?)\1\s*\)/giu)) {
+        const target = normalizeProfileSurface(match[2]).trim();
+        if (!target.startsWith("#")) {
+          throw new Error(`${label}: CSS external asset is forbidden in ${surfaceLabel}`);
+        }
+      }
+    }
+  }
+}
+
+export function assertProfileSurfacePolicy(surfaces, label) {
+  assertNoBlockedProfileContent(surfaces, label);
+  assertSafeProfileImages(surfaces, label);
 }
 
 export function assertAllowedProfileRepositoryNames(entries, label) {

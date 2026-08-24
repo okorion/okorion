@@ -1,7 +1,17 @@
 import { createHash } from "node:crypto";
 
-const expectedCatalogSchemaVersion = "1.0";
-const expectedCatalogPolicyId = "career-os-github-lab-exclusion-2026-08-21";
+// Trusted Career OS release lock. Updating the repository snapshot or its
+// self-reported metadata cannot move this boundary; a source release change
+// requires an explicit review of this constant and the canonical project set.
+export const trustedCareerExclusionRelease = Object.freeze({
+  schemaVersion: "1.0",
+  policyId: "career-os-github-lab-exclusion-2026-08-21",
+  sourceSha256:
+    "3399d932aa4b36bf8916f38ca8d6714e776c985fc4cac633811b2b77002ad7e2",
+  confirmedCanonicalProjectIds: Object.freeze(["vizport-studio"]),
+});
+const expectedCatalogSchemaVersion = trustedCareerExclusionRelease.schemaVersion;
+const expectedCatalogPolicyId = trustedCareerExclusionRelease.policyId;
 const expectedCatalogDecision = "omit-all";
 const expectedCatalogScope = "generated-external-artifacts-and-support-files";
 const expectedMetadataSyncMode = "byte-identical-source-catalog";
@@ -10,6 +20,14 @@ const expectedSnapshotPath =
 const expectedSourceSkill = "job-application-finalizer";
 const expectedSourceRelativePath =
   "references/github-lab-project-exclusions.json";
+const trustedProjectStatuses = new Map([
+  ["vizport-studio", "confirmed-excluded"],
+  ["localmesh-studio", "default-excluded"],
+  ["gpu-ux-lab", "default-excluded"],
+]);
+const trustedConfirmedCanonicalProjectIds = new Set(
+  trustedCareerExclusionRelease.confirmedCanonicalProjectIds,
+);
 const allowedProjectStatuses = new Set([
   "confirmed-excluded",
   "default-excluded",
@@ -184,6 +202,26 @@ export function assertValidCareerExclusionCatalog(catalog) {
   for (const project of catalog.projects) {
     validateProject(project, seenProjectIds);
   }
+  for (const [projectId, expectedStatus] of trustedProjectStatuses) {
+    const project = catalog.projects.find((candidate) => candidate.id === projectId);
+    if (!project) {
+      fail(`trusted project is missing (${projectId})`);
+    }
+    assertExact(project.status, expectedStatus, `${projectId}.trusted status`);
+  }
+  const confirmedProjectIds = new Set(
+    catalog.projects
+      .filter((project) => project.status === "confirmed-excluded")
+      .map((project) => project.id),
+  );
+  if (
+    confirmedProjectIds.size !== trustedConfirmedCanonicalProjectIds.size ||
+    [...trustedConfirmedCanonicalProjectIds].some(
+      (projectId) => !confirmedProjectIds.has(projectId),
+    )
+  ) {
+    fail("confirmed canonical project IDs do not match the trusted Career OS release");
+  }
   return catalog;
 }
 
@@ -220,10 +258,20 @@ export function assertValidCareerExclusionMetadata(metadata) {
     "source.relativePath",
   );
   assertSha256(metadata.source.sha256, "source.sha256");
+  assertExact(
+    metadata.source.sha256,
+    trustedCareerExclusionRelease.sourceSha256,
+    "trusted source SHA-256",
+  );
   assertPlainObject(metadata.snapshot, "metadata.snapshot");
   assertExactKeys(metadata.snapshot, ["path", "sha256"], "metadata.snapshot");
   assertExact(metadata.snapshot.path, expectedSnapshotPath, "snapshot.path");
   assertSha256(metadata.snapshot.sha256, "snapshot.sha256");
+  assertExact(
+    metadata.snapshot.sha256,
+    trustedCareerExclusionRelease.sourceSha256,
+    "trusted snapshot SHA-256",
+  );
   return metadata;
 }
 

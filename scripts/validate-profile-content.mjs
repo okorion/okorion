@@ -1,8 +1,10 @@
-import { access, readFile } from "node:fs/promises";
-import { join } from "node:path";
+import { createHash } from "node:crypto";
+import { readFile } from "node:fs/promises";
+import { basename, extname, join } from "node:path";
 import {
-  assertNoBlockedProfileContent,
+  assertProfileSurfacePolicy,
   loadProfileSurfaces,
+  profileEvidenceOnlyPaths,
   profileRepositoryRoot,
   retainedCleanPortfolioUrls,
 } from "./profile-exclusion-policy.mjs";
@@ -24,6 +26,19 @@ async function readRepositoryFile(relativePath) {
   return readFile(join(profileRepositoryRoot, relativePath), "utf8");
 }
 
+async function readRepositoryBytes(relativePath) {
+  // eslint-disable-next-line security/detect-non-literal-fs-filename -- Callers provide fixed evidence-only repository paths.
+  return readFile(join(profileRepositoryRoot, relativePath));
+}
+
+function requiredSurface(surfaceByPath, relativePath) {
+  const content = surfaceByPath.get(relativePath);
+  if (typeof content !== "string") {
+    throw new Error(`required active profile surface is missing (${relativePath})`);
+  }
+  return content;
+}
+
 const heroAssets = [
   "assets/hero-light.svg",
   "assets/hero-dark.svg",
@@ -36,40 +51,16 @@ const signalAssets = [
 ];
 const allSvgAssets = [...heroAssets, ...signalAssets];
 
-const [
-  readme,
-  workflow,
-  packageText,
-  heroLightSvg,
-  heroDarkSvg,
-  heroMobileLightSvg,
-  heroMobileDarkSvg,
-  signalLightSvg,
-  signalDarkSvg,
-] = await Promise.all([
-  readRepositoryFile("README.md"),
-  readRepositoryFile(".github/workflows/update-profile-signals.yml"),
-  readRepositoryFile("package.json"),
-  readRepositoryFile("assets/hero-light.svg"),
-  readRepositoryFile("assets/hero-dark.svg"),
-  readRepositoryFile("assets/hero-mobile-light.svg"),
-  readRepositoryFile("assets/hero-mobile-dark.svg"),
-  readRepositoryFile("assets/lab-signal-light.svg"),
-  readRepositoryFile("assets/lab-signal-dark.svg"),
-]);
-const svgByPath = new Map([
-  ["assets/hero-light.svg", heroLightSvg],
-  ["assets/hero-dark.svg", heroDarkSvg],
-  ["assets/hero-mobile-light.svg", heroMobileLightSvg],
-  ["assets/hero-mobile-dark.svg", heroMobileDarkSvg],
-  ["assets/lab-signal-light.svg", signalLightSvg],
-  ["assets/lab-signal-dark.svg", signalDarkSvg],
-]);
-
-assertNoBlockedProfileContent(
-  await loadProfileSurfaces(),
-  "career profile exclusion policy",
+const activeSurfaces = await loadProfileSurfaces();
+const surfaceByPath = new Map(activeSurfaces);
+const readme = requiredSurface(surfaceByPath, "README.md");
+const workflow = requiredSurface(
+  surfaceByPath,
+  ".github/workflows/update-profile-signals.yml",
 );
+const packageText = requiredSurface(surfaceByPath, "package.json");
+
+assertProfileSurfacePolicy(activeSurfaces, "career profile exclusion policy");
 
 for (const retainedContent of [
   "Frontend / Application Engineer",
@@ -123,11 +114,7 @@ for (const expectedAsset of expectedAssetReferences) {
   if (!localAssetReferences.includes(expectedAsset)) {
     throw new Error(`README.md: generated asset is not referenced (${expectedAsset})`);
   }
-  await access(join(profileRepositoryRoot, expectedAsset));
-}
-
-if (/!?\[!\[[^\r\n]*https?:\/\//u.test(readme)) {
-  throw new Error("README.md: remote project-card images must not be restored");
+  requiredSurface(surfaceByPath, expectedAsset);
 }
 
 const externalUrls = readme.match(/https:\/\/[^\s<>'"\])]+/gu) ?? [];
@@ -138,7 +125,10 @@ for (const candidate of externalUrls) {
   }
 }
 
-for (const [relativePath, svg] of svgByPath) {
+const svgSurfaces = activeSurfaces.filter(
+  ([relativePath]) => extname(relativePath).toLocaleLowerCase("en-US") === ".svg",
+);
+for (const [relativePath, svg] of svgSurfaces) {
   for (const requiredSvgContract of [
     "<svg",
     'role="img"',
@@ -167,7 +157,7 @@ for (const [relativePath, svg] of svgByPath) {
 }
 
 for (const heroAsset of heroAssets) {
-  const svg = svgByPath.get(heroAsset);
+  const svg = requiredSurface(surfaceByPath, heroAsset);
   for (const approvedHeroCopy of [
     "Frontend / Application Engineer",
     "PRODUCT DELIVERY",
@@ -179,7 +169,7 @@ for (const heroAsset of heroAssets) {
 }
 
 for (const signalAsset of signalAssets) {
-  const svg = svgByPath.get(signalAsset);
+  const svg = requiredSurface(surfaceByPath, signalAsset);
   for (const retainedSignal of [
     "tech-blog",
     "mermaid-sky-exporter",
@@ -217,6 +207,37 @@ for (const generatedAsset of allSvgAssets) {
   assertIncludes(workflow, generatedAsset, "update-profile-signals.yml");
 }
 
+const evidenceReadmePath = profileEvidenceOnlyPaths.find((relativePath) =>
+  relativePath.endsWith("/README.md"),
+);
+const evidenceImagePaths = profileEvidenceOnlyPaths.filter((relativePath) =>
+  relativePath.endsWith(".png"),
+);
+if (!evidenceReadmePath || evidenceImagePaths.length !== 4) {
+  throw new Error("profile evidence allowlist contract is incomplete");
+}
+const evidenceReadme = await readRepositoryFile(evidenceReadmePath);
+const pngMagic = Buffer.from("89504e470d0a1a0a", "hex");
+for (const evidenceImagePath of evidenceImagePaths) {
+  const bytes = await readRepositoryBytes(evidenceImagePath);
+  if (bytes.length < 24 || !bytes.subarray(0, pngMagic.length).equals(pngMagic)) {
+    throw new Error(`${evidenceImagePath}: evidence is not an actual PNG`);
+  }
+  if (bytes.subarray(12, 16).toString("ascii") !== "IHDR") {
+    throw new Error(`${evidenceImagePath}: PNG IHDR is missing`);
+  }
+  const width = bytes.readUInt32BE(16);
+  const height = bytes.readUInt32BE(20);
+  if (width !== 1440 || height !== 1000) {
+    throw new Error(
+      `${evidenceImagePath}: expected 1440x1000, received ${width}x${height}`,
+    );
+  }
+  const hash = createHash("sha256").update(bytes).digest("hex");
+  const manifestRow = `| \`${basename(evidenceImagePath)}\` | \`image/png\` | \`1440×1000\` | \`${hash}\` |`;
+  assertIncludes(evidenceReadme, manifestRow, evidenceReadmePath);
+}
+
 console.log(
-  "Profile content, retained links, SVG safety, workflow, and exclusion checks passed.",
+  `Profile content, ${activeSurfaces.length} discovered surfaces, image/evidence safety, workflow, and exclusion checks passed.`,
 );
