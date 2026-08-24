@@ -1,6 +1,7 @@
 name: Update profile signals
 
 on:
+  pull_request:
   schedule:
     - cron: "17 17 * * *"
   workflow_dispatch:
@@ -10,7 +11,31 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - name: Check out profile repository
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+
+      - name: Validate Career OS profile boundaries
+        run: npm test
+
+      - name: Verify generated hero assets are current
+        run: |
+          npm run generate:hero
+          git diff --exit-code -- assets/hero-light.svg assets/hero-dark.svg assets/hero-mobile-light.svg assets/hero-mobile-dark.svg
+
   generate:
+    if: github.event_name != 'pull_request'
+    needs: validate
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
@@ -24,15 +49,21 @@ jobs:
         with:
           node-version: 22
 
+      - name: Generate profile hero
+        run: npm run generate:hero
+
       - name: Generate repository constellation and activity pulse
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PROFILE_USERNAME: ${{ github.repository_owner }}
-        run: node scripts/generate-profile-signals.mjs
+        run: npm run generate:signals
+
+      - name: Validate generated profile surfaces
+        run: npm test
 
       - name: Commit refreshed signals
         run: |
-          git add assets/lab-signal-light.svg assets/lab-signal-dark.svg
+          git add assets/hero-light.svg assets/hero-dark.svg assets/hero-mobile-light.svg assets/hero-mobile-dark.svg assets/lab-signal-light.svg assets/lab-signal-dark.svg
           if git diff --cached --quiet; then
             exit 0
           fi

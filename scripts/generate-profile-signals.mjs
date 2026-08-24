@@ -1,5 +1,6 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { assertAllowedProfileRepositoryNames } from "./profile-exclusion-policy.mjs";
 
 const username = process.env.PROFILE_USERNAME
   ?? process.env.GITHUB_REPOSITORY?.split("/")[0]
@@ -89,16 +90,16 @@ const repositoryByName = new Map(
 );
 
 const featured = [
-  { name: "localmesh-studio", label: "localmesh-studio", x: 86, y: 116, width: 190, accent: "cyan" },
-  { name: "tech-blog", label: "tech-blog", x: 312, y: 54, width: 150, accent: "violet" },
-  { name: "vizport-studio", label: "vizport-studio", x: 318, y: 252, width: 164, accent: "blue" },
-  { name: "mermaid-sky-exporter", label: "mermaid-sky-exporter", x: 744, y: 58, width: 214, accent: "violet" },
-  { name: "codex-app-telegram-monitor", label: "codex-telegram-monitor", x: 926, y: 150, width: 222, accent: "amber" },
-  { name: "self-improving-maintainer-bot", label: "maintainer-bot", x: 768, y: 264, width: 172, accent: "rose" },
+  { name: "tech-blog", label: "tech-blog", x: 128, y: 70, width: 150, accent: "violet" },
+  { name: "mermaid-sky-exporter", label: "mermaid-sky-exporter", x: 88, y: 238, width: 214, accent: "cyan" },
+  { name: "codex-app-telegram-monitor", label: "codex-telegram-monitor", x: 910, y: 70, width: 222, accent: "amber" },
+  { name: "self-improving-maintainer-bot", label: "maintainer-bot", x: 928, y: 238, width: 172, accent: "rose" },
 ].map((entry) => ({
   ...entry,
   repository: repositoryByName.get(entry.name.toLowerCase()),
 }));
+
+assertAllowedProfileRepositoryNames(featured, "featured profile repositories");
 
 const weeks = calendar.weeks.slice(-26).map((week) => {
   const days = Array.isArray(week?.contributionDays) ? week.contributionDays : [];
@@ -231,7 +232,7 @@ function render(themeName) {
     <circle r="70" fill="${theme.panel}" stroke="${theme.center}" stroke-width="2"/>
     <circle r="55" fill="${theme.center}"/>
     <text y="-4" text-anchor="middle" font-size="15" font-weight="800" letter-spacing="1.4" fill="${theme.centerText}">${escapeXml(username.toUpperCase())}</text>
-    <text y="18" text-anchor="middle" font-size="9" font-weight="700" letter-spacing="1.1" fill="${theme.centerText}" opacity=".76">BUILD · RENDER · SHIP</text>
+    <text y="18" text-anchor="middle" font-size="9" font-weight="700" letter-spacing="1.1" fill="${theme.centerText}" opacity=".76">BUILD · VERIFY · SHIP</text>
   </g>
   ${nodes.trimStart()}
   <g>
