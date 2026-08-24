@@ -73,6 +73,18 @@ function insertCssComment(value) {
   return `${characters.slice(0, splitIndex).join("")}/**/${characters.slice(splitIndex).join("")}`;
 }
 
+function insertHtmlComment(value) {
+  const characters = [...value];
+  const splitIndex = Math.min(3, characters.length - 1);
+  return `${characters.slice(0, splitIndex).join("")}<!--hidden-->${characters.slice(splitIndex).join("")}`;
+}
+
+function insertHtmlEntity(value, entity) {
+  const characters = [...value];
+  const splitIndex = Math.min(3, characters.length - 1);
+  return `${characters.slice(0, splitIndex).join("")}${entity}${characters.slice(splitIndex).join("")}`;
+}
+
 function insertFormatControl(value) {
   const [firstCharacter, ...rest] = [...value];
   return `${firstCharacter}\u200b${rest.join("")}`;
@@ -110,6 +122,18 @@ for (const alias of catalogBlockedProfileAliases) {
   expectBlocked(
     [["assets/profile.css", `.card::before{content:"${insertCssComment(alias)}"}`]],
     `CSS comment alias regression (${alias})`,
+  );
+  expectBlocked(
+    [["README.md", insertHtmlComment(alias)]],
+    `HTML comment alias regression (${alias})`,
+  );
+  expectBlocked(
+    [["README.md", insertHtmlEntity(alias, "&Tab;")]],
+    `HTML named whitespace entity alias regression (${alias})`,
+  );
+  expectBlocked(
+    [["README.md", insertHtmlEntity(alias, "&#9;")]],
+    `HTML numeric whitespace entity alias regression (${alias})`,
   );
   expectBlocked(
     [["assets/profile.css", `.card::before{content:"${insertFormatControl(alias)}"}`]],
@@ -200,7 +224,42 @@ for (const rawAssetUrl of catalogDerivedProfileUrls) {
   );
 }
 
+for (const [referenceStyle, markdown] of [
+  [
+    "full",
+    "![generic preview][external-preview]\n\n[external-preview]: https://example.invalid/excluded-preview.png",
+  ],
+  [
+    "collapsed",
+    "![external-preview][]\n\n[external-preview]: <https://example.invalid/excluded-preview.png>",
+  ],
+  [
+    "shortcut",
+    "![external preview]\n\n[External   Preview]: https://example.invalid/excluded-preview.png",
+  ],
+]) {
+  expectBlocked(
+    [["README.md", markdown]],
+    `Markdown ${referenceStyle} reference image regression`,
+  );
+}
+
+assertProfileSurfacePolicy(
+  [[
+    "README.md",
+    "![hero][approved-hero]\n\n[approved-hero]: ./assets/hero-light.svg",
+  ]],
+  "approved Markdown reference image",
+);
+
 const evidenceImagePath = `${profileEvidenceDirectory}/hero-before.png`;
+expectBlocked(
+  [[
+    "README.md",
+    `![historical evidence][before-image]\n\n[before-image]: ${evidenceImagePath}`,
+  ]],
+  "Markdown reference image evidence-only target regression",
+);
 for (const activeSurfacePath of [
   "README.md",
   "assets/hero-light.svg",
@@ -227,6 +286,25 @@ for (const unsafeSvg of [
     "additional SVG image/use regression",
   );
 }
+
+await expectDiscoveredSurfaceRejected(
+  {
+    virtualFiles: new Map([[
+      "assets/protocol-relative.svg",
+      '<svg xmlns="http://www.w3.org/2000/svg"><style>.probe{fill:url(//example.invalid/remote.svg#paint)}</style><rect class="probe"/></svg>',
+    ]]),
+  },
+  "protocol-relative SVG paint resource regression",
+);
+await expectDiscoveredSurfaceRejected(
+  {
+    virtualFiles: new Map([[
+      "styles/external-import.css",
+      '@import "//example.invalid/remote.css";',
+    ]]),
+  },
+  "CSS string-form import regression",
+);
 
 await expectDiscoveredSurfaceRejected(
   { virtualFiles: new Map([["assets/alternate-image.png", "not-an-image"]]) },
@@ -368,7 +446,7 @@ console.log(
   `Profile aliases rejected across discovered README/workflow/package/generator/static/style/SVG paths (${catalogBlockedProfileAliases.length} aliases).`,
 );
 console.log(
-  `Derived copy rejected (${blockedProfileDerivedContent.length} patterns); image/evidence/CSS encoding regressions rejected.`,
+  `Derived copy rejected (${blockedProfileDerivedContent.length} patterns); HTML/entity/reference-image/CSS-resource regressions rejected.`,
 );
 console.log(
   "Path traversal, symlink/unsupported entries, catalog rehash tampering, and source drift were rejected.",

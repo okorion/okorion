@@ -77,21 +77,45 @@ function stripCssComments(value) {
   return value.replace(/\/\*[\s\S]*?\*\//gu, "");
 }
 
+function stripHtmlComments(value) {
+  return value.replace(/<!--[\s\S]*?-->/gu, "");
+}
+
+const namedHtmlEntityReplacements = new Map([
+  ["amp", "&"],
+  ["backslash", "\\"],
+  ["bsol", "\\"],
+  ["colon", ":"],
+  ["hyphen", "-"],
+  ["newline", "\n"],
+  ["nbsp", "\u00a0"],
+  ["period", "."],
+  ["sol", "/"],
+  ["tab", "\t"],
+]);
+
+function decodeNumericHtmlEntity(rawValue, radix) {
+  const codePoint = Number.parseInt(rawValue, radix);
+  return codePoint > 0 &&
+    codePoint <= 0x10ffff &&
+    !(codePoint >= 0xd800 && codePoint <= 0xdfff)
+    ? String.fromCodePoint(codePoint)
+    : "\ufffd";
+}
+
 function decodeHtmlEntities(value) {
   return value
-    .replace(/&#(\d+);?/gu, (_, decimal) =>
-      String.fromCodePoint(Number.parseInt(decimal, 10)),
-    )
     .replace(/&#x([0-9a-f]+);?/giu, (_, hexadecimal) =>
-      String.fromCodePoint(Number.parseInt(hexadecimal, 16)),
+      decodeNumericHtmlEntity(hexadecimal, 16),
     )
-    .replaceAll("&colon;", ":")
-    .replaceAll("&sol;", "/")
-    .replaceAll("&period;", ".")
-    .replaceAll("&hyphen;", "-")
-    .replaceAll("&bsol;", "\\")
-    .replaceAll("&backslash;", "\\")
-    .replaceAll("&amp;", "&");
+    .replace(/&#(\d+);?/gu, (_, decimal) =>
+      decodeNumericHtmlEntity(decimal, 10),
+    )
+    .replace(/&([a-z][a-z0-9]+);/giu, (_, entityName) =>
+      namedHtmlEntityReplacements.get(
+        entityName.toLocaleLowerCase("en-US"),
+      ) ?? "\ufffd",
+    );
 }
 
 function decodeUrlLayers(value) {
@@ -114,7 +138,9 @@ export function normalizeProfileSurface(value) {
   let normalized = String(value);
   for (let layer = 0; layer < 6; layer += 1) {
     const next = decodeCssEscapes(
-      decodeHtmlEntities(decodeUrlLayers(stripCssComments(normalized))),
+      decodeHtmlEntities(
+        decodeUrlLayers(stripHtmlComments(stripCssComments(normalized))),
+      ),
     )
       .replace(/\p{Cf}/gu, "")
       .normalize("NFKC");
@@ -139,7 +165,6 @@ function includesBlockedValue(surfaceValue, blockedValue) {
 
   const compactBlocked = compactProfileSurface(blockedValue);
   return (
-    /[\s\p{P}\p{S}]/u.test(normalizedBlocked) &&
     compactBlocked.length >= 6 &&
     compactProfileSurface(surfaceValue).includes(compactBlocked)
   );
@@ -398,9 +423,11 @@ export function assertNoBlockedProfileContent(surfaces, label) {
 }
 
 function assertAllowedProfileImageTarget(rawTarget, surfaceLabel, label) {
-  const target = normalizeProfileSurface(rawTarget)
-    .trim()
-    .replace(/^<|>$/gu, "");
+  const rawCanonicalTarget = String(rawTarget).trim().replace(/^<|>$/gu, "");
+  const target = normalizeProfileSurface(rawCanonicalTarget).trim();
+  if (target !== rawCanonicalTarget.toLocaleLowerCase("en-US")) {
+    throw new Error(`${label}: image target must use canonical syntax in ${surfaceLabel}`);
+  }
   if (/[?#]/u.test(target)) {
     throw new Error(`${label}: image target must match exactly in ${surfaceLabel}`);
   }
@@ -446,10 +473,65 @@ function collectHtmlImageTargets(content) {
   return targets;
 }
 
+function normalizeMarkdownReferenceLabel(value) {
+  return normalizeProfileSurface(
+    value.replace(/\\([!"#$%&'()*+,\-./:;<=>?@[\]^_`{|}~])/gu, "$1"),
+  )
+    .trim()
+    .replace(/\s+/gu, " ");
+}
+
 function collectMarkdownImageTargets(content) {
-  return [...content.matchAll(/!\[[^\]]*\]\(\s*(?:<([^>]+)>|([^\s)]+))/gu)]
+  const targets = [...content.matchAll(/!\[[^\]]*\]\(\s*(?:<([^>]+)>|([^\s)]+))/gu)]
     .map(([, bracketedTarget, target]) => bracketedTarget ?? target)
     .filter(Boolean);
+  const definitions = new Map();
+  for (const definition of content.matchAll(
+    /^[ \t]{0,3}\[([^\]\r\n]+)\]:[ \t]*(?:<([^>\r\n]*)>|([^\s\r\n]+))/gmu,
+  )) {
+    const [, rawLabel, bracketedTarget, target] = definition;
+    const normalizedLabel = normalizeMarkdownReferenceLabel(rawLabel);
+    if (!definitions.has(normalizedLabel)) {
+      definitions.set(normalizedLabel, bracketedTarget ?? target);
+    }
+  }
+
+  for (const reference of content.matchAll(
+    /!\[([^\]\r\n]*)\](?:[ \t]*\[([^\]\r\n]*)\])?/gu,
+  )) {
+    const [matchedReference, altText, explicitLabel] = reference;
+    const followingContent = content.slice(
+      (reference.index ?? 0) + matchedReference.length,
+    );
+    if (/^[ \t]*\(/u.test(followingContent)) {
+      continue;
+    }
+    const rawLabel = explicitLabel === undefined || explicitLabel === ""
+      ? altText
+      : explicitLabel;
+    const normalizedLabel = normalizeMarkdownReferenceLabel(rawLabel);
+    const target = definitions.get(normalizedLabel);
+    if (!target) {
+      throw new Error(`unresolved Markdown image reference (${rawLabel})`);
+    }
+    targets.push(target);
+  }
+  return targets;
+}
+
+function assertSafeCssResources(content, surfaceLabel, label) {
+  const normalizedContent = normalizeProfileSurface(content);
+  if (/@import\b/iu.test(normalizedContent)) {
+    throw new Error(`${label}: CSS import is forbidden in ${surfaceLabel}`);
+  }
+  for (const match of normalizedContent.matchAll(
+    /url\(\s*(["']?)(.*?)\1\s*\)/giu,
+  )) {
+    const target = match[2].trim();
+    if (!target.startsWith("#")) {
+      throw new Error(`${label}: CSS external asset is forbidden in ${surfaceLabel}`);
+    }
+  }
 }
 
 function collectAlternativeReadmeImageTargets(content, extension) {
@@ -503,18 +585,14 @@ export function assertSafeProfileImages(surfaces, label) {
         /xmlns=["']http:\/\/www\.w3\.org\/2000\/svg["']/giu,
         "",
       );
-      if (/data:image|https?:\/\//iu.test(withoutNamespace)) {
+      if (/(?:data:|https?:)?\/\//iu.test(withoutNamespace)) {
         throw new Error(`${label}: SVG external/data image is forbidden in ${surfaceLabel}`);
       }
+      assertSafeCssResources(content, surfaceLabel, label);
     }
 
     if (extension === ".css") {
-      for (const match of content.matchAll(/url\(\s*(["']?)(.*?)\1\s*\)/giu)) {
-        const target = normalizeProfileSurface(match[2]).trim();
-        if (!target.startsWith("#")) {
-          throw new Error(`${label}: CSS external asset is forbidden in ${surfaceLabel}`);
-        }
-      }
+      assertSafeCssResources(content, surfaceLabel, label);
     }
   }
 }
