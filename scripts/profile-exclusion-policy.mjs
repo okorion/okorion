@@ -1,6 +1,7 @@
 import { lstat, readFile, readdir } from "node:fs/promises";
 import { extname, isAbsolute, join, relative, sep } from "node:path";
 import { fileURLToPath } from "node:url";
+import { normalizeProfileSurface } from "./profile-surface-normalization.mjs";
 import {
   careerExclusionAliases,
   careerExclusionDerivedUrls,
@@ -45,7 +46,9 @@ const executableTextExtensions = new Set(
 );
 const activeSurfaceDirectories = new Set(".github assets docs public scripts static styles".split(" "));
 const skippedRepositoryDirectories = new Set([".git", "node_modules"]);
-const policyOnlyPaths = new Set("scripts/career-exclusion-catalog-schema.mjs scripts/profile-exclusion-policy.mjs".split(" "));
+const policyOnlyPaths = new Set(
+  "scripts/career-exclusion-catalog-schema.mjs scripts/profile-exclusion-policy.mjs scripts/profile-surface-normalization.mjs".split(" "),
+);
 export const profileEvidenceDirectory = "docs/pr-evidence/github-profile-career-exclusions";
 export const profileEvidenceOnlyPaths = Object.freeze([
   `${profileEvidenceDirectory}/README.md`, `${profileEvidenceDirectory}/hero-before.png`,
@@ -58,99 +61,7 @@ const allowedProfileImageTargets = new Set(
   "assets/hero-light.svg assets/hero-dark.svg assets/hero-mobile-light.svg assets/hero-mobile-dark.svg assets/lab-signal-light.svg assets/lab-signal-dark.svg".split(" "),
 );
 
-function decodeCssEscapes(value) {
-  return value.replace(
-    /\\(?:\r\n|[\n\r\f])|\\([0-9a-f]{1,6})[\t\n\f\r ]?|\\([^\n\r\f])/giu,
-    (_, hexadecimal, simpleEscape) => {
-      if (hexadecimal) {
-        const codePoint = Number.parseInt(hexadecimal, 16);
-        return codePoint > 0 && codePoint <= 0x10ffff
-          ? String.fromCodePoint(codePoint)
-          : "";
-      }
-      return simpleEscape ?? "";
-    },
-  );
-}
-
-function stripCssComments(value) {
-  return value.replace(/\/\*[\s\S]*?\*\//gu, "");
-}
-
-function stripHtmlComments(value) {
-  return value.replace(/<!--[\s\S]*?-->/gu, "");
-}
-
-const namedHtmlEntityReplacements = new Map([
-  ["amp", "&"],
-  ["backslash", "\\"],
-  ["bsol", "\\"],
-  ["colon", ":"],
-  ["hyphen", "-"],
-  ["newline", "\n"],
-  ["nbsp", "\u00a0"],
-  ["period", "."],
-  ["sol", "/"],
-  ["tab", "\t"],
-]);
-
-function decodeNumericHtmlEntity(rawValue, radix) {
-  const codePoint = Number.parseInt(rawValue, radix);
-  return codePoint > 0 &&
-    codePoint <= 0x10ffff &&
-    !(codePoint >= 0xd800 && codePoint <= 0xdfff)
-    ? String.fromCodePoint(codePoint)
-    : "\ufffd";
-}
-
-function decodeHtmlEntities(value) {
-  return value
-    .replace(/&#x([0-9a-f]+);?/giu, (_, hexadecimal) =>
-      decodeNumericHtmlEntity(hexadecimal, 16),
-    )
-    .replace(/&#(\d+);?/gu, (_, decimal) =>
-      decodeNumericHtmlEntity(decimal, 10),
-    )
-    .replace(/&([a-z][a-z0-9]+);/giu, (_, entityName) =>
-      namedHtmlEntityReplacements.get(
-        entityName.toLocaleLowerCase("en-US"),
-      ) ?? "\ufffd",
-    );
-}
-
-function decodeUrlLayers(value) {
-  let decoded = value;
-  for (let attempt = 0; attempt < 3; attempt += 1) {
-    try {
-      const next = decodeURIComponent(decoded);
-      if (next === decoded) {
-        break;
-      }
-      decoded = next;
-    } catch {
-      break;
-    }
-  }
-  return decoded;
-}
-
-export function normalizeProfileSurface(value) {
-  let normalized = String(value);
-  for (let layer = 0; layer < 6; layer += 1) {
-    const next = decodeCssEscapes(
-      decodeHtmlEntities(
-        decodeUrlLayers(stripHtmlComments(stripCssComments(normalized))),
-      ),
-    )
-      .replace(/\p{Cf}/gu, "")
-      .normalize("NFKC");
-    if (next === normalized) {
-      break;
-    }
-    normalized = next;
-  }
-  return normalized.toLocaleLowerCase("en-US");
-}
+export { normalizeProfileSurface };
 
 function compactProfileSurface(value) {
   return normalizeProfileSurface(value).replace(/[\s\p{P}\p{S}]+/gu, "");
@@ -497,6 +408,7 @@ function collectMarkdownImageTargets(content) {
   }
 
   for (const reference of content.matchAll(
+    // eslint-disable-next-line security/detect-unsafe-regex -- Both labels are bounded to one Markdown line and only parsed from repository-sized text surfaces.
     /!\[([^\]\r\n]*)\](?:[ \t]*\[([^\]\r\n]*)\])?/gu,
   )) {
     const [matchedReference, altText, explicitLabel] = reference;
@@ -546,54 +458,67 @@ function collectAlternativeReadmeImageTargets(content, extension) {
   return [];
 }
 
+const markupImageExtensions = new Set([
+  ".adoc",
+  ".asciidoc",
+  ".htm",
+  ".html",
+  ".md",
+  ".rst",
+]);
+
+function assertSafeMarkupImages(content, extension, surfaceLabel, label) {
+  if (!markupImageExtensions.has(extension)) {
+    return;
+  }
+  const imageTargets = [
+    ...collectMarkdownImageTargets(content),
+    ...collectHtmlImageTargets(content),
+    ...collectAlternativeReadmeImageTargets(content, extension),
+  ];
+  for (const imageTarget of imageTargets) {
+    assertAllowedProfileImageTarget(imageTarget, surfaceLabel, label);
+  }
+}
+
+function assertSafeSvgResources(content, normalizedContent, surfaceLabel, label) {
+  if (/<\s*(?:image|use)\b/iu.test(normalizedContent)) {
+    throw new Error(`${label}: SVG image/use is forbidden in ${surfaceLabel}`);
+  }
+  if (/\b(?:xlink:)?href\s*=/iu.test(normalizedContent)) {
+    throw new Error(`${label}: SVG href is forbidden in ${surfaceLabel}`);
+  }
+  const withoutNamespace = normalizedContent.replace(
+    /xmlns=["']http:\/\/www\.w3\.org\/2000\/svg["']/giu,
+    "",
+  );
+  if (withoutNamespace.includes("//") || withoutNamespace.includes("data:image")) {
+    throw new Error(`${label}: SVG external/data image is forbidden in ${surfaceLabel}`);
+  }
+  assertSafeCssResources(content, surfaceLabel, label);
+}
+
+function assertSafeSurfaceImages(surfaceLabel, content, evidenceReference, label) {
+  const normalizedContent = normalizeProfileSurface(content);
+  if (normalizedContent.includes(evidenceReference)) {
+    throw new Error(
+      `${label}: evidence-only path is referenced by active surface ${surfaceLabel}`,
+    );
+  }
+  const extension = extname(surfaceLabel).toLocaleLowerCase("en-US");
+  assertSafeMarkupImages(content, extension, surfaceLabel, label);
+  if (extension === ".svg") {
+    assertSafeSvgResources(content, normalizedContent, surfaceLabel, label);
+  }
+  if (extension === ".css") {
+    assertSafeCssResources(content, surfaceLabel, label);
+  }
+}
+
 export function assertSafeProfileImages(surfaces, label) {
   const evidenceReference = normalizeProfileSurface(`${profileEvidenceDirectory}/`);
   for (const [surfaceLabel, content] of surfaces) {
-    const normalizedContent = normalizeProfileSurface(content);
-    if (normalizedContent.includes(evidenceReference)) {
-      throw new Error(
-        `${label}: evidence-only path is referenced by active surface ${surfaceLabel}`,
-      );
-    }
-
-    const extension = extname(surfaceLabel).toLocaleLowerCase("en-US");
-    if (
-      extension === ".md" ||
-      extension === ".html" ||
-      extension === ".htm" ||
-      extension === ".rst" ||
-      extension === ".adoc" ||
-      extension === ".asciidoc"
-    ) {
-      for (const imageTarget of [
-        ...collectMarkdownImageTargets(content),
-        ...collectHtmlImageTargets(content),
-        ...collectAlternativeReadmeImageTargets(content, extension),
-      ]) {
-        assertAllowedProfileImageTarget(imageTarget, surfaceLabel, label);
-      }
-    }
-
-    if (extension === ".svg") {
-      if (/<\s*(?:image|use)\b/iu.test(normalizedContent)) {
-        throw new Error(`${label}: SVG image/use is forbidden in ${surfaceLabel}`);
-      }
-      if (/\b(?:xlink:)?href\s*=/iu.test(normalizedContent)) {
-        throw new Error(`${label}: SVG href is forbidden in ${surfaceLabel}`);
-      }
-      const withoutNamespace = normalizedContent.replace(
-        /xmlns=["']http:\/\/www\.w3\.org\/2000\/svg["']/giu,
-        "",
-      );
-      if (/(?:data:|https?:)?\/\//iu.test(withoutNamespace)) {
-        throw new Error(`${label}: SVG external/data image is forbidden in ${surfaceLabel}`);
-      }
-      assertSafeCssResources(content, surfaceLabel, label);
-    }
-
-    if (extension === ".css") {
-      assertSafeCssResources(content, surfaceLabel, label);
-    }
+    assertSafeSurfaceImages(surfaceLabel, content, evidenceReference, label);
   }
 }
 

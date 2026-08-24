@@ -289,6 +289,7 @@ for (const unsafeSvg of [
 
 await expectDiscoveredSurfaceRejected(
   {
+    // eslint-disable-next-line xss/no-mixed-html -- Fixed malicious SVG fixture verifies that the policy rejects raw paint resources.
     virtualFiles: new Map([[
       "assets/protocol-relative.svg",
       '<svg xmlns="http://www.w3.org/2000/svg"><style>.probe{fill:url(//example.invalid/remote.svg#paint)}</style><rect class="probe"/></svg>',
