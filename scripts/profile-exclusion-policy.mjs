@@ -33,9 +33,7 @@ export const blockedProfileDerivedContent = [...blockedDerivedProfileContent];
 // The cleaned portfolio is intentionally retained as a profile locator by the
 // current profile-specific decision. This does not permit any catalog project
 // alias, repository URL, demo URL, image, technology, or outcome to return.
-export const retainedCleanPortfolioUrls = [
-  "https://okorion.github.io/", "https://okorion.github.io/?view=3d",
-];
+export const retainedCleanPortfolioUrls = ["https://okorion.github.io/", "https://okorion.github.io/?view=3d"];
 
 const textExtensions = new Set(
   ".adoc .asciidoc .cjs .css .cts .htm .html .js .json .jsx .md .mjs .mts .ps1 .py .rst .sh .svg .toml .ts .tsx .txt .xml .yaml .yml".split(
@@ -45,15 +43,10 @@ const textExtensions = new Set(
 const executableTextExtensions = new Set(
   ".cjs .cts .js .jsx .mjs .mts .ps1 .py .sh .ts .tsx".split(" "),
 );
-const activeSurfaceDirectories = new Set(
-  ".github assets docs public scripts static styles".split(" "),
-);
+const activeSurfaceDirectories = new Set(".github assets docs public scripts static styles".split(" "));
 const skippedRepositoryDirectories = new Set([".git", "node_modules"]);
-const policyOnlyPaths = new Set([
-  "scripts/career-exclusion-catalog-schema.mjs", "scripts/profile-exclusion-policy.mjs",
-]);
-export const profileEvidenceDirectory =
-  "docs/pr-evidence/github-profile-career-exclusions";
+const policyOnlyPaths = new Set("scripts/career-exclusion-catalog-schema.mjs scripts/profile-exclusion-policy.mjs".split(" "));
+export const profileEvidenceDirectory = "docs/pr-evidence/github-profile-career-exclusions";
 export const profileEvidenceOnlyPaths = Object.freeze([
   `${profileEvidenceDirectory}/README.md`, `${profileEvidenceDirectory}/hero-before.png`,
   `${profileEvidenceDirectory}/hero-after.png`,
@@ -61,11 +54,9 @@ export const profileEvidenceOnlyPaths = Object.freeze([
   `${profileEvidenceDirectory}/selected-work-after.png`,
 ]);
 const evidenceOnlyPaths = new Set(profileEvidenceOnlyPaths);
-const allowedProfileImageTargets = new Set([
-  "assets/hero-light.svg", "assets/hero-dark.svg",
-  "assets/hero-mobile-light.svg", "assets/hero-mobile-dark.svg",
-  "assets/lab-signal-light.svg", "assets/lab-signal-dark.svg",
-]);
+const allowedProfileImageTargets = new Set(
+  "assets/hero-light.svg assets/hero-dark.svg assets/hero-mobile-light.svg assets/hero-mobile-dark.svg assets/lab-signal-light.svg assets/lab-signal-dark.svg".split(" "),
+);
 
 function decodeCssEscapes(value) {
   return value.replace(
