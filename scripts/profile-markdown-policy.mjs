@@ -2,7 +2,9 @@ import { normalizeProfileSurface } from "./profile-surface-normalization.mjs";
 
 function normalizeMarkdownReferenceLabel(value) {
   return normalizeProfileSurface(
-    value.replace(/\\([!"#$%&'()*+,\-.\/:;<=>?@[\]^_`{|}~])/gu, "$1"),
+    value
+      .replace(/\\([!"#$%&'()*+,\-.:;<=>?@[\]^_`{|}~])/gu, "$1")
+      .replaceAll("\\/", "/"),
   )
     .trim()
     .replace(/\s+/gu, " ");

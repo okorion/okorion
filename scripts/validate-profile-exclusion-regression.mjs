@@ -297,12 +297,11 @@ assertProfileSurfacePolicy(
   ]],
   "approved Markdown reference image",
 );
-// eslint-disable-next-line xss/no-mixed-html -- Fixed safe markup verifies ordinary GFM emphasis and links remain accepted.
+// eslint-disable-next-line xss/no-mixed-html -- Fixed safe markup is a non-DOM acceptance regression fixture.
+const approvedGfmFixture =
+  "<strong>Frontend</strong> Engineer · [GitHub](https://github.com/okorion)";
 assertProfileSurfacePolicy(
-  [[
-    "README.md",
-    "<strong>Frontend</strong> Engineer · [GitHub](https://github.com/okorion)",
-  ]],
+  [["README.md", approvedGfmFixture]],
   "approved GFM emphasis and link",
 );
 
