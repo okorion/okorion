@@ -297,6 +297,7 @@ assertProfileSurfacePolicy(
   ]],
   "approved Markdown reference image",
 );
+// eslint-disable-next-line xss/no-mixed-html -- Fixed safe markup verifies ordinary GFM emphasis and links remain accepted.
 assertProfileSurfacePolicy(
   [[
     "README.md",
