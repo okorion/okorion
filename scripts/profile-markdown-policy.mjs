@@ -1,11 +1,26 @@
 import { normalizeProfileSurface } from "./profile-surface-normalization.mjs";
 
+const markdownEscapablePunctuation = new Set(
+  [..."!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"],
+);
+
+function decodeMarkdownEscapes(value) {
+  let decoded = "";
+  for (let cursor = 0; cursor < value.length; cursor += 1) {
+    const character = value.at(cursor);
+    const nextCharacter = value.at(cursor + 1);
+    if (character === "\\" && markdownEscapablePunctuation.has(nextCharacter)) {
+      decoded += nextCharacter;
+      cursor += 1;
+    } else {
+      decoded += character;
+    }
+  }
+  return decoded;
+}
+
 function normalizeMarkdownReferenceLabel(value) {
-  return normalizeProfileSurface(
-    value
-      .replace(/\\([!"#$%&'()*+,\-.:;<=>?@[\]^_`{|}~])/gu, "$1")
-      .replaceAll("\\/", "/"),
-  )
+  return normalizeProfileSurface(decodeMarkdownEscapes(value))
     .trim()
     .replace(/\s+/gu, " ");
 }
