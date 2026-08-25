@@ -3,6 +3,12 @@ import { normalizeProfileSurface } from "./profile-surface-normalization.mjs";
 const markdownEscapablePunctuation = new Set(
   [..."!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"],
 );
+const fenceMarkers = new Set(["`", "~"]);
+const markdownLineBreaks = new Set(["\n", "\r"]);
+const markdownImageReferencePattern =
+  // eslint-disable-next-line security/detect-unsafe-regex -- Both labels are bounded to one Markdown line and only parsed from repository-sized text surfaces.
+  /!\[([^\]\r\n]*)\](?:[ \t]*\[([^\]\r\n]*)\])?/gu;
+const inlineImageDestinationPrefixPattern = /^[ \t]*\(/u;
 
 function decodeMarkdownEscapes(value) {
   let decoded = "";
@@ -31,40 +37,44 @@ function maskHtmlComments(value) {
   );
 }
 
-function readFenceOpening(line) {
+function leadingSpaceEnd(line) {
   let cursor = 0;
   while (cursor < 3 && line.at(cursor) === " ") {
     cursor += 1;
   }
-  const marker = line.at(cursor);
-  if (marker !== "`" && marker !== "~") {
-    return null;
-  }
-  const markerStart = cursor;
+  return cursor;
+}
+
+function markerRunLength(line, markerStart, marker) {
+  let cursor = markerStart;
   while (line.at(cursor) === marker) {
     cursor += 1;
   }
-  const markerLength = cursor - markerStart;
+  return cursor - markerStart;
+}
+
+function readFenceOpening(line) {
+  const markerStart = leadingSpaceEnd(line);
+  const marker = line.at(markerStart);
+  if (!fenceMarkers.has(marker)) {
+    return null;
+  }
+  const markerLength = markerRunLength(line, markerStart, marker);
+  const infoStart = markerStart + markerLength;
   if (markerLength < 3) {
     return null;
   }
-  if (marker === "`" && line.slice(cursor).includes("`")) {
+  if (marker === "`" && line.slice(infoStart).includes("`")) {
     return null;
   }
   return { marker, markerLength };
 }
 
 function isFenceClosing(line, fence) {
-  let cursor = 0;
-  while (cursor < 3 && line.at(cursor) === " ") {
-    cursor += 1;
-  }
-  const markerStart = cursor;
-  while (line.at(cursor) === fence.marker) {
-    cursor += 1;
-  }
-  return cursor - markerStart >= fence.markerLength &&
-    line.slice(cursor).trim().length === 0;
+  const markerStart = leadingSpaceEnd(line);
+  const markerLength = markerRunLength(line, markerStart, fence.marker);
+  return markerLength >= fence.markerLength &&
+    line.slice(markerStart + markerLength).trim().length === 0;
 }
 
 function maskFencedCode(value) {
@@ -93,6 +103,27 @@ function effectiveMarkdown(value) {
   return maskFencedCode(maskHtmlComments(String(value)));
 }
 
+function markdownDestinationEnd(value, cursor) {
+  let depth = 1;
+  while (cursor < value.length) {
+    const character = value.at(cursor);
+    if (character === "\\") {
+      cursor += 2;
+      continue;
+    }
+    if (markdownLineBreaks.has(character)) {
+      return null;
+    }
+    depth += Number(character === "(");
+    depth -= Number(character === ")");
+    cursor += 1;
+    if (depth === 0) {
+      return cursor;
+    }
+  }
+  return null;
+}
+
 function stripInlineLinkDestinations(value) {
   let output = "";
   let cursor = 0;
@@ -102,28 +133,11 @@ function stripInlineLinkDestinations(value) {
       return output + value.slice(cursor);
     }
     output += value.slice(cursor, destinationStart + 1);
-    let destinationCursor = destinationStart + 2;
-    let depth = 1;
-    for (; destinationCursor < value.length; destinationCursor += 1) {
-      const character = value.at(destinationCursor);
-      if (character === "\\") {
-        destinationCursor += 1;
-      } else if (character === "(") {
-        depth += 1;
-      } else if (character === ")") {
-        depth -= 1;
-        if (depth === 0) {
-          destinationCursor += 1;
-          break;
-        }
-      } else if (character === "\n" || character === "\r") {
-        break;
-      }
-    }
-    if (depth !== 0) {
+    const destinationEnd = markdownDestinationEnd(value, destinationStart + 2);
+    if (destinationEnd === null) {
       return output + value.slice(destinationStart + 1);
     }
-    cursor = destinationCursor;
+    cursor = destinationEnd;
   }
   return output;
 }
@@ -162,22 +176,24 @@ function collectMarkdownDefinitions(content) {
   }));
 }
 
+function markdownImageReferenceLabel(reference, content) {
+  const [matchedReference, altText, explicitLabel] = reference;
+  const followingContent = content.slice(
+    (reference.index ?? 0) + matchedReference.length,
+  );
+  if (inlineImageDestinationPrefixPattern.test(followingContent)) {
+    return null;
+  }
+  return explicitLabel ? explicitLabel : altText;
+}
+
 function collectMarkdownImageReferences(content) {
   const references = [];
-  for (const reference of content.matchAll(
-    // eslint-disable-next-line security/detect-unsafe-regex -- Both labels are bounded to one Markdown line and only parsed from repository-sized text surfaces.
-    /!\[([^\]\r\n]*)\](?:[ \t]*\[([^\]\r\n]*)\])?/gu,
-  )) {
-    const [matchedReference, altText, explicitLabel] = reference;
-    const followingContent = content.slice(
-      (reference.index ?? 0) + matchedReference.length,
-    );
-    if (/^[ \t]*\(/u.test(followingContent)) {
+  for (const reference of content.matchAll(markdownImageReferencePattern)) {
+    const rawLabel = markdownImageReferenceLabel(reference, content);
+    if (rawLabel === null) {
       continue;
     }
-    const rawLabel = explicitLabel === undefined || explicitLabel === ""
-      ? altText
-      : explicitLabel;
     references.push({
       normalizedLabel: normalizeMarkdownReferenceLabel(rawLabel),
       rawLabel,
