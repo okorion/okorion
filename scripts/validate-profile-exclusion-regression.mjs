@@ -244,12 +244,65 @@ for (const [referenceStyle, markdown] of [
   );
 }
 
+for (const [visibleSplit, markdown] of [
+  ["HTML strong", "<strong>Viz</strong>Port Studio"],
+  ["HTML span", "<span>Local</span>Mesh Studio"],
+  ["Markdown link", "GPU [UX](https://example.invalid) Lab"],
+]) {
+  expectBlocked(
+    [["README.md", markdown]],
+    `GFM ${visibleSplit} visible-text alias regression`,
+  );
+}
+
+const shadowedReferenceDefinitions = [
+  [
+    "HTML comment",
+    "<!--\n[external-preview]: ./assets/hero-light.svg\n-->",
+  ],
+  [
+    "fenced code",
+    "```md\n[external-preview]: ./assets/hero-light.svg\n```",
+  ],
+];
+const referenceImageSyntax = [
+  ["full", "![preview][external-preview]"],
+  ["collapsed", "![external-preview][]"],
+  ["shortcut", "![external-preview]"],
+];
+for (const [ignoredRegion, ignoredDefinition] of shadowedReferenceDefinitions) {
+  for (const [referenceStyle, referenceImage] of referenceImageSyntax) {
+    expectBlocked(
+      [[
+        "README.md",
+        `${ignoredDefinition}\n${referenceImage}\n\n[external-preview]: https://example.invalid/excluded-preview.png`,
+      ]],
+      `GFM ${ignoredRegion} shadowed ${referenceStyle} image definition regression`,
+    );
+  }
+}
+
+expectBlocked(
+  [[
+    "README.md",
+    "![hero][duplicate]\n\n[duplicate]: ./assets/hero-light.svg\n[Duplicate]: ./assets/hero-light.svg",
+  ]],
+  "duplicate raw Markdown image definition regression",
+);
+
 assertProfileSurfacePolicy(
   [[
     "README.md",
     "![hero][approved-hero]\n\n[approved-hero]: ./assets/hero-light.svg",
   ]],
   "approved Markdown reference image",
+);
+assertProfileSurfacePolicy(
+  [[
+    "README.md",
+    "<strong>Frontend</strong> Engineer · [GitHub](https://github.com/okorion)",
+  ]],
+  "approved GFM emphasis and link",
 );
 
 const evidenceImagePath = `${profileEvidenceDirectory}/hero-before.png`;
@@ -447,7 +500,7 @@ console.log(
   `Profile aliases rejected across discovered README/workflow/package/generator/static/style/SVG paths (${catalogBlockedProfileAliases.length} aliases).`,
 );
 console.log(
-  `Derived copy rejected (${blockedProfileDerivedContent.length} patterns); HTML/entity/reference-image/CSS-resource regressions rejected.`,
+  `Derived copy rejected (${blockedProfileDerivedContent.length} patterns); GFM visible-text/reference-image and CSS-resource regressions rejected.`,
 );
 console.log(
   "Path traversal, symlink/unsupported entries, catalog rehash tampering, and source drift were rejected.",

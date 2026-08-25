@@ -1,6 +1,10 @@
 import { lstat, readFile, readdir } from "node:fs/promises";
 import { extname, isAbsolute, join, relative, sep } from "node:path";
 import { fileURLToPath } from "node:url";
+import {
+  canonicalizeGfmVisibleText,
+  collectMarkdownImageTargets,
+} from "./profile-markdown-policy.mjs";
 import { normalizeProfileSurface } from "./profile-surface-normalization.mjs";
 import {
   careerExclusionAliases,
@@ -323,8 +327,15 @@ export async function loadProfileSurfaces({
 export function assertNoBlockedProfileContent(surfaces, label) {
   for (const [surfaceLabel, content] of surfaces) {
     const searchableSurface = `${surfaceLabel}\n${content}`;
+    const extension = extname(surfaceLabel).toLocaleLowerCase("en-US");
+    const visibleSurface = extension === ".md" || extension === ".htm" || extension === ".html"
+      ? `${surfaceLabel}\n${canonicalizeGfmVisibleText(content)}`
+      : searchableSurface;
     for (const blockedContent of blockedProfileContent) {
-      if (includesBlockedValue(searchableSurface, blockedContent)) {
+      if (
+        includesBlockedValue(searchableSurface, blockedContent) ||
+        includesBlockedValue(visibleSurface, blockedContent)
+      ) {
         throw new Error(
           `${label}: forbidden content is present in ${surfaceLabel} (${blockedContent})`,
         );
@@ -380,53 +391,6 @@ function collectHtmlImageTargets(content) {
         targets.push(value.trim());
       }
     }
-  }
-  return targets;
-}
-
-function normalizeMarkdownReferenceLabel(value) {
-  return normalizeProfileSurface(
-    value.replace(/\\([!"#$%&'()*+,\-./:;<=>?@[\]^_`{|}~])/gu, "$1"),
-  )
-    .trim()
-    .replace(/\s+/gu, " ");
-}
-
-function collectMarkdownImageTargets(content) {
-  const targets = [...content.matchAll(/!\[[^\]]*\]\(\s*(?:<([^>]+)>|([^\s)]+))/gu)]
-    .map(([, bracketedTarget, target]) => bracketedTarget ?? target)
-    .filter(Boolean);
-  const definitions = new Map();
-  for (const definition of content.matchAll(
-    /^[ \t]{0,3}\[([^\]\r\n]+)\]:[ \t]*(?:<([^>\r\n]*)>|([^\s\r\n]+))/gmu,
-  )) {
-    const [, rawLabel, bracketedTarget, target] = definition;
-    const normalizedLabel = normalizeMarkdownReferenceLabel(rawLabel);
-    if (!definitions.has(normalizedLabel)) {
-      definitions.set(normalizedLabel, bracketedTarget ?? target);
-    }
-  }
-
-  for (const reference of content.matchAll(
-    // eslint-disable-next-line security/detect-unsafe-regex -- Both labels are bounded to one Markdown line and only parsed from repository-sized text surfaces.
-    /!\[([^\]\r\n]*)\](?:[ \t]*\[([^\]\r\n]*)\])?/gu,
-  )) {
-    const [matchedReference, altText, explicitLabel] = reference;
-    const followingContent = content.slice(
-      (reference.index ?? 0) + matchedReference.length,
-    );
-    if (/^[ \t]*\(/u.test(followingContent)) {
-      continue;
-    }
-    const rawLabel = explicitLabel === undefined || explicitLabel === ""
-      ? altText
-      : explicitLabel;
-    const normalizedLabel = normalizeMarkdownReferenceLabel(rawLabel);
-    const target = definitions.get(normalizedLabel);
-    if (!target) {
-      throw new Error(`unresolved Markdown image reference (${rawLabel})`);
-    }
-    targets.push(target);
   }
   return targets;
 }
