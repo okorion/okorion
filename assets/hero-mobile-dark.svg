@@ -1,39 +1,51 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="720" height="420" viewBox="0 0 720 420" role="img" aria-labelledby="title desc">
-  <title id="title">Hyounkyu Oh</title>
-  <desc id="desc">Local-first AI, visual systems, and developer automation</desc>
+  <title id="title">Hyounkyu Oh — Frontend / Application Engineer</title>
+  <desc id="desc">Editor and Builder state connected through save, load, Runtime, and real-environment verification</desc>
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#09111f"/><stop offset=".58" stop-color="#0b1326"/><stop offset="1" stop-color="#160f2c"/></linearGradient>
-    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#60a5fa"/><stop offset=".5" stop-color="#22d3ee"/><stop offset="1" stop-color="#a78bfa"/></linearGradient>
-    <radialGradient id="orb"><stop stop-color="#e0f2fe"/><stop offset=".48" stop-color="#2563eb"/><stop offset="1" stop-color="#6d28d9"/></radialGradient>
-    <pattern id="grid" width="28" height="28" patternUnits="userSpaceOnUse"><path d="M28 0H0V28" fill="none" stroke="#93c5fd" stroke-opacity=".075"/></pattern>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1120"/>
+      <stop offset="0.55" stop-color="#101827"/>
+      <stop offset="1" stop-color="#17142b"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#2563eb"/>
+      <stop offset="0.5" stop-color="#06b6d4"/>
+      <stop offset="1" stop-color="#8b5cf6"/>
+    </linearGradient>
+    <pattern id="grid" width="28" height="28" patternUnits="userSpaceOnUse">
+      <path d="M28 0H0V28" fill="none" stroke="#60a5fa" stroke-opacity=".08"/>
+    </pattern>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#60a5fa" flood-opacity=".13"/>
+    </filter>
     <clipPath id="frame"><rect width="720" height="420" rx="28"/></clipPath>
-    <style>text{font-family:Inter,Segoe UI,Arial,sans-serif}.pulse{transform-box:fill-box;transform-origin:center;animation:pulse 3s ease-in-out infinite}@keyframes pulse{0%,100%{opacity:.65}50%{opacity:1;transform:scale(1.14)}}@media(prefers-reduced-motion:reduce){.pulse{animation:none}}</style>
+    <style>text{font-family:Inter,Segoe UI,Arial,sans-serif}.flow{animation:flow 12s linear infinite}.pulse{transform-box:fill-box;transform-origin:center;animation:pulse 3.2s ease-in-out infinite}@keyframes flow{to{stroke-dashoffset:-120}}@keyframes pulse{0%,100%{opacity:.68}50%{opacity:1;transform:scale(1.16)}}@media(prefers-reduced-motion:reduce){.flow,.pulse{animation:none}}</style>
   </defs>
   <g clip-path="url(#frame)">
     <rect width="720" height="420" fill="url(#bg)"/><rect width="720" height="420" fill="url(#grid)"/>
-    <circle cx="690" cy="35" r="180" fill="#8b5cf6" opacity=".14"/><circle cx="620" cy="400" r="210" fill="#06b6d4" opacity=".1"/>
-    <path d="M0 366c142-53 228 27 371-22 124-42 223-80 349-51" fill="none" stroke="url(#accent)" stroke-width="2" opacity=".36"/>
-    <g transform="translate(38 36)">
-      <rect width="272" height="34" rx="17" fill="#111c30" stroke="#294365"/><circle cx="18" cy="17" r="4" fill="#34d399" class="pulse"/>
-      <text x="32" y="22" font-size="12" font-weight="700" letter-spacing="1.7" fill="#a5b4fc">OKORION / VISUAL SYSTEMS LAB</text>
-      <text y="113" font-size="50" font-weight="800" letter-spacing="-1.8" fill="#f8fafc">HYOUNKYU OH</text>
-      <rect y="132" width="385" height="5" rx="2.5" fill="url(#accent)"/>
-      <text y="181" font-size="25" font-weight="650" fill="#e2e8f0">I build tools that think,</text>
-      <text y="216" font-size="25" font-weight="650" fill="#e2e8f0">render, and collaborate.</text>
-      <text y="254" font-size="15" fill="#94a3b8">Local-first AI · Visual Computing</text>
-      <text y="278" font-size="15" fill="#94a3b8">Developer Automation</text>
-      <g transform="translate(0 312)">
-        <g><rect width="101" height="34" rx="17" fill="#102444" stroke="#1d4ed8"/><text x="50.5" y="22" text-anchor="middle" font-size="10.5" font-weight="700" fill="#93c5fd">TYPESCRIPT</text></g>
-        <g transform="translate(109)"><rect width="70" height="34" rx="17" fill="#0d2a24" stroke="#047857"/><text x="35" y="22" text-anchor="middle" font-size="10.5" font-weight="700" fill="#6ee7b7">REACT</text></g>
-        <g transform="translate(187)"><rect width="88" height="34" rx="17" fill="#0b2b34" stroke="#0e7490"/><text x="44" y="22" text-anchor="middle" font-size="10.5" font-weight="700" fill="#67e8f9">THREE.JS</text></g>
-        <g transform="translate(283)"><rect width="88" height="34" rx="17" fill="#251b45" stroke="#6d28d9"/><text x="44" y="22" text-anchor="middle" font-size="10.5" font-weight="700" fill="#c4b5fd">WEBLLM</text></g>
+    <circle cx="690" cy="35" r="180" fill="#8b5cf6" opacity=".07"/><circle cx="620" cy="410" r="210" fill="#06b6d4" opacity=".07"/>
+    <path d="M0 374c142-53 228 27 371-22 124-42 223-80 349-51" fill="none" stroke="url(#accent)" stroke-width="2" opacity=".25"/>
+    <g transform="translate(38 34)">
+      <rect width="270" height="34" rx="17" fill="#111827" stroke="#293548"/><circle cx="18" cy="17" r="4" fill="#10b981" class="pulse"/>
+      <text x="32" y="22" font-size="12" font-weight="700" letter-spacing="1.7" fill="#94a3b8">OKORION / PRODUCT DELIVERY</text>
+      <text y="109" font-size="50" font-weight="800" letter-spacing="-1.8" fill="#f8fafc">HYOUNKYU OH</text>
+      <rect y="128" width="385" height="5" rx="2.5" fill="url(#accent)"/>
+      <text y="176" font-size="24" font-weight="650" fill="#e2e8f0">Frontend / Application</text>
+      <text y="208" font-size="24" font-weight="650" fill="#e2e8f0">Engineer</text>
+      <text y="239" font-size="14" fill="#94a3b8">Editor · Builder · Runtime Integration</text>
+      <g transform="translate(0 270)" filter="url(#shadow)">
+        <rect width="644" height="108" rx="20" fill="#111827" stroke="#293548"/>
+        <text x="20" y="28" font-size="10" font-weight="800" letter-spacing="1.4" fill="#94a3b8">PRODUCT FLOW</text>
+        <g transform="translate(20 45)" font-size="10.5" font-weight="800">
+          <g><rect width="112" height="42" rx="12" fill="#102444" stroke="#1d4ed8"/><text x="56" y="26" text-anchor="middle" fill="#93c5fd">EDITOR</text></g>
+          <path d="M120 21h24" stroke="#2563eb" stroke-width="2" stroke-dasharray="4 5" class="flow"/>
+          <g transform="translate(152)"><rect width="112" height="42" rx="12" fill="#0b2b34" stroke="#0e7490"/><text x="56" y="26" text-anchor="middle" fill="#67e8f9">SAVE / LOAD</text></g>
+          <path d="M272 21h24" stroke="#06b6d4" stroke-width="2" stroke-dasharray="4 5" class="flow"/>
+          <g transform="translate(304)"><rect width="112" height="42" rx="12" fill="#251b45" stroke="#6d28d9"/><text x="56" y="26" text-anchor="middle" fill="#c4b5fd">RUNTIME</text></g>
+          <path d="M424 21h24" stroke="#8b5cf6" stroke-width="2" stroke-dasharray="4 5" class="flow"/>
+          <g transform="translate(456)"><rect width="148" height="42" rx="12" fill="#101827" stroke="#293548"/><text x="74" y="26" text-anchor="middle" fill="#e2e8f0">DEVICE · FIELD</text></g>
+        </g>
       </g>
-    </g>
-    <g transform="translate(576 242)">
-      <circle r="76" fill="url(#orb)" stroke="#334155" stroke-width="3"/>
-      <circle r="55" fill="none" stroke="#a78bfa" stroke-dasharray="5 8" opacity=".62"/>
-      <path d="M-27 4l24-23 27 9-20 13 24 9-33 20z" fill="url(#accent)"/>
-      <circle cx="-66" cy="-50" r="8" fill="#60a5fa" class="pulse"/><circle cx="68" cy="-29" r="7" fill="#a78bfa" class="pulse"/><circle cx="50" cy="61" r="7" fill="#22d3ee" class="pulse"/>
     </g>
   </g>
 </svg>

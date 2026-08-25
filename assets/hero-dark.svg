@@ -1,66 +1,63 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="360" viewBox="0 0 1200 360" role="img" aria-labelledby="title desc">
-  <title id="title">Hyounkyu Oh</title>
-  <desc id="desc">Local-first AI, visual systems, and developer automation</desc>
+  <title id="title">Hyounkyu Oh — Frontend / Application Engineer</title>
+  <desc id="desc">Editor and Builder state connected through save, load, Runtime, and real-environment verification</desc>
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#09111f"/>
-      <stop offset="0.55" stop-color="#0b1326"/>
-      <stop offset="1" stop-color="#160f2c"/>
+      <stop offset="0" stop-color="#0b1120"/>
+      <stop offset="0.55" stop-color="#101827"/>
+      <stop offset="1" stop-color="#17142b"/>
     </linearGradient>
     <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#60a5fa"/>
-      <stop offset="0.5" stop-color="#22d3ee"/>
-      <stop offset="1" stop-color="#a78bfa"/>
+      <stop offset="0" stop-color="#2563eb"/>
+      <stop offset="0.5" stop-color="#06b6d4"/>
+      <stop offset="1" stop-color="#8b5cf6"/>
     </linearGradient>
-    <radialGradient id="orb" cx="40%" cy="35%" r="70%">
-      <stop offset="0" stop-color="#e0f2fe"/>
-      <stop offset="0.5" stop-color="#2563eb"/>
-      <stop offset="1" stop-color="#6d28d9"/>
-    </radialGradient>
     <pattern id="grid" width="28" height="28" patternUnits="userSpaceOnUse">
-      <path d="M28 0H0V28" fill="none" stroke="#93c5fd" stroke-opacity=".075"/>
+      <path d="M28 0H0V28" fill="none" stroke="#60a5fa" stroke-opacity=".08"/>
     </pattern>
-    <filter id="shadow" x="-40%" y="-40%" width="180%" height="180%">
-      <feDropShadow dx="0" dy="16" stdDeviation="20" flood-color="#38bdf8" flood-opacity=".2"/>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#60a5fa" flood-opacity=".13"/>
     </filter>
     <clipPath id="frame"><rect width="1200" height="360" rx="28"/></clipPath>
-    <style>
-      text{font-family:Inter,Segoe UI,Arial,sans-serif}.orbit{animation:dash 18s linear infinite}.pulse{transform-box:fill-box;transform-origin:center;animation:pulse 3.2s ease-in-out infinite}.pulse-delay{animation-delay:-1.4s}@keyframes dash{to{stroke-dashoffset:-180}}@keyframes pulse{0%,100%{transform:scale(1);opacity:.72}50%{transform:scale(1.16);opacity:1}}@media(prefers-reduced-motion:reduce){.orbit,.pulse{animation:none}}
-    </style>
+    <style>text{font-family:Inter,Segoe UI,Arial,sans-serif}.flow{animation:flow 12s linear infinite}.pulse{transform-box:fill-box;transform-origin:center;animation:pulse 3.2s ease-in-out infinite}@keyframes flow{to{stroke-dashoffset:-120}}@keyframes pulse{0%,100%{opacity:.68}50%{opacity:1;transform:scale(1.16)}}@media(prefers-reduced-motion:reduce){.flow,.pulse{animation:none}}</style>
   </defs>
   <g clip-path="url(#frame)">
     <rect width="1200" height="360" fill="url(#bg)"/>
     <rect width="1200" height="360" fill="url(#grid)"/>
-    <circle cx="1090" cy="-20" r="210" fill="#8b5cf6" opacity=".12"/>
-    <circle cx="900" cy="410" r="250" fill="#06b6d4" opacity=".1"/>
-    <path d="M0 322C235 264 389 378 635 310s360-96 565-31" fill="none" stroke="url(#accent)" stroke-width="2" opacity=".3"/>
-    <g transform="translate(72 62)">
-      <rect width="278" height="32" rx="16" fill="#111c30" stroke="#294365"/>
-      <circle cx="17" cy="16" r="4" fill="#34d399" class="pulse"/>
-      <text x="31" y="21" font-size="12" font-weight="700" letter-spacing="1.8" fill="#a5b4fc">OKORION / VISUAL SYSTEMS LAB</text>
-      <text x="0" y="112" font-size="55" font-weight="800" letter-spacing="-2" fill="#f8fafc">HYOUNKYU OH</text>
-      <rect x="0" y="132" width="434" height="5" rx="2.5" fill="url(#accent)"/>
-      <text x="0" y="176" font-size="22" font-weight="600" fill="#e2e8f0">I build tools that think, render, and collaborate.</text>
-      <text x="0" y="207" font-size="15" fill="#94a3b8">Local-first AI · Visual Computing · Developer Automation</text>
+    <circle cx="1120" cy="-40" r="220" fill="#8b5cf6" opacity=".055"/>
+    <circle cx="905" cy="410" r="250" fill="#06b6d4" opacity=".055"/>
+    <path d="M0 322C235 264 389 378 635 310s360-96 565-31" fill="none" stroke="url(#accent)" stroke-width="2" opacity=".18"/>
+    <g transform="translate(72 58)">
+      <rect width="270" height="32" rx="16" fill="#111827" stroke="#293548"/>
+      <circle cx="17" cy="16" r="4" fill="#10b981" class="pulse"/>
+      <text x="31" y="21" font-size="12" font-weight="700" letter-spacing="1.7" fill="#94a3b8">OKORION / PRODUCT DELIVERY</text>
+      <text x="0" y="109" font-size="54" font-weight="800" letter-spacing="-2" fill="#f8fafc">HYOUNKYU OH</text>
+      <rect x="0" y="129" width="430" height="5" rx="2.5" fill="url(#accent)"/>
+      <text x="0" y="174" font-size="24" font-weight="650" fill="#e2e8f0">Frontend / Application Engineer</text>
+      <text x="0" y="207" font-size="15" fill="#94a3b8">Editor · Builder · Runtime Integration</text>
       <g transform="translate(0 235)">
-        <g><rect width="132" height="34" rx="17" fill="#102444" stroke="#1d4ed8"/><text x="66" y="22" text-anchor="middle" font-size="12" font-weight="700" fill="#93c5fd">LOCAL-FIRST AI</text></g>
-        <g transform="translate(144)"><rect width="105" height="34" rx="17" fill="#0b2b34" stroke="#0e7490"/><text x="52.5" y="22" text-anchor="middle" font-size="12" font-weight="700" fill="#67e8f9">WEBGPU</text></g>
-        <g transform="translate(261)"><rect width="126" height="34" rx="17" fill="#251b45" stroke="#6d28d9"/><text x="63" y="22" text-anchor="middle" font-size="12" font-weight="700" fill="#c4b5fd">AUTOMATION</text></g>
+        <g><rect width="112" height="34" rx="17" fill="#102444" stroke="#1d4ed8"/><text x="56" y="22" text-anchor="middle" font-size="11" font-weight="700" fill="#93c5fd">STATE FLOW</text></g>
+        <g transform="translate(124)"><rect width="112" height="34" rx="17" fill="#0b2b34" stroke="#0e7490"/><text x="56" y="22" text-anchor="middle" font-size="11" font-weight="700" fill="#67e8f9">SAVE / LOAD</text></g>
+        <g transform="translate(248)"><rect width="122" height="34" rx="17" fill="#251b45" stroke="#6d28d9"/><text x="61" y="22" text-anchor="middle" font-size="11" font-weight="700" fill="#c4b5fd">FIELD CHECK</text></g>
       </g>
     </g>
-    <g transform="translate(900 178)" filter="url(#shadow)">
-      <ellipse rx="204" ry="90" fill="none" stroke="#60a5fa" stroke-width="1.5" stroke-dasharray="7 10" opacity=".52" class="orbit"/>
-      <ellipse rx="145" ry="145" fill="none" stroke="#a78bfa" stroke-width="1.5" stroke-dasharray="5 11" opacity=".48" class="orbit"/>
-      <ellipse rx="95" ry="162" transform="rotate(62)" fill="none" stroke="#22d3ee" stroke-width="1.5" stroke-dasharray="4 10" opacity=".48" class="orbit"/>
-      <circle r="66" fill="url(#orb)" stroke="#334155" stroke-width="5"/>
-      <circle r="31" fill="#e0f2fe" opacity=".2"/>
-      <path d="M-21 3l18-17 20 7-15 9 19 7-25 15z" fill="url(#accent)" opacity=".95"/>
-      <circle cx="-181" cy="-34" r="10" fill="#60a5fa" class="pulse"/>
-      <circle cx="126" cy="-77" r="9" fill="#a78bfa" class="pulse pulse-delay"/>
-      <circle cx="163" cy="58" r="8" fill="#22d3ee" class="pulse"/>
-      <circle cx="-75" cy="131" r="7" fill="#34d399" class="pulse pulse-delay"/>
-      <g fill="#cbd5e1" font-size="11" font-weight="700" letter-spacing="1">
-        <text x="-270" y="-52">TYPESCRIPT</text><text x="139" y="-91">WEBLLM</text><text x="175" y="82">THREE.JS</text><text x="-107" y="153">REACT</text>
+    <g transform="translate(690 56)" filter="url(#shadow)">
+      <rect width="438" height="248" rx="24" fill="#111827" stroke="#293548"/>
+      <text x="24" y="34" font-size="11" font-weight="800" letter-spacing="1.6" fill="#94a3b8">EDITOR · BUILDER · RUNTIME</text>
+      <circle cx="397" cy="28" r="5" fill="#10b981" class="pulse"/>
+      <g transform="translate(24 58)">
+        <g><rect width="104" height="70" rx="14" fill="#102444" stroke="#1d4ed8"/><text x="52" y="31" text-anchor="middle" font-size="11" font-weight="800" fill="#93c5fd">EDITOR</text><text x="52" y="50" text-anchor="middle" font-size="9.5" fill="#94a3b8">USER ACTION</text></g>
+        <path d="M112 35h32" fill="none" stroke="#2563eb" stroke-width="2" stroke-dasharray="4 5" class="flow"/><path d="m139 30 7 5-7 5" fill="none" stroke="#2563eb" stroke-width="2"/>
+        <g transform="translate(154)"><rect width="104" height="70" rx="14" fill="#0b2b34" stroke="#0e7490"/><text x="52" y="31" text-anchor="middle" font-size="11" font-weight="800" fill="#67e8f9">STATE</text><text x="52" y="50" text-anchor="middle" font-size="9.5" fill="#94a3b8">SAVE / LOAD</text></g>
+        <path d="M266 35h32" fill="none" stroke="#06b6d4" stroke-width="2" stroke-dasharray="4 5" class="flow"/><path d="m293 30 7 5-7 5" fill="none" stroke="#06b6d4" stroke-width="2"/>
+        <g transform="translate(308)"><rect width="82" height="70" rx="14" fill="#251b45" stroke="#6d28d9"/><text x="41" y="31" text-anchor="middle" font-size="11" font-weight="800" fill="#c4b5fd">RUNTIME</text><text x="41" y="50" text-anchor="middle" font-size="9.5" fill="#94a3b8">EXECUTE</text></g>
+      </g>
+      <g transform="translate(24 151)">
+        <rect width="390" height="70" rx="16" fill="#101827" stroke="#293548"/>
+        <text x="18" y="26" font-size="10" font-weight="800" letter-spacing="1.4" fill="#94a3b8">REAL-ENVIRONMENT VERIFICATION</text>
+        <g transform="translate(18 38)" font-size="10.5" font-weight="700" fill="#e2e8f0">
+          <text>DEVICE</text><circle cx="71" cy="-4" r="3" fill="#2563eb"/><text x="85">FIELD</text><circle cx="136" cy="-4" r="3" fill="#06b6d4"/><text x="150">OPERATIONS</text><circle cx="235" cy="-4" r="3" fill="#8b5cf6"/><text x="249">SERVER</text>
+        </g>
       </g>
     </g>
   </g>

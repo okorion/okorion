@@ -1,0 +1,16 @@
+{
+  "name": "okorion-profile",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "check:career-catalog": "node scripts/sync-career-exclusion-catalog.mjs --check",
+    "sync:career-catalog": "node scripts/sync-career-exclusion-catalog.mjs",
+    "generate:hero": "node scripts/generate-profile-hero.mjs",
+    "generate:signals": "node scripts/generate-profile-signals.mjs",
+    "check:profile": "node scripts/validate-profile-content.mjs",
+    "check:links": "node scripts/check-profile-links.mjs",
+    "check:sensitive": "node scripts/scan-profile-sensitive.mjs",
+    "test": "npm run check:career-catalog && node scripts/validate-profile-exclusion-regression.mjs && npm run check:profile && npm run check:sensitive"
+  }
+}

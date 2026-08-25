@@ -3,18 +3,18 @@
   <source media="(prefers-color-scheme: light) and (max-width: 600px)" srcset="./assets/hero-mobile-light.svg" />
   <source media="(prefers-color-scheme: dark)" srcset="./assets/hero-dark.svg" />
   <source media="(prefers-color-scheme: light)" srcset="./assets/hero-light.svg" />
-  <img alt="Hyounkyu Oh — Local-first AI, visual systems, and developer automation" src="./assets/hero-light.svg" width="100%" />
+  <img alt="Hyounkyu Oh — Frontend / Application Engineer" src="./assets/hero-light.svg" width="100%" />
 </picture>
 
 <p align="center">
-  <strong>Editor·Builder의 복잡한 상태를 저장·Runtime·서버까지 연결합니다.</strong><br />
-  Product / Application Engineer · React · TypeScript · Three.js
+  <strong>Editor·Builder의 편집 상태를 저장하고 불러온 뒤 Runtime·서버까지 일관되게 연결합니다.</strong><br />
+  Frontend / Application Engineer · React · TypeScript · Three.js
 </p>
 
 <p align="center">
-  <a href="https://okorion.github.io">Portfolio</a> ·
-  <a href="#selected-work">Public Builds</a> ·
-  <a href="https://okorion.github.io/?view=3d">3D Lab</a> ·
+  <a href="https://okorion.github.io/">Portfolio</a> ·
+  <a href="#selected-work">Selected Work</a> ·
+  <a href="https://okorion.github.io/?view=3d">3D View</a> ·
   <a href="https://velog.io/@okorion">Technical Writing</a>
 </p>
 
@@ -22,38 +22,27 @@
 
 React·TypeScript·Three.js 기반의 2D·3D Editor·Builder와 지도 제품을 개발해 왔습니다. 편집 상태와 command·event, 저장 모델, Runtime 실행의 의미를 맞추고 모바일·현장·운영 환경에서 실제 동작을 검증합니다.
 
-공개 프로젝트에서는 local-first AI, 3D·데이터 시각화와 개발 자동화 도구를 실험합니다. 현업 제품과 개인 공개 프로젝트의 책임 범위는 구분해 기록합니다.
+공개 저장소에서는 다이어그램 내보내기, 개발 자동화와 운영 보조 도구를 만들며 문제 해결 과정과 검증 경계를 함께 기록합니다.
 
 ## Selected Work
 
-### 01 — [LocalMesh Studio](https://github.com/okorion/localmesh-studio)
+### 01 — [Mermaid Sky Exporter](https://github.com/okorion/mermaid-sky-exporter)
 
-**Local AI meets collaborative 3D editing.** 오브젝트 선택·강조, 이동·회전·크기 기즈모와 기본 편집 단축키를 로컬 LLM 명령·브라우저 저장과 하나의 `SceneCommand`·Yjs 문서 흐름으로 연결한 local-first 3D Studio입니다. Transform은 변경 축만 기록해 서로 다른 축의 동시 편집과 Undo/Redo를 보존합니다.
+Mermaid 작성, 공유, SVG·PNG·JPG 내보내기를 연결한 PWA입니다.
 
-[![LocalMesh Studio 브랜드 그래픽 — Local AI · WebGPU · Yjs](https://raw.githubusercontent.com/okorion/localmesh-studio/main/public/og.png)](https://localmesh-studio.okorion.chatgpt.site)
+`Next.js` · `Mermaid` · `Monaco`
 
-`TypeScript` · `React` · `Three.js` · `WebGPU` · `WebLLM` · `Yjs` · `Hocuspocus` · `IndexedDB`
+### 02 — [Codex App Telegram Monitor](https://github.com/okorion/codex-app-telegram-monitor)
 
-[Live demo](https://localmesh-studio.okorion.chatgpt.site) · [Source](https://github.com/okorion/localmesh-studio)
+Telegram을 통한 Windows Codex App 상태 점검과 원격 자동화 도구입니다.
 
-### 02 — [VizPort Studio](https://github.com/okorion/vizport-studio)
+`PowerShell` · `Telegram API`
 
-**From raw data to explainable visualization and portable code.** CSV·JSON을 브라우저에서 분석하고 적합한 차트를 추천한 뒤 React 코드, LLM 프롬프트, VizSpec으로 가져갈 수 있는 시각화 스튜디오입니다.
+### 03 — [Self-Improving Maintainer Bot](https://github.com/okorion/self-improving-maintainer-bot)
 
-[![VizPort Studio — data to visualization and code](https://raw.githubusercontent.com/okorion/vizport-studio/main/public/og.png)](https://vizport-studio.okorion.chatgpt.site)
+실패 사례를 eval로 축적하고 검증된 개선 PR을 제안하는 루프입니다.
 
-`React` · `TypeScript` · `ECharts` · `Local-first` · `WebLLM`
-
-[Live demo](https://vizport-studio.okorion.chatgpt.site) · [Source](https://github.com/okorion/vizport-studio) · [Architecture](https://github.com/okorion/vizport-studio/blob/main/ARCHITECTURE.md)
-
-### More from the lab
-
-- [**Mermaid Sky Exporter**](https://github.com/okorion/mermaid-sky-exporter) — Mermaid 작성, 공유, SVG·PNG·JPG 내보내기를 연결한 PWA<br />
-  `Next.js` · `Mermaid` · `Monaco`
-- [**Codex App Telegram Monitor**](https://github.com/okorion/codex-app-telegram-monitor) — Telegram을 통한 Windows Codex App 상태 점검과 원격 자동화<br />
-  `PowerShell` · `Telegram API`
-- [**Self-Improving Maintainer Bot**](https://github.com/okorion/self-improving-maintainer-bot) — 실패 사례를 eval로 축적하고 검증된 개선 PR을 제안하는 루프<br />
-  `Python` · `GitHub Actions` · `Codex`
+`Python` · `GitHub Actions` · `Codex`
 
 ## Technical Writing
 
@@ -68,7 +57,7 @@ React·TypeScript·Three.js 기반의 2D·3D Editor·Builder와 지도 제품을
 
 [All posts on Velog](https://velog.io/@okorion)
 
-## Signals from the lab
+## Signals from public work
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="./assets/lab-signal-dark.svg" />
@@ -76,24 +65,24 @@ React·TypeScript·Three.js 기반의 2D·3D Editor·Builder와 지도 제품을
   <img alt="Repository constellation and recent contribution pulse" src="./assets/lab-signal-light.svg" width="100%" />
 </picture>
 
-<sub>주요 공개 저장소와 최근 기여 활동을 이 저장소의 GitHub Actions가 직접 SVG로 생성합니다. 외부 통계 카드 서비스에 의존하지 않습니다.</sub>
+<sub>선별한 공개 저장소와 최근 기여 활동을 이 저장소의 GitHub Actions가 직접 SVG로 생성합니다. 외부 통계 카드 서비스에 의존하지 않습니다.</sub>
 
-## Core & Experiments
+## Core & Practice
 
 **Core** — `TypeScript` · `React` · `MobX` · `Three.js` · `Web Editor / Builder` · `Runtime Integration`
 
-**Exploring** — `Next.js` · `WebGPU` · `WebLLM` · `Local-first systems` · `Developer automation`
+**Practice** — `Next.js` · `Mermaid` · `GitHub Actions` · `Developer Automation`
 
 ## Principles
 
 - **Align state meaning first** — 화면, 저장 모델, Runtime과 서버가 같은 사용자 의도를 가리키게 합니다.
-- **Verify in the real environment** — 저장·재진입·모바일·현장·운영 환경에서 실제 동작을 확인합니다.
+- **Verify in the real environment** — 저장과 불러오기, 모바일·현장·운영 환경에서 실제 동작을 확인합니다.
 - **Keep judgment visible** — 자동화와 AI에는 검증 가능한 경계와 사람의 승인 지점을 남깁니다.
 
 ---
 
 <p align="center">
-  <a href="https://okorion.github.io">Portfolio</a> ·
+  <a href="https://okorion.github.io/">Portfolio</a> ·
   <a href="https://github.com/okorion?tab=repositories">Repositories</a> ·
   <a href="https://velog.io/@okorion">Technical Writing</a> ·
   <a href="https://okorion.github.io/tech-blog/">Learning Archive — 이전 강의 및 기술 학습 기록</a>
