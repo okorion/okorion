@@ -12,6 +12,8 @@ import {
   assertProfileSurfacePolicy,
   assertSafeProfileRelativePath,
   assertSupportedProfileEntry,
+  approvedShowcaseProjectIds,
+  blockedPrivateRepositoryUrls,
   blockedProfileDerivedContent,
   catalogBlockedProfileAliases,
   catalogDerivedProfileUrls,
@@ -158,7 +160,7 @@ for (const alias of catalogBlockedProfileAliases) {
   await expectDiscoveredSurfaceRejected(
     {
       contentMutations: new Map([
-        ["scripts/generate-profile-signals.mjs", `{ name: "${alias}" }`],
+        ["scripts/generate-profile-hero.mjs", `{ name: "${alias}" }`],
       ]),
     },
     `generator alias regression (${alias})`,
@@ -245,8 +247,8 @@ for (const [referenceStyle, markdown] of [
 }
 
 for (const [visibleSplit, markdown] of [
-  ["HTML strong", "<strong>Viz</strong>Port Studio"],
-  ["HTML span", "<span>Local</span>Mesh Studio"],
+  ["HTML strong", "<strong>GPU</strong> UX Lab"],
+  ["HTML span", "<span>GPU UX</span> Lab"],
   ["Markdown link", "GPU [UX](https://example.invalid) Lab"],
 ]) {
   expectBlocked(
@@ -417,6 +419,23 @@ assertNoBlockedProfileContent(
     ["README.md", "Frontend / Application Engineer"],
   ],
   "approved retained profile content",
+);
+
+for (const projectId of approvedShowcaseProjectIds) {
+  assertProfileSurfacePolicy(
+    [["README.md", `[Public source](https://github.com/okorion/${projectId})`]],
+    `approved personal-project source (${projectId})`,
+  );
+}
+for (const privateUrl of blockedPrivateRepositoryUrls) {
+  expectBlocked(
+    [["README.md", `https://${privateUrl}`]],
+    `private source link (${privateUrl})`,
+  );
+}
+expectBlocked(
+  [["README.md", "![Retired statistics](./assets/lab-signal-light.svg)"]],
+  "retired statistics cannot return to the public profile",
 );
 
 const snapshotText = Buffer.from(careerExclusionCatalogSnapshotBytes).toString(

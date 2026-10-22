@@ -60,29 +60,42 @@ const workflow = requiredSurface(
 );
 const packageText = requiredSurface(surfaceByPath, "package.json");
 
-assertProfileSurfacePolicy(activeSurfaces, "career profile exclusion policy");
+assertProfileSurfacePolicy(activeSurfaces, "personal project profile policy");
 
 for (const retainedContent of [
-  "Frontend / Application Engineer",
-  "React·TypeScript·Three.js 기반의 2D·3D Editor·Builder와 지도 제품",
+  "개인 프로젝트에서는 AI-native 방식으로 작업합니다.",
+  "저는 방향과 UI·UX를 정하고, 프롬프트를 구성하며 결과를 보고 수정 의견을 전달합니다.",
+  "코드 구현과 내부 구조 설계는 AI가 수행합니다.",
+  "https://okorion.github.io/?project=rust-lab",
+  "https://okorion.github.io/?project=report-review-tool",
+  "https://okorion.github.io/?project=aether-studio",
+  "https://rust-3d-engine-lab.vercel.app",
+  "https://aether-studio-nu.vercel.app/",
   "https://github.com/okorion/mermaid-sky-exporter",
-  "https://github.com/okorion/codex-app-telegram-monitor",
-  "https://github.com/okorion/self-improving-maintainer-bot",
-  "https://github.com/okorion?tab=repositories",
+  "https://github.com/okorion/vizport-studio",
+  "https://github.com/okorion/localmesh-studio",
   ...retainedCleanPortfolioUrls,
-  "https://velog.io/@okorion",
-  "Technical Writing",
+  "가상 스튜디오 웹사이트",
+  "사람이 내용을 검토·확정",
+  "학습 아카이브 — 이전 강의·기술 학습 기록",
 ]) {
   assertIncludes(readme, retainedContent, "README.md");
 }
 
 for (const removedStructure of [
-  "### More from the lab",
-  "## Signals from the lab",
-  "**Exploring**",
-  "Public Builds",
+  "## About", "## Signals", "## Principles", "## Core & Practice",
+  "Career Profile", "Frontend / Application Engineer", "Runtime Integration",
+  "lab-signal", "github-readme-stats", "https://velog.io/", "notion.site",
+  "https://okorion.github.io/?view=3d",
 ]) {
   assertExcludes(readme, removedStructure, "README.md");
+}
+const archiveUrl = "https://okorion.github.io/tech-blog/";
+if (readme.split(archiveUrl).length - 1 !== 1) {
+  throw new Error("README.md: the learning archive must appear once");
+}
+if (!readme.trimEnd().endsWith(`](${archiveUrl})`)) {
+  throw new Error("README.md: the learning archive must be the last text link");
 }
 
 const selectedWorkHeadings = [
@@ -93,9 +106,9 @@ const selectedWorkOrder = selectedWorkHeadings.map(([, index, title]) => ({
   title,
 }));
 const expectedSelectedWorkOrder = [
-  { index: "01", title: "Mermaid Sky Exporter" },
-  { index: "02", title: "Codex App Telegram Monitor" },
-  { index: "03", title: "Self-Improving Maintainer Bot" },
+  { index: "01", title: "Rust Lab" },
+  { index: "02", title: "정기 재무 보고서 검토 지원 도구" },
+  { index: "03", title: "Aether Studio" },
 ];
 if (
   JSON.stringify(selectedWorkOrder) !==
@@ -109,7 +122,7 @@ if (
 const localAssetReferences = [
   ...readme.matchAll(/(?:src|srcset)="\.\/([^"]+)"/gu),
 ].map(([, relativePath]) => relativePath);
-const expectedAssetReferences = [...allSvgAssets];
+const expectedAssetReferences = [...heroAssets];
 for (const expectedAsset of expectedAssetReferences) {
   if (!localAssetReferences.includes(expectedAsset)) {
     throw new Error(`README.md: generated asset is not referenced (${expectedAsset})`);
@@ -159,25 +172,11 @@ for (const [relativePath, svg] of svgSurfaces) {
 for (const heroAsset of heroAssets) {
   const svg = requiredSurface(surfaceByPath, heroAsset);
   for (const approvedHeroCopy of [
-    "Frontend / Application Engineer",
-    "PRODUCT DELIVERY",
-    "Runtime Integration",
-    "SAVE / LOAD",
+    "AI-native 개인 프로젝트", "AI-NATIVE PROJECTS", "개인 프로젝트 제작 역할",
+    "내 역할", "방향 · UI/UX · 프롬프트 · 피드백",
+    "AI 역할", "코드 구현 · 내부 구조 설계",
   ]) {
     assertIncludes(svg, approvedHeroCopy, heroAsset);
-  }
-}
-
-for (const signalAsset of signalAssets) {
-  const svg = requiredSurface(surfaceByPath, signalAsset);
-  for (const retainedSignal of [
-    "tech-blog",
-    "mermaid-sky-exporter",
-    "codex-telegram-monitor",
-    "maintainer-bot",
-    "BUILD · VERIFY · SHIP",
-  ]) {
-    assertIncludes(svg, retainedSignal, signalAsset);
   }
 }
 
@@ -197,14 +196,22 @@ for (const scriptName of [
 
 for (const workflowContract of [
   "pull_request:",
+  "push:",
+  "contents: read",
   "npm test",
   "npm run generate:hero",
-  "npm run generate:signals",
 ]) {
   assertIncludes(workflow, workflowContract, "update-profile-signals.yml");
 }
-for (const generatedAsset of allSvgAssets) {
+for (const generatedAsset of heroAssets) {
   assertIncludes(workflow, generatedAsset, "update-profile-signals.yml");
+}
+
+for (const retiredAutomation of [
+  "schedule:", "npm run generate:signals", "contents: write",
+  "git commit", "git push", "GITHUB_TOKEN", "lab-signal",
+]) {
+  assertExcludes(workflow, retiredAutomation, "update-profile-signals.yml");
 }
 
 const evidenceReadmePath = profileEvidenceOnlyPaths.find((relativePath) =>

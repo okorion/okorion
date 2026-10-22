@@ -6,19 +6,32 @@ import {
   collectMarkdownImageTargets,
 } from "./profile-markdown-policy.mjs";
 import { normalizeProfileSurface } from "./profile-surface-normalization.mjs";
+import { careerExclusionCatalog } from "./career-exclusion-catalog.mjs";
 import {
-  careerExclusionAliases,
-  careerExclusionDerivedUrls,
-} from "./career-exclusion-catalog.mjs";
+  collectCareerExclusionAliases,
+  collectCareerExclusionDerivedUrls,
+} from "./career-exclusion-catalog-schema.mjs";
 
 const repositoryRoot = fileURLToPath(new URL("../", import.meta.url));
 
-// These phrases and technologies were copied from the excluded project cards
-// or the previous hero. They are profile-surface extensions of the catalog,
-// not replacements for its authoritative aliases.
+// The 2026-10-22 personal-project showcase approval permits these two public
+// projects here. Keep the career catalog snapshot and its integrity checks
+// unchanged: this scope exception does not update career documents.
+export const approvedShowcaseProjectIds = Object.freeze([
+  "vizport-studio", "localmesh-studio",
+]);
+const profileBlockedCatalog = {
+  ...careerExclusionCatalog,
+  projects: careerExclusionCatalog.projects.filter(
+    (project) => !approvedShowcaseProjectIds.includes(project.id),
+  ),
+};
+const careerExclusionAliases = collectCareerExclusionAliases(profileBlockedCatalog);
+const careerExclusionDerivedUrls = collectCareerExclusionDerivedUrls(profileBlockedCatalog);
+
+// Legacy promotional copy remains excluded. Technology names are not ownership
+// claims; the README states the human and AI roles separately.
 const blockedDerivedProfileContent = [
-  "local-first", "local first", "local AI", "WebGPU", "WebLLM",
-  "ECharts", "Yjs", "Hocuspocus", "IndexedDB", "VizSpec", "SceneCommand",
   "Visual Systems Lab", "Visual Computing",
   "tools that think, render, and collaborate", "collaborative 3D editing",
   "explainable visualization and portable code", "data to visualization and code",
@@ -35,10 +48,15 @@ export const catalogBlockedProfileAliases = [...careerExclusionAliases];
 export const catalogDerivedProfileUrls = [...careerExclusionDerivedUrls];
 export const blockedProfileDerivedContent = [...blockedDerivedProfileContent];
 
-// The cleaned portfolio is intentionally retained as a profile locator by the
-// current profile-specific decision. This does not permit any catalog project
-// alias, repository URL, demo URL, image, technology, or outcome to return.
-export const retainedCleanPortfolioUrls = ["https://okorion.github.io/", "https://okorion.github.io/?view=3d"];
+// Public project pages and the separate personal introduction are the profile
+// destinations. Private repository URLs are excluded from the showcase.
+export const retainedCleanPortfolioUrls = ["https://okorion.github.io/?view=projects", "https://okorion.github.io/?view=about"];
+export const blockedPrivateRepositoryUrls = [
+  "github.com/okorion/ember-studio",
+  "github.com/okorion/rust-3d-engine-lab",
+  "github.com/okorion/aether-studio",
+  "github.com/okorion/reusable-product-assets",
+];
 
 const textExtensions = new Set(
   ".adoc .asciidoc .cjs .css .cts .htm .html .js .json .jsx .md .mjs .mts .ps1 .py .rst .sh .svg .toml .ts .tsx .txt .xml .yaml .yml".split(
@@ -62,7 +80,7 @@ export const profileEvidenceOnlyPaths = Object.freeze([
 ]);
 const evidenceOnlyPaths = new Set(profileEvidenceOnlyPaths);
 const allowedProfileImageTargets = new Set(
-  "assets/hero-light.svg assets/hero-dark.svg assets/hero-mobile-light.svg assets/hero-mobile-dark.svg assets/lab-signal-light.svg assets/lab-signal-dark.svg".split(" "),
+  "assets/hero-light.svg assets/hero-dark.svg assets/hero-mobile-light.svg assets/hero-mobile-dark.svg".split(" "),
 );
 
 export { normalizeProfileSurface };
@@ -331,7 +349,7 @@ export function assertNoBlockedProfileContent(surfaces, label) {
     const visibleSurface = extension === ".md" || extension === ".htm" || extension === ".html"
       ? `${surfaceLabel}\n${canonicalizeGfmVisibleText(content)}`
       : searchableSurface;
-    for (const blockedContent of blockedProfileContent) {
+    for (const blockedContent of [...blockedProfileContent, ...blockedPrivateRepositoryUrls]) {
       if (
         includesBlockedValue(searchableSurface, blockedContent) ||
         includesBlockedValue(visibleSurface, blockedContent)

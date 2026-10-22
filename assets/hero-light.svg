@@ -1,64 +1,21 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="360" viewBox="0 0 1200 360" role="img" aria-labelledby="title desc">
-  <title id="title">Hyounkyu Oh — Frontend / Application Engineer</title>
-  <desc id="desc">Editor and Builder state connected through save, load, Runtime, and real-environment verification</desc>
-  <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#f8fbff"/>
-      <stop offset="0.55" stop-color="#f3f7ff"/>
-      <stop offset="1" stop-color="#f8f5ff"/>
-    </linearGradient>
-    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#2563eb"/>
-      <stop offset="0.5" stop-color="#06b6d4"/>
-      <stop offset="1" stop-color="#8b5cf6"/>
-    </linearGradient>
-    <pattern id="grid" width="28" height="28" patternUnits="userSpaceOnUse">
-      <path d="M28 0H0V28" fill="none" stroke="#2563eb" stroke-opacity=".08"/>
-    </pattern>
-    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
-      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#1d4ed8" flood-opacity=".13"/>
-    </filter>
-    <clipPath id="frame"><rect width="1200" height="360" rx="28"/></clipPath>
-    <style>text{font-family:Inter,Segoe UI,Arial,sans-serif}.flow{animation:flow 12s linear infinite}.pulse{transform-box:fill-box;transform-origin:center;animation:pulse 3.2s ease-in-out infinite}@keyframes flow{to{stroke-dashoffset:-120}}@keyframes pulse{0%,100%{opacity:.68}50%{opacity:1;transform:scale(1.16)}}@media(prefers-reduced-motion:reduce){.flow,.pulse{animation:none}}</style>
-  </defs>
-  <g clip-path="url(#frame)">
-    <rect width="1200" height="360" fill="url(#bg)"/>
-    <rect width="1200" height="360" fill="url(#grid)"/>
-    <circle cx="1120" cy="-40" r="220" fill="#8b5cf6" opacity=".055"/>
-    <circle cx="905" cy="410" r="250" fill="#06b6d4" opacity=".055"/>
-    <path d="M0 322C235 264 389 378 635 310s360-96 565-31" fill="none" stroke="url(#accent)" stroke-width="2" opacity=".18"/>
-    <g transform="translate(72 58)">
-      <rect width="270" height="32" rx="16" fill="#ffffff" stroke="#dbe4f0"/>
-      <circle cx="17" cy="16" r="4" fill="#10b981" class="pulse"/>
-      <text x="31" y="21" font-size="12" font-weight="700" letter-spacing="1.7" fill="#64748b">OKORION / PRODUCT DELIVERY</text>
-      <text x="0" y="109" font-size="54" font-weight="800" letter-spacing="-2" fill="#0f172a">HYOUNKYU OH</text>
-      <rect x="0" y="129" width="430" height="5" rx="2.5" fill="url(#accent)"/>
-      <text x="0" y="174" font-size="24" font-weight="650" fill="#334155">Frontend / Application Engineer</text>
-      <text x="0" y="207" font-size="15" fill="#64748b">Editor · Builder · Runtime Integration</text>
-      <g transform="translate(0 235)">
-        <g><rect width="112" height="34" rx="17" fill="#eff6ff" stroke="#bfdbfe"/><text x="56" y="22" text-anchor="middle" font-size="11" font-weight="700" fill="#1d4ed8">STATE FLOW</text></g>
-        <g transform="translate(124)"><rect width="112" height="34" rx="17" fill="#ecfeff" stroke="#a5f3fc"/><text x="56" y="22" text-anchor="middle" font-size="11" font-weight="700" fill="#0e7490">SAVE / LOAD</text></g>
-        <g transform="translate(248)"><rect width="122" height="34" rx="17" fill="#f5f3ff" stroke="#ddd6fe"/><text x="61" y="22" text-anchor="middle" font-size="11" font-weight="700" fill="#6d28d9">FIELD CHECK</text></g>
-      </g>
-    </g>
-    <g transform="translate(690 56)" filter="url(#shadow)">
-      <rect width="438" height="248" rx="24" fill="#ffffff" stroke="#dbe4f0"/>
-      <text x="24" y="34" font-size="11" font-weight="800" letter-spacing="1.6" fill="#64748b">EDITOR · BUILDER · RUNTIME</text>
-      <circle cx="397" cy="28" r="5" fill="#10b981" class="pulse"/>
-      <g transform="translate(24 58)">
-        <g><rect width="104" height="70" rx="14" fill="#eff6ff" stroke="#bfdbfe"/><text x="52" y="31" text-anchor="middle" font-size="11" font-weight="800" fill="#1d4ed8">EDITOR</text><text x="52" y="50" text-anchor="middle" font-size="9.5" fill="#64748b">USER ACTION</text></g>
-        <path d="M112 35h32" fill="none" stroke="#2563eb" stroke-width="2" stroke-dasharray="4 5" class="flow"/><path d="m139 30 7 5-7 5" fill="none" stroke="#2563eb" stroke-width="2"/>
-        <g transform="translate(154)"><rect width="104" height="70" rx="14" fill="#ecfeff" stroke="#a5f3fc"/><text x="52" y="31" text-anchor="middle" font-size="11" font-weight="800" fill="#0e7490">STATE</text><text x="52" y="50" text-anchor="middle" font-size="9.5" fill="#64748b">SAVE / LOAD</text></g>
-        <path d="M266 35h32" fill="none" stroke="#06b6d4" stroke-width="2" stroke-dasharray="4 5" class="flow"/><path d="m293 30 7 5-7 5" fill="none" stroke="#06b6d4" stroke-width="2"/>
-        <g transform="translate(308)"><rect width="82" height="70" rx="14" fill="#f5f3ff" stroke="#ddd6fe"/><text x="41" y="31" text-anchor="middle" font-size="11" font-weight="800" fill="#6d28d9">RUNTIME</text><text x="41" y="50" text-anchor="middle" font-size="9.5" fill="#64748b">EXECUTE</text></g>
-      </g>
-      <g transform="translate(24 151)">
-        <rect width="390" height="70" rx="16" fill="#f3f7ff" stroke="#dbe4f0"/>
-        <text x="18" y="26" font-size="10" font-weight="800" letter-spacing="1.4" fill="#64748b">REAL-ENVIRONMENT VERIFICATION</text>
-        <g transform="translate(18 38)" font-size="10.5" font-weight="700" fill="#334155">
-          <text>DEVICE</text><circle cx="71" cy="-4" r="3" fill="#2563eb"/><text x="85">FIELD</text><circle cx="136" cy="-4" r="3" fill="#06b6d4"/><text x="150">OPERATIONS</text><circle cx="235" cy="-4" r="3" fill="#8b5cf6"/><text x="249">SERVER</text>
-        </g>
-      </g>
-    </g>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="320" viewBox="0 0 1200 320" role="img" aria-labelledby="title desc">
+  <title id="title">오현규 — AI-native 개인 프로젝트</title>
+  <desc id="desc">개인 프로젝트 제작에서 방향, UI·UX, 프롬프트와 결과 피드백은 사용자. 코드 구현과 내부 구조 설계는 AI.</desc>
+  <style>text{font-family:"Noto Sans KR","Malgun Gothic","Apple SD Gothic Neo",sans-serif}</style>
+  <rect x="1" y="1" width="1198" height="318" rx="24" fill="#ffffff" stroke="#e1e4e9"/>
+  <rect x="56" y="40" width="228" height="32" rx="16" fill="#e9eeff"/>
+  <text x="72" y="62" font-size="17" font-weight="700" letter-spacing="1" fill="#3156d3">AI-NATIVE PROJECTS</text>
+  <text x="56" y="148" font-size="56" font-weight="800" letter-spacing="-2" fill="#17212d">오현규 <tspan font-size="34" font-weight="500" letter-spacing="0" fill="#526070">/ okorion</tspan></text>
+  <text x="56" y="201" font-size="27" fill="#17212d">결과를 보며 사용 흐름을 다듬습니다</text>
+  <text x="56" y="246" font-size="20" fill="#526070">편집 도구 · 업무 흐름 · 시각 실험</text>
+  <g transform="translate(700 56)">
+    <text x="0" y="-14" font-size="18" font-weight="700" fill="#526070">개인 프로젝트 제작 역할</text>
+    <rect width="444" height="208" rx="18" fill="#f4f5f7"/>
+    <text x="24" y="44" font-size="20" font-weight="700" fill="#3156d3">내 역할</text>
+    <text x="24" y="91" font-size="24" fill="#17212d">방향 · UI/UX · 프롬프트 · 피드백</text>
+    <path d="M24 118H420" stroke="#e1e4e9"/>
+    <text x="24" y="161" font-size="20" font-weight="700" fill="#526070">AI 역할</text>
+    <text x="118" y="161" font-size="20" fill="#17212d">코드 구현 · 내부 구조 설계</text>
+
   </g>
 </svg>
