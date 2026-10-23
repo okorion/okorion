@@ -106,7 +106,7 @@ const selectedWorkOrder = selectedWorkHeadings.map(([, index, title]) => ({
   title,
 }));
 const expectedSelectedWorkOrder = [
-  { index: "01", title: "Rust Lab" },
+  { index: "01", title: "Rust 3D Engine Lab" },
   { index: "02", title: "정기 재무 보고서 검토 지원 도구" },
   { index: "03", title: "Aether Studio" },
 ];
