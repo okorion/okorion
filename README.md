@@ -14,7 +14,7 @@
 
 ### 01 — [Rust 3D Engine Lab](https://okorion.github.io/?project=rust-lab)
 
-3D 오브젝트를 편집하고 두 렌더러의 화면과 성능을 비교하는 웹 도구입니다.
+렌더링 비교 실험실에서 출발해 장면·재질·조명·애니메이션 편집과 프로젝트 저장·내보내기를 갖춘 3D 웹 스튜디오로 확장했습니다. Rust/wgpu와 Three.js WebGPU의 렌더링 비교도 제공합니다.
 
 [데모 열기](https://rust-3d-engine-lab.vercel.app) · [만든 과정](https://okorion.github.io/?project=rust-lab)
 
