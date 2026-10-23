@@ -12,7 +12,7 @@
 
 ## 대표 프로젝트
 
-### 01 — [Rust Lab](https://okorion.github.io/?project=rust-lab)
+### 01 — [Rust 3D Engine Lab](https://okorion.github.io/?project=rust-lab)
 
 3D 오브젝트를 편집하고 두 렌더러의 화면과 성능을 비교하는 웹 도구입니다.
 
