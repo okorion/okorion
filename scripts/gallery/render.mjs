@@ -64,7 +64,7 @@ try {
   });
   const page = await context.newPage();
   if (process.env.GALLERY_REUSE_CAPTURE !== "1") {
-    await page.goto(config.portfolioUrl, {
+    const navigation = await page.goto(config.portfolioUrl, {
       waitUntil: "networkidle",
       timeout: 60000,
     });
@@ -79,7 +79,8 @@ try {
       path: "assets/gallery/portfolio.png",
       animations: "disabled",
     });
-    const html = await page.content();
+    if (!navigation?.ok()) throw new Error("Portfolio document did not load");
+    const html = await navigation.text();
     const scripts = [...html.matchAll(/src="(\/assets\/[^"<>]+\.js)"/g)].map(
       (m) => m[1],
     );
@@ -100,6 +101,7 @@ try {
           url: config.portfolioUrl,
           viewport: { width: 1184, height: 760 },
           scripts,
+          htmlSha256: createHash("sha256").update(html).digest("hex"),
           sha256: createHash("sha256").update(png).digest("hex"),
           darkSha256: createHash("sha256").update(darkPng).digest("hex"),
         },

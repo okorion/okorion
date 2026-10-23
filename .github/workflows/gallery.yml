@@ -9,10 +9,8 @@ on:
         default: keep
   issues:
     types: [opened, edited, closed, reopened, deleted]
-  repository_dispatch:
-    types: [portfolio-deployed]
   schedule:
-    - cron: "23 1,13 * * *"
+    - cron: "13,43 * * * *"
 permissions:
   contents: read
   issues: read
@@ -36,16 +34,24 @@ jobs:
         with:
           node-version: 22
           cache: npm
-      - run: npm ci
-      - run: npx playwright install --with-deps chromium
-      - run: sudo apt-get install -y fonts-noto-cjk
       - name: Collect bounded public data
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: npm run gallery:collect
+      - name: Check for changed site or gallery data
+        id: changes
+        run: node scripts/gallery/needs-refresh.mjs
+      - if: steps.changes.outputs.changed == 'true'
+        run: npm ci
+      - if: steps.changes.outputs.changed == 'true'
+        run: npx playwright install --with-deps chromium
+      - if: steps.changes.outputs.changed == 'true'
+        run: sudo apt-get install -y fonts-noto-cjk
       - name: Render all themes and layouts
+        if: steps.changes.outputs.changed == 'true'
         run: npm run gallery:render
       - name: Select layout
+        if: steps.changes.outputs.changed == 'true'
         env:
           VARIANT: ${{ inputs.variant || 'keep' }}
         run: |
@@ -55,8 +61,10 @@ jobs:
             npm run gallery:readme -- "$VARIANT"
           fi
       - name: Validate complete result
+        if: steps.changes.outputs.changed == 'true'
         run: npm test
       - name: Publish only generated gallery changes
+        if: steps.changes.outputs.changed == 'true'
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: node scripts/gallery/publish.mjs
