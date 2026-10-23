@@ -53,7 +53,7 @@ npm test
 
 Actions 게시 단계는 README·전시관 설정·생성된 이미지와 데이터만 Git Data API로 커밋합니다. 원격 main이 실행 시작 커밋과 같은지 확인하고, 강제 갱신 없이 반영합니다. 변경이 없으면 커밋하지 않습니다. 사용자 댓글·리뷰·Issue 상태를 자동으로 변경하지 않습니다.
 
-`okorion.github.io-src`의 기존 `GH_PAGES_DEPLOY_TOKEN`은 배포 후 이 저장소의 워크플로를 호출할 권한이 필요합니다. 프로필 워크플로 자체는 저장소의 기본 `GITHUB_TOKEN`을 사용하며, 권한은 contents 쓰기·issues 읽기입니다. Actions 로그에서 갱신 성공 여부를 확인할 수 있습니다.
+`okorion.github.io-src`의 기존 `GH_PAGES_DEPLOY_TOKEN`으로 배포 후 `portfolio-deployed` 저장소 이벤트를 보냅니다. 이 이벤트 API는 프로필 저장소의 contents 쓰기 권한을 사용합니다. 프로필 워크플로 자체는 저장소의 기본 `GITHUB_TOKEN`을 사용하며, 권한은 contents 쓰기·issues 읽기입니다. Actions 로그에서 갱신 성공 여부를 확인할 수 있습니다.
 
 ## 도구 선택 근거 · 2026-10-23
 

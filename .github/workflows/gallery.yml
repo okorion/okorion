@@ -9,6 +9,8 @@ on:
         default: keep
   issues:
     types: [opened, edited, closed, reopened, deleted]
+  repository_dispatch:
+    types: [portfolio-deployed]
   schedule:
     - cron: "23 1,13 * * *"
 permissions:
