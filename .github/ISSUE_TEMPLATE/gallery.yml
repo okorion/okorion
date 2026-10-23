@@ -1,0 +1,40 @@
+name: 전시관에 오브젝트 남기기
+description: 도형과 색상을 골라 README 전시관을 함께 꾸며 주세요.
+title: "[Gallery] 오브젝트 남기기"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        공개 README 전시관에 도형 하나를 남깁니다. 계정당 가장 최근의 열린 참여 이슈 하나가 반영되며, 최근 9명의 작품을 전시합니다.
+        생성과 이미지 캐시 갱신에 몇 분이 걸릴 수 있습니다. 이슈를 닫으면 다음 갱신에서 전시 대상에서 제외됩니다.
+        자유 텍스트·이름·아바타는 이미지에 표시하지 않습니다.
+  - type: dropdown
+    id: shape
+    attributes:
+      label: 도형
+      options:
+        - 구체 (sphere)
+        - 큐브 (cube)
+        - 고리 (torus)
+        - 아치 (arch)
+        - 피라미드 (pyramid)
+    validations:
+      required: true
+  - type: dropdown
+    id: color
+    attributes:
+      label: 색상
+      options:
+        - 파랑 (blue)
+        - 민트 (mint)
+        - 보라 (violet)
+        - 흰색 (white)
+    validations:
+      required: true
+  - type: checkboxes
+    id: consent
+    attributes:
+      label: 공개 안내
+      options:
+        - label: 선택한 도형과 색상이 공개 README에 표시되는 데 동의합니다.
+          required: true

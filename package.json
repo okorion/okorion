@@ -11,6 +11,14 @@
     "check:profile": "node scripts/validate-profile-content.mjs",
     "check:links": "node scripts/check-profile-links.mjs",
     "check:sensitive": "node scripts/scan-profile-sensitive.mjs",
-    "test": "npm run check:career-catalog && node scripts/validate-profile-exclusion-regression.mjs && npm run check:profile && npm run check:sensitive"
+    "test": "npm run check:career-catalog && node scripts/validate-profile-exclusion-regression.mjs && npm run check:profile && npm run check:sensitive && npm run check:gallery",
+    "gallery:collect": "node scripts/gallery/collect.mjs",
+    "gallery:render": "node scripts/gallery/render.mjs",
+    "gallery:readme": "node scripts/gallery/readme.mjs",
+    "check:gallery": "node --test scripts/gallery/model.test.mjs && node scripts/gallery/validate.mjs"
+  },
+  "devDependencies": {
+    "playwright": "1.64.1",
+    "three": "0.186.1"
   }
 }

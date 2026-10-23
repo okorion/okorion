@@ -82,6 +82,10 @@ const evidenceOnlyPaths = new Set(profileEvidenceOnlyPaths);
 const allowedProfileImageTargets = new Set(
   "assets/hero-light.svg assets/hero-dark.svg assets/hero-mobile-light.svg assets/hero-mobile-dark.svg".split(" "),
 );
+// The gallery contains only a fixed public-site capture and generated scenes.
+export const galleryImagePaths = ["assets/gallery/portfolio.png", "assets/gallery/portfolio-dark.png", ...["wall", "gallery", "island"].flatMap(variant =>
+  ["light", "dark"].flatMap(theme => [`assets/gallery/${variant}-${theme}.png`, `assets/gallery/${variant}-mobile-${theme}.png`]))];
+for (const path of galleryImagePaths) allowedProfileImageTargets.add(path);
 
 export { normalizeProfileSurface };
 
@@ -237,6 +241,7 @@ export function classifyProfileSurfacePath(candidatePath) {
   if (githubClassification) {
     return githubClassification;
   }
+  if (galleryImagePaths.includes(relativePath)) return "generated-gallery-image";
   if (!textExtensions.has(extname(relativePath).toLocaleLowerCase("en-US"))) {
     throw new Error(`active profile surface type is unsupported (${relativePath})`);
   }

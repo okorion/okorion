@@ -1,0 +1,60 @@
+name: Refresh portfolio gallery
+on:
+  workflow_dispatch:
+    inputs:
+      variant:
+        description: "Keep current, C wall, A gallery, or B island"
+        type: choice
+        options: [keep, wall, gallery, island]
+        default: keep
+  issues:
+    types: [opened, edited, closed, reopened, deleted]
+  schedule:
+    - cron: "23 1,13 * * *"
+permissions:
+  contents: read
+  issues: read
+concurrency:
+  group: portfolio-gallery-refresh
+  cancel-in-progress: false
+jobs:
+  refresh:
+    if: github.event_name != 'issues' || startsWith(github.event.issue.title, '[Gallery] ') || startsWith(github.event.changes.title.from, '[Gallery] ')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      issues: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: sudo apt-get install -y fonts-noto-cjk
+      - name: Collect bounded public data
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: npm run gallery:collect
+      - name: Render all themes and layouts
+        run: npm run gallery:render
+      - name: Select layout
+        env:
+          VARIANT: ${{ inputs.variant || 'keep' }}
+        run: |
+          if [ "$VARIANT" = keep ]; then
+            npm run gallery:readme
+          else
+            npm run gallery:readme -- "$VARIANT"
+          fi
+      - name: Validate complete result
+        run: npm test
+      - name: Publish only generated gallery changes
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node scripts/gallery/publish.mjs
