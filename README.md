@@ -7,4 +7,4 @@
   </picture>
 </a>
 
-[포트폴리오 둘러보기 ↗](https://okorion.github.io/) · [오브젝트 남기기 +](https://github.com/okorion/okorion/issues/new?template=gallery.yml)
+[포트폴리오 둘러보기 ↗](https://okorion.github.io/) · [오브젝트 남기기 +](https://github.com/okorion/okorion/issues/new?template=gallery.yml) · [이 전시관 사용하기 ↗](https://github.com/okorion/readme-gallery)
