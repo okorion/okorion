@@ -2,7 +2,7 @@ import { chromium } from "playwright";
 import { createServer } from "node:http";
 import { readFile, mkdir, writeFile, copyFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
-import { variants, validateData } from "./model.mjs";
+import { variants, stylesFor, assetName, validateData } from "./model.mjs";
 
 const config = JSON.parse(await readFile("config/gallery.json", "utf8"));
 if (config.portfolioUrl !== "https://okorion.github.io/")
@@ -12,6 +12,21 @@ const root = new URL("../../", import.meta.url);
 const routes = new Map([
   ["/", ["scripts/gallery/scene.html", "text/html"]],
   ["/scene.mjs", ["scripts/gallery/scene.mjs", "text/javascript"]],
+  ["/font.woff2", ["assets/fonts/PretendardVariable.woff2", "font/woff2"]],
+  [
+    "/RoundedBoxGeometry.mjs",
+    [
+      "node_modules/three/examples/jsm/geometries/RoundedBoxGeometry.js",
+      "text/javascript",
+    ],
+  ],
+  [
+    "/RoomEnvironment.mjs",
+    [
+      "node_modules/three/examples/jsm/environments/RoomEnvironment.js",
+      "text/javascript",
+    ],
+  ],
   [
     "/three.mjs",
     ["node_modules/three/build/three.module.js", "text/javascript"],
@@ -72,6 +87,33 @@ try {
       throw new Error("Unexpected portfolio redirect");
     await page.locator('[data-default-view="portfolio"]').waitFor();
     await page.evaluate(() => document.fonts.ready);
+    const loadedFonts = await page.evaluate(
+      async () =>
+        (
+          await document.fonts.load(
+            '750 32px "Pretendard Variable"',
+            "도구를 만들고, 사용 경험을 다듬습니다.",
+          )
+        ).length,
+    );
+    if (!loadedFonts) throw new Error("Portfolio webfont is missing");
+    const cdp = await context.newCDPSession(page);
+    await cdp.send("DOM.enable");
+    await cdp.send("CSS.enable");
+    const { root: documentNode } = await cdp.send("DOM.getDocument");
+    const { nodeId } = await cdp.send("DOM.querySelector", {
+      nodeId: documentNode.nodeId,
+      selector: ".hero__summary",
+    });
+    const { fonts } = await cdp.send("CSS.getPlatformFontsForNode", { nodeId });
+    if (
+      !fonts.length ||
+      fonts.some(
+        (font) => !font.isCustomFont || !font.familyName.includes("Pretendard"),
+      )
+    )
+      throw new Error("Portfolio text used a fallback font");
+    await cdp.detach();
     await page.waitForFunction(() =>
       [...document.images].every((i) => i.complete && i.naturalWidth > 0),
     );
@@ -101,6 +143,17 @@ try {
           url: config.portfolioUrl,
           viewport: { width: 1184, height: 760 },
           scripts,
+          typography: {
+            family: "Pretendard Variable",
+            sampleSelector: ".hero__summary",
+            sampleFonts: fonts.map(
+              ({ familyName, isCustomFont, glyphCount }) => ({
+                familyName,
+                isCustomFont,
+                glyphCount,
+              }),
+            ),
+          },
           htmlSha256: createHash("sha256").update(html).digest("hex"),
           sha256: createHash("sha256").update(png).digest("hex"),
           darkSha256: createHash("sha256").update(darkPng).digest("hex"),
@@ -112,53 +165,79 @@ try {
   }
   const errors = [];
   page.on("pageerror", (e) => errors.push(e.message));
+  const layoutAnchors = new Map();
   for (const variant of variants)
-    for (const theme of ["light", "dark"])
-      for (const mobile of [false, true]) {
-        const size = mobile
-          ? { width: 900, height: 900 }
-          : { width: 1600, height: 700 };
-        await page.setViewportSize(size);
-        await page.goto(
-          `http://127.0.0.1:${port}/?variant=${variant}&theme=${theme}&mobile=${mobile}`,
-          { waitUntil: "networkidle" },
-        );
-        await page.waitForFunction(
-          () => window.galleryReady,
-          {},
-          { timeout: 60000 },
-        );
-        const labelsFit = await page.locator(".label").evaluateAll((labels) =>
-          labels.every((label) => {
-            const r = label.getBoundingClientRect();
-            return (
-              r.left >= 0 &&
-              r.top >= 0 &&
-              r.right <= innerWidth &&
-              r.bottom <= innerHeight
+    for (const style of stylesFor(variant))
+      for (const theme of ["light", "dark"])
+        for (const mobile of [false, true]) {
+          const size = mobile
+            ? { width: 900, height: 900 }
+            : { width: 1600, height: 700 };
+          await page.setViewportSize(size);
+          await page.goto(
+            `http://127.0.0.1:${port}/?variant=${variant}&style=${style}&theme=${theme}&mobile=${mobile}&sectionLabels=${config.showSectionLabels === true}`,
+            { waitUntil: "networkidle" },
+          );
+          await page.waitForFunction(
+            () => window.galleryReady,
+            {},
+            { timeout: 60000 },
+          );
+          const ready = await page.evaluate(() => window.galleryReady);
+          const labelsFit = ready.labelsFit;
+          if (!ready.decorFits)
+            throw new Error(
+              `Clipped decoration: ${variant}/${style}/${mobile}`,
             );
-          }),
-        );
-        if (!labelsFit)
-          throw new Error(`Clipped labels in ${variant}/${theme}/${mobile}`);
-        if (errors.length)
-          throw new Error(`Scene failed: ${errors.join("; ")}`);
-        const filename = `${variant}${mobile ? "-mobile" : ""}-${theme}.png`;
-        await page.screenshot({
-          path: `assets/gallery/${filename}`,
-          animations: "disabled",
-        });
-        console.log(`Rendered ${filename}`);
-      }
+          if (
+            !config.showSectionLabels &&
+            JSON.stringify(ready.labelTexts) !== '["okorion.github.io"]'
+          )
+            throw new Error(
+              `Unexpected visible nameplate: ${variant}/${style}`,
+            );
+          const layoutKey = `${variant}/${theme}/${mobile}`;
+          const anchors = JSON.stringify(ready.anchors);
+          if (style === "simple") layoutAnchors.set(layoutKey, anchors);
+          else if (
+            variant !== "pavilion" &&
+            layoutAnchors.get(layoutKey) !== anchors
+          )
+            throw new Error(`Finish changed exhibit placement: ${layoutKey}`);
+          if (!labelsFit)
+            throw new Error(`Clipped labels in ${variant}/${theme}/${mobile}`);
+          if (errors.length)
+            throw new Error(`Scene failed: ${errors.join("; ")}`);
+          const filename = `${assetName(variant, style)}${mobile ? "-mobile" : ""}-${theme}.png`;
+          await page.screenshot({
+            path: `assets/gallery/${filename}`,
+            animations: "disabled",
+          });
+          console.log(`Rendered ${filename}`);
+        }
+  // Verify that optional section nameplates remain available without publishing them.
+  await page.goto(
+    `http://127.0.0.1:${port}/?variant=wall&style=simple&theme=light&mobile=false&sectionLabels=true`,
+  );
+  await page.waitForFunction(() => window.galleryReady);
+  const restoredLabels = await page.evaluate(
+    () => window.galleryReady.labelTexts,
+  );
+  if (restoredLabels.length !== 3 || !restoredLabels.includes("활동 기록"))
+    throw new Error("Optional section nameplates could not be restored");
   // Optional review evidence remains outside the product repository.
   if (process.env.GALLERY_EVIDENCE_DIR) {
     await mkdir(process.env.GALLERY_EVIDENCE_DIR, { recursive: true });
     const { join } = await import("node:path");
     for (const variant of variants)
-      await copyFile(
-        `assets/gallery/${variant}-light.png`,
-        join(process.env.GALLERY_EVIDENCE_DIR, `${variant}-light.png`),
-      );
+      for (const style of stylesFor(variant))
+        await copyFile(
+          `assets/gallery/${assetName(variant, style)}-light.png`,
+          join(
+            process.env.GALLERY_EVIDENCE_DIR,
+            `${assetName(variant, style)}-light.png`,
+          ),
+        );
   }
 } finally {
   await browser?.close();

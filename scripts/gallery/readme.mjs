@@ -1,11 +1,18 @@
 import { readFile, writeFile } from "node:fs/promises";
-import { variants } from "./model.mjs";
+import { variants, styles, assetName } from "./model.mjs";
 const config = JSON.parse(await readFile("config/gallery.json", "utf8"));
 const selection = process.argv[2];
 if (selection && !variants.includes(selection))
-  throw new Error("Choose wall (C), gallery (A), or island (B)");
-if (selection) {
-  config.variant = selection;
+  throw new Error("Choose wall (C), gallery (A), island (B), or pavilion (D)");
+const style = process.argv[3];
+if (style && !styles.includes(style))
+  throw new Error("Choose simple or advanced");
+config.variant = selection || config.variant;
+config.style =
+  config.variant === "pavilion"
+    ? "advanced"
+    : style || config.style || "simple";
+if (selection || style) {
   await writeFile(
     "config/gallery.json",
     JSON.stringify(config, null, 2) + "\n",
@@ -13,7 +20,8 @@ if (selection) {
 }
 if (!variants.includes(config.variant))
   throw new Error("Invalid gallery variant");
-const v = config.variant;
+if (!styles.includes(config.style)) throw new Error("Invalid gallery style");
+const v = assetName(config.variant, config.style);
 await writeFile(
   "README.md",
   `<a href="https://okorion.github.io/">

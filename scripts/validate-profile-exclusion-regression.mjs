@@ -524,3 +524,14 @@ console.log(
 console.log(
   "Path traversal, symlink/unsupported entries, catalog rehash tampering, and source drift were rejected.",
 );
+
+assertProfileSurfacePolicy(
+  [["docs/gallery-preview.md", '<img src="../assets/gallery/pavilion-light.png" />']],
+  "approved parent-relative gallery preview",
+);
+for (const target of ["../../assets/gallery/pavilion-light.png", "../private.png", "../assets/gallery/missing.png"]) {
+  expectBlocked(
+    [["docs/gallery-preview.md", `<img src="${target}" />`]],
+    `unapproved parent-relative preview (${target})`,
+  );
+}

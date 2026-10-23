@@ -1,4 +1,9 @@
-export const variants = ["wall", "gallery", "island"];
+export const variants = ["wall", "gallery", "island", "pavilion"];
+export const styles = ["simple", "advanced"];
+export const stylesFor = (variant) =>
+  variant === "pavilion" ? ["advanced"] : styles;
+export const assetName = (variant, style) =>
+  `${variant}${variant !== "pavilion" && style === "advanced" ? "-advanced" : ""}`;
 export const shapes = ["sphere", "cube", "torus", "arch", "pyramid"];
 export const colors = {
   blue: "#3569e8",

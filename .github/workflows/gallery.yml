@@ -3,9 +3,14 @@ on:
   workflow_dispatch:
     inputs:
       variant:
-        description: "Keep current, C wall, A gallery, or B island"
+        description: "Layout: C wall, A gallery, B island, D pavilion"
         type: choice
-        options: [keep, wall, gallery, island]
+        options: [keep, wall, gallery, island, pavilion]
+        default: keep
+      style:
+        description: "Finish: simple or advanced (D always advanced)"
+        type: choice
+        options: [keep, simple, advanced]
         default: keep
   issues:
     types: [opened, edited, closed, reopened, deleted]
@@ -54,12 +59,15 @@ jobs:
         if: steps.changes.outputs.changed == 'true'
         env:
           VARIANT: ${{ inputs.variant || 'keep' }}
+          STYLE: ${{ inputs.style || 'keep' }}
         run: |
           if [ "$VARIANT" = keep ]; then
-            npm run gallery:readme
-          else
-            npm run gallery:readme -- "$VARIANT"
+            VARIANT=$(node -p "JSON.parse(require('fs').readFileSync('config/gallery.json')).variant")
           fi
+          if [ "$STYLE" = keep ]; then
+            STYLE=$(node -p "JSON.parse(require('fs').readFileSync('config/gallery.json')).style || 'simple'")
+          fi
+          npm run gallery:readme -- "$VARIANT" "$STYLE"
       - name: Validate complete result
         if: steps.changes.outputs.changed == 'true'
         run: npm test

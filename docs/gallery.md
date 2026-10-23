@@ -2,20 +2,36 @@
 
 README에는 전시관 이미지와 포트폴리오·참여 링크를 표시합니다. 이미지를 누르면 [포트폴리오](https://okorion.github.io/)로 이동합니다.
 
+[일곱 조합 비교 보기](gallery-preview.md)
+
 ## 디자인 교체
 
-[Refresh portfolio gallery](https://github.com/okorion/okorion/actions/workflows/gallery.yml)에서 **Run workflow → variant → Run workflow**를 선택합니다. 선택한 구성이 `config/gallery.json`에 저장되고, 이후 자동 갱신에도 유지됩니다.
+[Refresh portfolio gallery](https://github.com/okorion/okorion/actions/workflows/gallery.yml)에서 **Run workflow → variant(배치)·style(마감) → Run workflow**를 선택합니다. 선택은 `config/gallery.json`에 저장되어 자동 갱신 후에도 유지됩니다. `keep`은 현재 선택을 유지합니다.
 
-| 선택 | 구성 | 미리보기 |
+| 배치 | Simple | Advanced |
 | --- | --- | --- |
-| `wall` · C 기본 | 한 벽에 실제 화면·활동 부조·방문자 선반 배치 | [C 이미지](../assets/gallery/wall-light.png) |
-| `gallery` · A | 작은 전시실과 작품 받침대 | [A 이미지](../assets/gallery/gallery-light.png) |
-| `island` · B | 활동량에 따라 높이가 달라지는 부유 섬 | [B 이미지](../assets/gallery/island-light.png) |
-| `keep` | 현재 선택을 유지하며 내용만 갱신 | |
+| A · `gallery` | [작은 전시실과 작품 받침대](../assets/gallery/gallery-light.png) | [유리 프레임·금속 링·간접 조명](../assets/gallery/gallery-advanced-light.png) |
+| B · `island` | [활동 지형을 담은 부유 섬](../assets/gallery/island-light.png) | [매끄러운 곡면·금속 테두리·푸른 조명](../assets/gallery/island-advanced-light.png) |
+| C · `wall` · 기본 | [한 벽에 화면·활동·방문자 선반 배치](../assets/gallery/wall-light.png) | [유리 벽·금속 프레임·선반 조명](../assets/gallery/wall-advanced-light.png) |
+| D · `pavilion` | — | [곡선 무대·유리 파티션·금속 큐브](../assets/gallery/pavilion-light.png) |
 
-세 구성 모두 데스크톱·모바일, 라이트·다크 PNG를 함께 생성합니다. GitHub README는 `<picture>`로 화면 폭과 브라우저 색상 선호에 맞는 이미지를 선택합니다. GitHub 앱의 이미지 선택·캐시 동작은 앱에 따라 다를 수 있습니다.
+A·B·C 각각 Simple과 Advanced의 카메라와 전시물 위치는 같습니다. Advanced는 D 시안의 유리·금속·곡선·조명을 각 배치에 적용한 마감입니다. 바닥 화분은 모두 제거했습니다. D · `pavilion`은 곡선 무대·조형물·유리 파티션을 갖춘 별도 디자인으로 유지합니다. D는 Advanced 마감을 사용합니다. 현재 기본값은 C Simple입니다.
 
-로컬 교체는 `npm run gallery:readme -- wall`로 실행합니다. `gallery` 또는 `island`로 바꾸면 README와 설정만 교체하므로 이미지를 다시 렌더링하지 않아도 됩니다.
+일곱 조합 모두 데스크톱·모바일, 라이트·다크 PNG를 생성합니다. GitHub README는 `<picture>`로 화면 폭과 브라우저 색상 선호에 맞는 이미지를 선택합니다. GitHub 앱의 이미지 선택·캐시 동작은 앱에 따라 다를 수 있습니다.
+
+```sh
+npm run gallery:readme -- gallery simple    # A Simple
+npm run gallery:readme -- gallery advanced  # A Advanced
+npm run gallery:readme -- island simple     # B Simple
+npm run gallery:readme -- island advanced   # B Advanced
+npm run gallery:readme -- wall simple       # C Simple
+npm run gallery:readme -- wall advanced     # C Advanced
+npm run gallery:readme -- pavilion advanced # D
+```
+
+로컬 교체는 README와 설정만 바꾸므로 이미지를 다시 렌더링하지 않아도 됩니다. GitHub에 반영하려면 변경을 게시하거나 위 Actions를 실행합니다.
+
+이름표는 `okorion.github.io`만 표시합니다. `config/gallery.json`의 `showSectionLabels`를 `true`로 바꾸고 다시 렌더링하면 활동 기록·방문자 전시 이름표가 복원됩니다. 사이트와 전시관은 [Pretendard Variable 1.3.9](https://github.com/orioncactus/pretendard/releases/tag/v1.3.9) 원본을 직접 제공하며, `assets/fonts/OFL.txt`에 라이선스를 보존합니다. 캡처할 때 `document.fonts.load()` 이후 Chrome의 실제 글리프 렌더링 폰트도 확인합니다. 대체 글꼴이 감지되면 생성을 중단합니다. 확인한 폰트와 대상 요소는 `source.json`의 `typography`에 기록합니다.
 
 ## 이미지에 들어가는 실제 데이터
 

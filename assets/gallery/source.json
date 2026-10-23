@@ -5,9 +5,20 @@
     "height": 760
   },
   "scripts": [
-    "/assets/index-B3K4J7yp.js"
+    "/assets/index-CgvjI2TK.js"
   ],
-  "htmlSha256": "89790588a9c1034562b091244e02fa964c922a7094657fa39bf08e31e8ce05c5",
-  "sha256": "1591491220325897861ab1e998f15c60db7a078639681efe2f03ebdf486be69f",
-  "darkSha256": "dd66afa0745a4f07f0295654cb8c442d58a57e3ce4baf303877b5b315ead565c"
+  "typography": {
+    "family": "Pretendard Variable",
+    "sampleSelector": ".hero__summary",
+    "sampleFonts": [
+      {
+        "familyName": "Pretendard Variable",
+        "isCustomFont": true,
+        "glyphCount": 76
+      }
+    ]
+  },
+  "htmlSha256": "d171b26f714e3162150372b96f267dc464afabd5a22c4b017daf643cab5bbc4d",
+  "sha256": "4ec0270cb5d05bd41ead6e500e6d8f51a0fce47df61c3638332bc5e3dfe8383c",
+  "darkSha256": "30a7c2fc5fd8bbdead89d7607ac0311f87a4167eeac92816083d993af8a90ee5"
 }

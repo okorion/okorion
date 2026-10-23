@@ -2,5 +2,7 @@
   "variant": "wall",
   "portfolioUrl": "https://okorion.github.io/",
   "maxVisitors": 9,
-  "contributionWeeks": 26
+  "contributionWeeks": 26,
+  "style": "simple",
+  "showSectionLabels": false
 }

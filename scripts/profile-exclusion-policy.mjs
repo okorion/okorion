@@ -1,5 +1,5 @@
 import { lstat, readFile, readdir } from "node:fs/promises";
-import { extname, isAbsolute, join, relative, sep } from "node:path";
+import { extname, isAbsolute, join, relative, sep, posix } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   canonicalizeGfmVisibleText,
@@ -83,7 +83,7 @@ const allowedProfileImageTargets = new Set(
   "assets/hero-light.svg assets/hero-dark.svg assets/hero-mobile-light.svg assets/hero-mobile-dark.svg".split(" "),
 );
 // The gallery contains only a fixed public-site capture and generated scenes.
-export const galleryImagePaths = ["assets/gallery/portfolio.png", "assets/gallery/portfolio-dark.png", ...["wall", "gallery", "island"].flatMap(variant =>
+export const galleryImagePaths = ["assets/gallery/portfolio.png", "assets/gallery/portfolio-dark.png", ...["wall", "gallery", "island", "wall-advanced", "gallery-advanced", "island-advanced", "pavilion"].flatMap(variant =>
   ["light", "dark"].flatMap(theme => [`assets/gallery/${variant}-${theme}.png`, `assets/gallery/${variant}-mobile-${theme}.png`]))];
 for (const path of galleryImagePaths) allowedProfileImageTargets.add(path);
 
@@ -242,6 +242,7 @@ export function classifyProfileSurfacePath(candidatePath) {
     return githubClassification;
   }
   if (galleryImagePaths.includes(relativePath)) return "generated-gallery-image";
+  if (relativePath === "assets/fonts/PretendardVariable.woff2") return "licensed-gallery-font";
   if (!textExtensions.has(extname(relativePath).toLocaleLowerCase("en-US"))) {
     throw new Error(`active profile surface type is unsupported (${relativePath})`);
   }
@@ -385,9 +386,13 @@ function assertAllowedProfileImageTarget(rawTarget, surfaceLabel, label) {
   ) {
     throw new Error(`${label}: external or embedded image is forbidden in ${surfaceLabel}`);
   }
-  const relativeTarget = assertSafeProfileRelativePath(
-    target.startsWith("./") ? target.slice(2) : target,
-  );
+  const canonicalTarget = target.startsWith("./") ? target.slice(2) : target;
+  // Documentation may refer to a generated asset in the parent directory.
+  // Resolve within the repository, then retain both traversal and exact-asset checks.
+  const resolvedTarget = canonicalTarget.startsWith("../") && surfaceLabel.includes("/")
+    ? posix.normalize(posix.join(posix.dirname(surfaceLabel), canonicalTarget))
+    : canonicalTarget;
+  const relativeTarget = assertSafeProfileRelativePath(resolvedTarget);
   if (!allowedProfileImageTargets.has(relativeTarget)) {
     throw new Error(
       `${label}: image target is not an approved generated asset in ${surfaceLabel} (${rawTarget})`,

@@ -52,6 +52,7 @@ for (const filePath of await collectFiles(repositoryRoot, [])) {
   const relativePath = relative(repositoryRoot, filePath).split(sep).join("/");
   if (
     relativePath === scannerPath ||
+    relativePath === "assets/fonts/PretendardVariable.woff2" ||
     skippedBinaryExtensions.has(extname(relativePath).toLowerCase())
   ) {
     continue;
