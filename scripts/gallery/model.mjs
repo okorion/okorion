@@ -1,5 +1,9 @@
 export const variants = ["wall", "gallery", "island", "pavilion"];
 export const styles = ["simple", "advanced"];
+export const imageSize = (variant, mobile) =>
+  mobile
+    ? { width: 900, height: variant === "wall" ? 1400 : 900 }
+    : { width: 1600, height: 700 };
 export const stylesFor = (variant) =>
   variant === "pavilion" ? ["advanced"] : styles;
 export const assetName = (variant, style) =>

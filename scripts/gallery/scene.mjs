@@ -9,6 +9,7 @@ const labelTexts = [];
 const showSectionLabels = params.get("sectionLabels") === "true";
 const dark = params.get("theme") === "dark";
 const mobile = params.get("mobile") === "true";
+const portrait = mobile && variant === "wall";
 const data = await (await fetch("/data.json")).json();
 const fontResponse = await fetch("/font.woff2");
 if (!fontResponse.ok) throw new Error("Gallery font request failed");
@@ -70,10 +71,10 @@ const camera = new T.OrthographicCamera(
   0.1,
   100,
 );
-const target = new T.Vector3(0, mobile ? 3.55 : 2, 0);
+const target = new T.Vector3(0, portrait ? 6.5 : mobile ? 3.55 : 2, 0);
 camera.position.set(
   variant === "wall" ? 2.6 : variant === "pavilion" ? 4.8 : 7,
-  mobile ? 8 : 7.5,
+  portrait ? 10 : mobile ? 8 : 7.5,
   23,
 );
 camera.lookAt(target);
@@ -372,10 +373,10 @@ if (variant === "island") {
   box(mobile ? 8.8 : 16.7, 0.18, 4.8, 0, -0.12, 0.2, palette.wall);
 if (variant === "wall") {
   if (mobile) {
-    box(8.7, 7.7, 0.24, 0, 3.75, -0.35);
-    display(0, 5.45, -0.05, 6.7);
-    calendar(-2.25, 1.65, -0.05, 0.125, 0.014);
-    niches(2.25, 1.72, -0.03, 0.85);
+    box(8.7, 13.3, 0.24, 0, 6.55, -0.35);
+    display(0, 10.5, -0.05, 7.5);
+    calendar(0, 6.65, -0.05, 0.255, 0.026);
+    niches(0, 2.9, -0.03, 1.48);
   } else {
     box(16.5, 4.9, 0.24, 0, 2.35, -0.35);
     display(0.1, 2.5, -0.06, 5.5);
@@ -540,8 +541,8 @@ if (advanced) {
   // Architectural lighting follows each layout; all exhibit anchors stay fixed.
   if (variant === "wall") {
     const w = mobile ? 8.7 : 16.5;
-    const h = mobile ? 7.7 : 4.9;
-    const y = mobile ? 3.75 : 2.35;
+    const h = mobile ? 13.3 : 4.9;
+    const y = mobile ? 6.55 : 2.35;
     accent(w - 0.18, 0.028, 0.035, 0, y + h / 2 - 0.1, -0.2);
     for (const x of [-w / 2 + 0.06, w / 2 - 0.06]) {
       const trim = box(0.035, h - 0.14, 0.04, x, y, -0.2);

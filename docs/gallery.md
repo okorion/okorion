@@ -2,6 +2,10 @@
 
 README에는 전시관 이미지와 포트폴리오·참여 링크를 표시합니다. 이미지를 누르면 [포트폴리오](https://okorion.github.io/)로 이동합니다.
 
+기본 C Wall은 세로형입니다. 포트폴리오 화면, 활동 기록, 방문자 선반을 위에서 아래로 배치한 900×1400 이미지를 데스크톱과 모바일에 함께 표시합니다. GitHub 본문 폭 안에서 각 전시물이 차지하는 너비를 넓혔습니다. 라이트·다크 전환과 자동 갱신에도 이 배치를 유지합니다.
+
+`config/gallery.json`의 `orientation`을 `landscape`로 바꾸고 `npm run gallery:readme`를 실행하면 데스크톱에서 기존 1600×700 가로형을 사용합니다. 모바일 C Wall은 세로형을 유지합니다. `orientation` 선택은 C Wall에 적용되며 A·B·D의 기존 배치는 유지합니다.
+
 [일곱 조합 비교 보기](gallery-preview.md)
 
 ## 디자인 교체
@@ -17,7 +21,7 @@ README에는 전시관 이미지와 포트폴리오·참여 링크를 표시합�
 
 A·B·C 각각 Simple과 Advanced의 카메라와 전시물 위치는 같습니다. Advanced는 D 시안의 유리·금속·곡선·조명을 각 배치에 적용한 마감입니다. 바닥 화분은 모두 제거했습니다. D · `pavilion`은 곡선 무대·조형물·유리 파티션을 갖춘 별도 디자인으로 유지합니다. D는 Advanced 마감을 사용합니다. 현재 기본값은 C Simple입니다.
 
-일곱 조합 모두 데스크톱·모바일, 라이트·다크 PNG를 생성합니다. GitHub README는 `<picture>`로 화면 폭과 브라우저 색상 선호에 맞는 이미지를 선택합니다. GitHub 앱의 이미지 선택·캐시 동작은 앱에 따라 다를 수 있습니다.
+일곱 조합 모두 데스크톱·모바일, 라이트·다크 PNG를 생성합니다. GitHub README는 `<picture>`로 화면 폭과 브라우저 색상 선호에 맞는 이미지를 선택합니다. C Wall의 기본 세로형은 화면 폭과 관계없이 같은 세로 배치를 사용합니다. GitHub 앱의 이미지 선택·캐시 동작은 앱에 따라 다를 수 있습니다.
 
 ```sh
 npm run gallery:readme -- gallery simple    # A Simple

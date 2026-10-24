@@ -2,7 +2,7 @@ import { chromium } from "playwright";
 import { createServer } from "node:http";
 import { readFile, mkdir, writeFile, copyFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
-import { variants, stylesFor, assetName, validateData } from "./model.mjs";
+import { variants, stylesFor, assetName, imageSize, validateData } from "./model.mjs";
 
 const config = JSON.parse(await readFile("config/gallery.json", "utf8"));
 if (config.portfolioUrl !== "https://okorion.github.io/")
@@ -170,9 +170,7 @@ try {
     for (const style of stylesFor(variant))
       for (const theme of ["light", "dark"])
         for (const mobile of [false, true]) {
-          const size = mobile
-            ? { width: 900, height: 900 }
-            : { width: 1600, height: 700 };
+          const size = imageSize(variant, mobile);
           await page.setViewportSize(size);
           await page.goto(
             `http://127.0.0.1:${port}/?variant=${variant}&style=${style}&theme=${theme}&mobile=${mobile}&sectionLabels=${config.showSectionLabels === true}`,
