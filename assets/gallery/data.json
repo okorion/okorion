@@ -782,5 +782,13 @@
       }
     ]
   ],
-  "artworks": []
+  "artworks": [
+    {
+      "issue": 20,
+      "authorId": 97646070,
+      "shape": "sphere",
+      "color": "blue",
+      "createdAt": "2026-10-24T16:55:38Z"
+    }
+  ]
 }
