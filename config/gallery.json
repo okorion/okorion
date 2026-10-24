@@ -4,5 +4,6 @@
   "maxVisitors": 9,
   "contributionWeeks": 26,
   "style": "simple",
+  "orientation": "portrait",
   "showSectionLabels": false
 }

@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
-import { variants, stylesFor, assetName, validateData } from "./model.mjs";
+import { variants, stylesFor, assetName, imageSize, validateData } from "./model.mjs";
 const config = JSON.parse(await readFile("config/gallery.json", "utf8"));
 assert.ok(variants.includes(config.variant));
 assert.ok(stylesFor(config.variant).includes(config.style));
@@ -17,8 +17,9 @@ for (const variant of variants)
         const p = `assets/gallery/${assetName(variant, style)}${mobile ? "-mobile" : ""}-${theme}.png`,
           b = await readFile(p);
         assert.equal(b.subarray(0, 8).toString("hex"), "89504e470d0a1a0a", p);
-        assert.equal(b.readUInt32BE(16), mobile ? 900 : 1600, p);
-        assert.equal(b.readUInt32BE(20), mobile ? 900 : 700, p);
+        const size = imageSize(variant, mobile);
+        assert.equal(b.readUInt32BE(16), size.width, p);
+        assert.equal(b.readUInt32BE(20), size.height, p);
         assert.ok(b.length > 10000 && b.length < 3000000, p);
       }
 const source = JSON.parse(await readFile("assets/gallery/source.json", "utf8"));
@@ -37,12 +38,23 @@ assert.equal(
   source.darkSha256,
 );
 const readme = await readFile("README.md", "utf8");
-for (const suffix of ["light", "dark", "mobile-light", "mobile-dark"])
+const portrait = config.orientation === "portrait" && config.variant === "wall";
+const suffixes = portrait
+  ? ["mobile-light", "mobile-dark"]
+  : ["light", "dark", "mobile-light", "mobile-dark"];
+for (const suffix of suffixes)
   assert.ok(
     readme.includes(
       `./assets/gallery/${assetName(config.variant, config.style)}-${suffix}.png`,
     ),
   );
+if (portrait) {
+  const v = assetName(config.variant, config.style);
+  assert.ok(readme.includes(`src="./assets/gallery/${v}-mobile-light.png"`));
+  assert.ok(
+    readme.includes(`media="(prefers-color-scheme: dark)" srcset="./assets/gallery/${v}-mobile-dark.png"`),
+  );
+}
 assert.ok(readme.includes("issues/new?template=gallery.yml"));
 assert.ok(readme.length < 1700);
 assert.equal(source.typography?.family, "Pretendard Variable");
