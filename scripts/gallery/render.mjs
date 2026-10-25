@@ -6,6 +6,8 @@ import { variants, stylesFor, assetName, imageSize, validateData } from "./model
 import { archiveParts, archiveImageSize, objects } from "./catalog.mjs";
 
 const config = JSON.parse(await readFile("config/gallery.json", "utf8"));
+const hiddenPortfolioSelectors = [".hero__summary", ".project-row__description", ".project-media figcaption"];
+const portfolioCaptureStyle = `${hiddenPortfolioSelectors.join(",")}{display:none!important}`;
 if (config.portfolioUrl !== "https://okorion.github.io/")
   throw new Error("Only the public portfolio is allowed");
 validateData(JSON.parse(await readFile("assets/gallery/data.json", "utf8")));
@@ -106,6 +108,7 @@ try {
     if (!page.url().startsWith(config.portfolioUrl))
       throw new Error("Unexpected portfolio redirect");
     await page.locator('[data-default-view="portfolio"]').waitFor();
+    await page.addStyleTag({ content: portfolioCaptureStyle });
     await page.evaluate(() => document.fonts.ready);
     const loadedFonts = await page.evaluate(
       async () =>
@@ -123,7 +126,7 @@ try {
     const { root: documentNode } = await cdp.send("DOM.getDocument");
     const { nodeId } = await cdp.send("DOM.querySelector", {
       nodeId: documentNode.nodeId,
-      selector: ".hero__summary",
+      selector: ".project-row h3 a",
     });
     const { fonts } = await cdp.send("CSS.getPlatformFontsForNode", { nodeId });
     if (
@@ -165,7 +168,7 @@ try {
           scripts,
           typography: {
             family: "Pretendard Variable",
-            sampleSelector: ".hero__summary",
+            sampleSelector: ".project-row h3 a",
             sampleFonts: fonts.map(
               ({ familyName, isCustomFont, glyphCount }) => ({
                 familyName,
@@ -175,6 +178,7 @@ try {
             ),
           },
           htmlSha256: createHash("sha256").update(html).digest("hex"),
+          presentation: { hiddenSelectors: hiddenPortfolioSelectors },
           sha256: createHash("sha256").update(png).digest("hex"),
           darkSha256: createHash("sha256").update(darkPng).digest("hex"),
         },
@@ -187,6 +191,7 @@ try {
     await page.setViewportSize({ width: 390, height: 760 });
     await page.goto(config.portfolioUrl, { waitUntil: "networkidle", timeout: 60000 });
     await page.locator('[data-default-view="portfolio"]').waitFor();
+    await page.addStyleTag({ content: portfolioCaptureStyle });
     const mobileHashes = new Map();
     for (const theme of ["light", "dark"]) {
       const view = page.locator('[data-default-view="portfolio"]');

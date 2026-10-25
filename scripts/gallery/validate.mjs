@@ -99,7 +99,8 @@ if (portrait) {
 assert.ok(readme.includes("issues/new?template=gallery.yml"));
 assert.ok(readme.length < 2800);
 assert.equal(source.typography?.family, "Pretendard Variable");
-assert.equal(source.typography.sampleSelector, ".hero__summary");
+assert.equal(source.typography.sampleSelector, ".project-row h3 a");
+assert.deepEqual(source.presentation?.hiddenSelectors, [".hero__summary", ".project-row__description", ".project-media figcaption"]);
 assert.ok(
   source.typography.sampleFonts.length > 0 &&
     source.typography.sampleFonts.every(
