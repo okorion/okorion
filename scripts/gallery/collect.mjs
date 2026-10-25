@@ -7,6 +7,7 @@ if (!token)
     "A GitHub token is required to read public guestbook issues",
   );
 const config = JSON.parse(await readFile("config/gallery.json", "utf8"));
+if (config.maxVisitors !== 6 || config.retentionDays !== 3) throw new Error("Invalid guestbook policy");
 async function api(path, options = {}) {
   const res = await fetch(`https://api.github.com/${path}`, {
     ...options,

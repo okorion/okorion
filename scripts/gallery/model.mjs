@@ -31,6 +31,25 @@ const colorChoices = new Map([
 ]);
 const objectChoices = new Map(objects.map(({ id, label }) => [`${label} (${id})`, id]));
 export const assetForArtwork = (artwork) => artwork.asset || legacyObjectMap.get(artwork.shape);
+export const guestbookCapacity = 6;
+export const artworkLifetimeMs = 3 * 24 * 60 * 60 * 1000;
+export const artworkExpiresAt = (artwork) => new Date(Date.parse(artwork.createdAt) + artworkLifetimeMs).toISOString();
+export const formatKoreanTime = (value) => new Intl.DateTimeFormat("sv-SE", {
+  timeZone: "Asia/Seoul", year: "numeric", month: "2-digit", day: "2-digit",
+  hour: "2-digit", minute: "2-digit", hourCycle: "h23",
+}).format(new Date(value)).replaceAll("-", ".");
+
+export function activeArtworks(artworks, now = Date.now()) {
+  return artworks.filter((artwork) => {
+    const createdAt = Date.parse(artwork.createdAt);
+    return Number.isFinite(createdAt) && createdAt <= now && now - createdAt < artworkLifetimeMs;
+  }).sort((a, b) => b.issue - a.issue).slice(0, guestbookCapacity);
+}
+
+export function guestbookSlots(artworks, now = Date.now()) {
+  const active = activeArtworks(artworks, now);
+  return [...active, ...Array.from({ length: guestbookCapacity - active.length }, () => null)];
+}
 
 export function parseArtwork(issue) {
   if (
@@ -69,15 +88,15 @@ export function parseArtwork(issue) {
   };
 }
 
-export function selectArtworks(issues, limit = 9) {
+export function selectArtworks(issues, limit = guestbookCapacity, now = Date.now()) {
+  if (!Number.isInteger(limit) || limit < 1 || limit > guestbookCapacity) throw new Error("Invalid guestbook capacity");
   const byAuthor = new Map();
   for (const artwork of issues
     .map(parseArtwork)
     .filter(Boolean)
     .sort((a, b) => a.issue - b.issue))
     byAuthor.set(artwork.authorId, artwork);
-  return [...byAuthor.values()]
-    .sort((a, b) => b.issue - a.issue)
+  return activeArtworks([...byAuthor.values()], now)
     .slice(0, limit)
     .reverse();
 }
@@ -109,7 +128,7 @@ export function validateData(data) {
     !Array.isArray(data.weeks) ||
     data.weeks.length > 26 ||
     !Array.isArray(data.artworks) ||
-    data.artworks.length > 9
+    data.artworks.length > guestbookCapacity
   )
     throw new Error("Invalid gallery data");
   for (const week of data.weeks)
@@ -121,7 +140,8 @@ export function validateData(data) {
       (item.asset ? !objectIds.includes(item.asset) : (!shapes.includes(item.shape) || !Object.hasOwn(colors, item.color))) ||
       (item.shape !== undefined && (!shapes.includes(item.shape) || !Object.hasOwn(colors, item.color))) ||
       !Number.isSafeInteger(item.issue) ||
-      !Number.isSafeInteger(item.authorId)
+      !Number.isSafeInteger(item.authorId) ||
+      !Number.isFinite(Date.parse(item.createdAt))
     )
       throw new Error("Invalid artwork");
   return data;

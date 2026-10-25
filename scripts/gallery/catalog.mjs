@@ -18,5 +18,5 @@ export const legacyObjectMap = new Map([
 export const archiveParts = ["portfolio", "guestbook"];
 export const archiveImageSize = (part, mobile) => ({
   width: mobile ? 700 : 1200,
-  height: part === "portfolio" ? (mobile ? 1300 : 590) : (mobile ? 2340 : 1500),
+  height: part === "portfolio" ? (mobile ? 1300 : 590) : (mobile ? 1660 : 1100),
 });

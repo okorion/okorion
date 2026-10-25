@@ -62,7 +62,7 @@ const packageText = requiredSurface(surfaceByPath, "package.json");
 
 assertProfileSurfacePolicy(activeSurfaces, "personal project profile policy");
 
-for (const required of ["https://okorion.github.io/", "포트폴리오 둘러보기", "소품으로 인사 남기기", "issues/new?template=gallery.yml"]) {
+for (const required of ["https://okorion.github.io/", "프로젝트 둘러보기", "소품으로 인사 남기기", "issues/new?template=gallery.yml"]) {
   assertIncludes(readme, required, "README.md");
 }
 for (const retired of ["## 대표 프로젝트", "hero-light.svg", "개인 프로젝트 제작 역할", "lab-signal"]) {

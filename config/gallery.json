@@ -1,7 +1,8 @@
 {
   "variant": "archive",
   "portfolioUrl": "https://okorion.github.io/",
-  "maxVisitors": 9,
+  "maxVisitors": 6,
+  "retentionDays": 3,
   "style": "advanced",
   "orientation": "portrait",
   "showSectionLabels": false

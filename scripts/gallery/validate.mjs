@@ -9,7 +9,8 @@ assert.ok(variants.includes(config.variant));
 assert.ok(stylesFor(config.variant).includes(config.style));
 assert.equal(typeof config.showSectionLabels, "boolean");
 assert.equal(config.portfolioUrl, "https://okorion.github.io/");
-assert.equal(config.maxVisitors, 9);
+assert.equal(config.maxVisitors, 6);
+assert.equal(config.retentionDays, 3);
 assert.equal(config.orientation, "portrait");
 validateData(JSON.parse(await readFile("assets/gallery/data.json", "utf8")));
 for (const variant of variants.filter((variant) => variant !== "archive"))
@@ -53,6 +54,10 @@ if (config.variant === "archive") {
   }
   assert.equal((readme.match(/<picture>/g) || []).length, 2);
   assert.ok(readme.includes("### 소품으로 인사 남기기"));
+  assert.ok(readme.includes("### 프로젝트"));
+  assert.ok(!readme.includes("포트폴리오"));
+  assert.ok(readme.includes("작성 시각 (KST)"));
+  assert.ok(readme.includes("README 갱신:"));
   assert.ok(!readme.includes("GitHub 활동"));
   const mobileCapture = await readFile("assets/gallery/portfolio-mobile.png");
   assert.equal(createHash("sha256").update(mobileCapture).digest("hex"), source.mobileSha256);
@@ -97,7 +102,8 @@ if (portrait) {
 }
 }
 assert.ok(readme.includes("issues/new?template=gallery.yml"));
-assert.ok(readme.length < 2800);
+assert.ok(readme.length < 4000);
+assert.ok(Number.isFinite(Date.parse(source.renderedAt)));
 assert.equal(source.typography?.family, "Pretendard Variable");
 assert.equal(source.typography.sampleSelector, ".project-row h3 a");
 assert.deepEqual(source.presentation?.hiddenSelectors, [".hero__summary", ".project-row__description", ".project-media figcaption"]);

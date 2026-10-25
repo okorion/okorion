@@ -2,15 +2,16 @@ import { chromium } from "playwright";
 import { createServer } from "node:http";
 import { readFile, mkdir, writeFile, copyFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
-import { variants, stylesFor, assetName, imageSize, validateData } from "./model.mjs";
+import { variants, stylesFor, assetName, imageSize, validateData, activeArtworks, assetForArtwork } from "./model.mjs";
 import { archiveParts, archiveImageSize, objects } from "./catalog.mjs";
 
 const config = JSON.parse(await readFile("config/gallery.json", "utf8"));
+const snapshotAt = Date.now();
 const hiddenPortfolioSelectors = [".hero__summary", ".project-row__description", ".project-media figcaption"];
 const portfolioCaptureStyle = `${hiddenPortfolioSelectors.join(",")}{display:none!important}`;
 if (config.portfolioUrl !== "https://okorion.github.io/")
   throw new Error("Only the public portfolio is allowed");
-validateData(JSON.parse(await readFile("assets/gallery/data.json", "utf8")));
+const galleryData = validateData(JSON.parse(await readFile("assets/gallery/data.json", "utf8")));
 const root = new URL("../../", import.meta.url);
 const routes = new Map([
   ["/", ["scripts/gallery/scene.html", "text/html"]],
@@ -215,11 +216,11 @@ try {
   if (config.variant === "archive") {
     for (const part of archiveParts) for (const theme of ["light", "dark"]) for (const mobile of [false, true]) {
       await page.setViewportSize(archiveImageSize(part, mobile));
-      await page.goto(`http://127.0.0.1:${port}/archive.html?part=${part}&theme=${theme}&mobile=${mobile}`, { waitUntil: "networkidle" });
+      await page.goto(`http://127.0.0.1:${port}/archive.html?part=${part}&theme=${theme}&mobile=${mobile}&asOf=${snapshotAt}`, { waitUntil: "networkidle" });
       await page.waitForFunction(() => window.galleryReady, {}, { timeout: 60000 });
       const ready = await page.evaluate(() => window.galleryReady);
       if (!ready.labelsFit || !ready.contentFits || errors.length) throw new Error(`Archive rendering failed: ${part}/${theme}/${mobile}: ${errors.join("; ")}`);
-      if (part === "guestbook" && JSON.stringify(ready.objects) !== JSON.stringify(objects.map((object) => object.id))) throw new Error("Archive is missing approved models");
+      if (part === "guestbook" && (ready.slots !== 6 || ready.emptySlots !== 6 - ready.recentEntries || JSON.stringify(ready.objects) !== JSON.stringify(activeArtworks(galleryData.artworks, snapshotAt).map(assetForArtwork)))) throw new Error("Archive guestbook slots differ from active entries");
       const filename = `archive-${part}${mobile ? "-mobile" : ""}-${theme}.png`;
       await page.screenshot({ path: `assets/gallery/${filename}`, animations: "disabled" });
       console.log(`Rendered ${filename}`);
@@ -283,6 +284,9 @@ try {
   if (restoredLabels.length !== 3 || !restoredLabels.includes("활동 기록"))
     throw new Error("Optional section nameplates could not be restored");
   }
+  const renderedSource = JSON.parse(await readFile("assets/gallery/source.json", "utf8"));
+  renderedSource.renderedAt = new Date(snapshotAt).toISOString();
+  await writeFile("assets/gallery/source.json", JSON.stringify(renderedSource, null, 2) + "\n");
   // Optional review evidence remains outside the product repository.
   if (process.env.GALLERY_EVIDENCE_DIR) {
     await mkdir(process.env.GALLERY_EVIDENCE_DIR, { recursive: true });
