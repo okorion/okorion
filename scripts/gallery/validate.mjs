@@ -55,6 +55,7 @@ if (config.variant === "archive") {
   }
   assert.equal((readme.match(/<picture>/g) || []).length, 2);
   assert.ok(readme.includes("### 소품으로 인사 남기기"));
+  assert.ok(readme.includes("소품 9종(📷 🎮 🦆 📻 ⏱️ ♟️ 🐘 🐴 🐚) 중 하나로 인사를 남겨 주세요. 최근 인사 6개를 표시하며, 하나의 인사는 3일 동안 표시합니다."));
   assert.ok(readme.includes("### 프로젝트"));
   assert.ok(readme.includes(config.anonymousGuestbookUrl));
   assert.ok(!readme.includes("포트폴리오"));

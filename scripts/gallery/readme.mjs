@@ -45,7 +45,7 @@ if (config.variant === "archive") {
   ${picture("guestbook", "최근 3일의 인사만 소품으로 표시하는 유리 진열장 6칸")}
 </a>
 
-소품 9종 중 하나로 인사를 남겨 주세요. 최근 인사 6개를 작성 후 3일 동안 표시하며, 인사가 없는 진열장은 비워 둡니다.
+소품 9종(📷 🎮 🦆 📻 ⏱️ ♟️ 🐘 🐴 🐚) 중 하나로 인사를 남겨 주세요. 최근 인사 6개를 표시하며, 하나의 인사는 3일 동안 표시합니다.
 
 [${config.anonymousGuestbookUrl ? "익명으로 소품 고르기" : "소품 고르고 인사 남기기"} ↗](${guestbookUrl})${config.anonymousGuestbookUrl ? " · [GitHub 방식으로 남기기 ↗](https://github.com/okorion/okorion/issues/new?template=gallery.yml)" : ""} · [소품 출처·사용 안내](./docs/gallery.md)
 `);
