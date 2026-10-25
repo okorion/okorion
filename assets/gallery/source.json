@@ -5,7 +5,7 @@
     "height": 760
   },
   "scripts": [
-    "/assets/index-B3c-R3E1.js"
+    "/assets/index-W6xbMZ0g.js"
   ],
   "typography": {
     "family": "Pretendard Variable",
@@ -18,7 +18,7 @@
       }
     ]
   },
-  "htmlSha256": "106465107a903a427c5a205be94f0c01a9b2c1b3ed7407bfe1da800db5549af8",
+  "htmlSha256": "40495cae9d1856ebe355932b47d7f84b5dd4855e4cc3e56a3972077475f46872",
   "presentation": {
     "hiddenSelectors": [
       ".hero__summary",
@@ -34,5 +34,5 @@
   },
   "mobileSha256": "8137bd0abe6acfba61fcbb7ff27fefdb461a8e7afeedf93a82b5d4531b476c0a",
   "mobileDarkSha256": "ddd6014f417a4e96d40af10b36c6fd49a23f39a9556edd6a038bc4173a9acbae",
-  "renderedAt": "2026-10-25T09:26:56.805Z"
+  "renderedAt": "2026-10-25T14:19:59.234Z"
 }
