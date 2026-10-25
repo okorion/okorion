@@ -26,12 +26,12 @@
       ".project-media figcaption"
     ]
   },
-  "sha256": "baaf9ce7db22b52d83127d35b4a20f46460cd1ac39cbc4bea85d65cc01285865",
-  "darkSha256": "a1459d06d3d1883b4abdbcb3f0701603f8981601aa854f336f524eac0773a3ed",
+  "sha256": "eef0b13bb5ec4548674a77deec903fd8bfce9993a010e1d27deadeae7da3a39f",
+  "darkSha256": "5f9053cf2377899b72fa68c0aac4656b6918c3ea54ff99de82ad6d2950a864f4",
   "mobileViewport": {
     "width": 390,
     "height": 760
   },
-  "mobileSha256": "1f5b055a3f63e984af9aec6da97b0198178ca9d3ff2ac56ab3011f7068e753ee",
-  "mobileDarkSha256": "65688e5b04a669b154245b07c6373232ef6b2e70d0543d3e11f80541bfcdcbc6"
+  "mobileSha256": "8137bd0abe6acfba61fcbb7ff27fefdb461a8e7afeedf93a82b5d4531b476c0a",
+  "mobileDarkSha256": "ddd6014f417a4e96d40af10b36c6fd49a23f39a9556edd6a038bc4173a9acbae"
 }

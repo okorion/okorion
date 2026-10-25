@@ -3,12 +3,10 @@
   "weeks": [],
   "artworks": [
     {
-      "issue": 20,
+      "issue": 24,
       "authorId": 97646070,
-      "shape": "sphere",
-      "color": "blue",
-      "asset": "rubber_duck_toy",
-      "createdAt": "2026-10-24T16:55:38Z"
+      "asset": "Camera_01",
+      "createdAt": "2026-10-25T08:12:47Z"
     }
   ]
 }
