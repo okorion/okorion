@@ -33,3 +33,11 @@ jobs:
         run: |
           npm run generate:hero
           git diff --exit-code -- assets/hero-light.svg assets/hero-dark.svg assets/hero-mobile-light.svg assets/hero-mobile-dark.svg
+
+      - name: Validate anonymous guestbook build without deployment
+        run: |
+          npm ci --prefix guestbook --ignore-scripts
+          npm run check --prefix guestbook
+          npm run build --prefix guestbook
+          cd guestbook
+          node node_modules/wrangler/bin/wrangler.js deploy --dry-run --outdir .wrangler/dry-run

@@ -1,5 +1,5 @@
 import { readFile, mkdir, writeFile } from "node:fs/promises";
-import { selectArtworks, validateData } from "./model.mjs";
+import { selectArtworks, validateData, activeArtworks, parseAnonymousFeed } from "./model.mjs";
 
 const token = process.env.GITHUB_TOKEN || process.env.GH_TOKEN;
 if (!token)
@@ -43,10 +43,20 @@ if (!finished)
   throw new Error(
     "Issue pagination exceeded limit; previous published image is preserved",
   );
+let anonymous = [];
+if (config.anonymousGuestbookUrl) {
+  const origin = new URL(config.anonymousGuestbookUrl);
+  if (origin.origin !== "https://okorion-guestbook.ok-or-orion.workers.dev" || origin.pathname !== "/" || origin.search || origin.hash) throw new Error("Unapproved anonymous guestbook origin");
+  const response = await fetch(new URL("/api/greetings", origin), { redirect: "error", signal: AbortSignal.timeout(15000), cache: "no-store" });
+  if (!response.ok) throw new Error(`Anonymous guestbook fetch failed (${response.status})`);
+  const text = await response.text();
+  if (text.length > 6000) throw new Error("Anonymous feed exceeded size limit");
+  anonymous = parseAnonymousFeed(JSON.parse(text));
+}
 const data = validateData({
   version: 1,
   weeks,
-  artworks: selectArtworks(issues, config.maxVisitors),
+  artworks: activeArtworks([...selectArtworks(issues, config.maxVisitors), ...anonymous]).reverse(),
 });
 await mkdir("assets/gallery", { recursive: true });
 await writeFile(

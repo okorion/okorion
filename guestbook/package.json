@@ -1,0 +1,13 @@
+{
+  "name": "okorion-anonymous-guestbook",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "dev": "npm run build && wrangler dev --local --port 41741",
+    "check": "node --check worker.mjs && node --check public/app.mjs && node --test validation.test.mjs",
+    "deploy": "npm run build && wrangler deploy"
+  },
+  "devDependencies": { "wrangler": "4.152.0" },
+  "overrides": { "undici": "7.30.1" }
+}

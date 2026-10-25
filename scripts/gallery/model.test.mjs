@@ -11,6 +11,7 @@ import {
   artworkLifetimeMs,
   artworkExpiresAt,
   formatKoreanTime,
+  parseAnonymousFeed,
 } from "./model.mjs";
 import { objects } from "./catalog.mjs";
 const now = Date.parse("2026-10-25T00:00:00Z");
@@ -23,6 +24,16 @@ const issue = (number, id = number) => ({
   body,
   user: { id, type: "User" },
   created_at: "2026-10-23T00:00:00Z",
+});
+
+test("anonymous feed accepts opaque IDs without inventing GitHub identities", () => {
+  const item = { id: "9021245a-47a1-46a3-9619-191c3de715ec", asset: "lambis_shell", createdAt: "2026-10-24T00:00:00Z", expiresAt: "2026-10-27T00:00:00Z" };
+  const [parsed] = parseAnonymousFeed({ version: 1, greetings: [item] });
+  assert.equal(parsed.source, "anonymous"); assert.equal(parsed.authorId, undefined); assert.equal(parsed.issue, undefined);
+  assert.doesNotThrow(() => validateData({ version: 1, weeks: [], artworks: [parsed] }));
+  assert.equal(activeArtworks([parseArtwork(issue(90)), parsed], now)[0].source, "anonymous");
+  for (const bad of [{ ...item, asset: "https://untrusted.example/model" }, { ...item, expiresAt: "2026-10-28T00:00:00Z" }, { ...item, authorId: 1 }]) assert.throws(() => parseAnonymousFeed({ version: 1, greetings: [bad] }));
+  assert.throws(() => parseAnonymousFeed({ version: 1, greetings: [item, item] }));
 });
 test("valid form accepts exact enums, not arbitrary text or code", () => {
   assert.equal(parseArtwork(issue(1)).shape, "sphere");

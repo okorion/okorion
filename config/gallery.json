@@ -1,6 +1,7 @@
 {
   "variant": "archive",
   "portfolioUrl": "https://okorion.github.io/",
+  "anonymousGuestbookUrl": "https://okorion-guestbook.ok-or-orion.workers.dev/",
   "maxVisitors": 6,
   "retentionDays": 3,
   "style": "advanced",

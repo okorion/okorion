@@ -60,14 +60,14 @@ export const blockedPrivateRepositoryUrls = [
 ];
 
 const textExtensions = new Set(
-  ".adoc .asciidoc .cjs .css .cts .gltf .htm .html .js .json .jsx .md .mjs .mts .ps1 .py .rst .sh .svg .toml .ts .tsx .txt .xml .yaml .yml".split(
+  ".adoc .asciidoc .cjs .css .cts .gltf .htm .html .js .json .jsonc .jsx .md .mjs .mts .ps1 .py .rst .sh .sql .svg .toml .ts .tsx .txt .xml .yaml .yml".split(
     " ",
   ),
 );
 const executableTextExtensions = new Set(
   ".cjs .cts .js .jsx .mjs .mts .ps1 .py .sh .ts .tsx".split(" "),
 );
-const activeSurfaceDirectories = new Set(".github assets docs public scripts static styles".split(" "));
+const activeSurfaceDirectories = new Set(".github assets docs guestbook public scripts static styles".split(" "));
 const skippedRepositoryDirectories = new Set([".git", "node_modules"]);
 const policyOnlyPaths = new Set(
   "scripts/career-exclusion-catalog-schema.mjs scripts/profile-exclusion-policy.mjs scripts/profile-surface-normalization.mjs".split(" "),
@@ -90,6 +90,7 @@ galleryImagePaths.push("assets/gallery/portfolio-mobile.png", "assets/gallery/po
   ...["portfolio", "guestbook"].flatMap(part => ["light", "dark"].flatMap(theme => [
     `assets/gallery/archive-${part}-${theme}.png`, `assets/gallery/archive-${part}-mobile-${theme}.png`,
   ])));
+galleryImagePaths.push(...["Camera_01", "gamepad", "rubber_duck_toy", "boombox", "pocket_watch", "chess_set", "carved_wooden_elephant", "horse_head", "lambis_shell"].map((id) => `assets/gallery/choices/${id}.png`));
 for (const path of galleryImagePaths) allowedProfileImageTargets.add(path);
 
 export { normalizeProfileSurface };
@@ -230,6 +231,7 @@ export function classifyProfileSurfacePath(candidatePath) {
   if (relativePath === "package.json" || isRootReadme(relativePath)) {
     return "active";
   }
+  if (relativePath === "guestbook/.dev.vars") return "development-config";
 
   const [topLevelDirectory] = relativePath.split("/");
   const outsideClassification = classifyOutsideActiveDirectories(
@@ -277,6 +279,7 @@ async function collectTree(root, directory, surfaces) {
   for (const entry of await readdir(safeDirectory, { withFileTypes: true })) {
     const filePath = join(safeDirectory, entry.name);
     const relativePath = repositoryRelativePath(root, filePath);
+    if (entry.isDirectory() && ["guestbook/node_modules", "guestbook/.wrangler", "guestbook/dist"].includes(relativePath)) continue;
     if (
       entry.isDirectory() &&
       !relativePath.includes("/") &&
@@ -438,6 +441,8 @@ function assertSafeCssResources(content, surfaceLabel, label) {
     /url\(\s*(["']?)(.*?)\1\s*\)/giu,
   )) {
     const target = match[2].trim();
+    // This build-owned path is copied from the hash-verified gallery font.
+    if (surfaceLabel === "guestbook/public/styles.css" && target === "/font.woff2") continue;
     if (!target.startsWith("#")) {
       throw new Error(`${label}: CSS external asset is forbidden in ${surfaceLabel}`);
     }

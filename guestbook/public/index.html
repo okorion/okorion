@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>소품으로 인사 남기기 · okorion</title>
+  <meta name="description" content="마음에 드는 소품 하나를 골라 이름과 계정 없이 인사를 남겨 주세요. 소품은 3일 동안 GitHub README에 표시됩니다.">
+  <meta name="theme-color" content="#ffffff">
+  <meta property="og:title" content="소품으로 인사 남기기 · okorion">
+  <meta property="og:description" content="소품 하나로 남기는 인사. 이름과 계정 없이 참여하고, 3일 동안 진열합니다.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="">
+  <meta property="og:image" content="">
+  <meta property="og:image:alt" content="방명록에서 고를 수 있는 조개 소품">
+  <link rel="canonical" href="/">
+  <link rel="icon" type="image/png" href="/choices/lambis_shell.png">
+  <link rel="stylesheet" href="/styles.css">
+  <script id="turnstile-script" src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" defer></script>
+  <script type="module" src="/app.mjs"></script>
+</head>
+<body>
+  <div class="page">
+    <header><a class="brand" href="https://github.com/okorion">okorion</a><a href="https://github.com/okorion">README로 돌아가기 ↗</a></header>
+    <main>
+      <div class="intro"><span class="eyebrow">작은 소품, 짧은 인사</span><h1>소품으로 인사 남기기</h1><p>마음에 드는 소품 하나를 골라 주세요.<br>이름과 계정 없이 남기고, 3일 동안 진열합니다.</p></div>
+      <form id="guestbook">
+        <fieldset id="choices"><legend>어떤 소품으로 인사할까요?</legend><div class="options" id="options" aria-busy="true"><p>소품을 불러오고 있습니다.</p></div></fieldset>
+        <section class="register" aria-label="인사 등록">
+          <div class="selection"><span class="muted">선택한 소품</span><strong id="selected">소품을 골라 주세요</strong></div>
+          <label class="consent"><input type="checkbox" id="consent" required><span>선택한 소품과 작성 시각이 공개 README에 3일 동안 표시되는 데 동의합니다.</span></label>
+          <div id="challenge" aria-label="도배 방지 확인"></div>
+          <button id="submit" type="submit" disabled aria-busy="true"><span class="spinner" aria-hidden="true"></span><span id="submit-label">등록 준비 중</span></button>
+          <p id="result" role="status" aria-live="polite"></p>
+          <button id="retry" type="button" hidden>등록 화면 다시 불러오기</button>
+          <p class="note">현재 브라우저에서 남긴 인사는 새 인사로 바뀝니다.<br>README 반영에는 자동 갱신과 이미지 캐시 때문에 시간이 걸릴 수 있습니다.</p>
+        </section>
+      </form>
+    </main>
+    <footer><span>모델 · <a href="https://polyhaven.com/license" target="_blank" rel="noreferrer">Poly Haven / CC0 ↗</a></span><a href="https://github.com/okorion/okorion/issues/new?template=gallery.yml">GitHub 방식으로 남기기 ↗</a></footer>
+  </div>
+</body>
+</html>

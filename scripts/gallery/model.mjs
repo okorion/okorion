@@ -34,6 +34,9 @@ export const assetForArtwork = (artwork) => artwork.asset || legacyObjectMap.get
 export const guestbookCapacity = 6;
 export const artworkLifetimeMs = 3 * 24 * 60 * 60 * 1000;
 export const artworkExpiresAt = (artwork) => new Date(Date.parse(artwork.createdAt) + artworkLifetimeMs).toISOString();
+const anonymousIdPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const recentFirst = (a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt) ||
+  (a.source === "anonymous" || b.source === "anonymous" ? String(b.id || b.issue).localeCompare(String(a.id || a.issue)) : b.issue - a.issue);
 export const formatKoreanTime = (value) => new Intl.DateTimeFormat("sv-SE", {
   timeZone: "Asia/Seoul", year: "numeric", month: "2-digit", day: "2-digit",
   hour: "2-digit", minute: "2-digit", hourCycle: "h23",
@@ -43,7 +46,19 @@ export function activeArtworks(artworks, now = Date.now()) {
   return artworks.filter((artwork) => {
     const createdAt = Date.parse(artwork.createdAt);
     return Number.isFinite(createdAt) && createdAt <= now && now - createdAt < artworkLifetimeMs;
-  }).sort((a, b) => b.issue - a.issue).slice(0, guestbookCapacity);
+  }).sort(recentFirst).slice(0, guestbookCapacity);
+}
+
+export function parseAnonymousFeed(feed) {
+  if (feed?.version !== 1 || !Array.isArray(feed.greetings) || feed.greetings.length > guestbookCapacity) throw new Error("Invalid anonymous guestbook feed");
+  const ids = new Set();
+  return feed.greetings.map((item) => {
+    if (!item || Object.keys(item).some((key) => !["id", "asset", "createdAt", "expiresAt"].includes(key)) ||
+      !anonymousIdPattern.test(item.id) || ids.has(item.id) || !objectIds.includes(item.asset) ||
+      !Number.isFinite(Date.parse(item.createdAt)) || Date.parse(item.expiresAt) - Date.parse(item.createdAt) !== artworkLifetimeMs) throw new Error("Invalid anonymous greeting");
+    ids.add(item.id);
+    return { source: "anonymous", id: item.id, asset: item.asset, createdAt: item.createdAt };
+  });
 }
 
 export function guestbookSlots(artworks, now = Date.now()) {
@@ -139,8 +154,8 @@ export function validateData(data) {
     if (
       (item.asset ? !objectIds.includes(item.asset) : (!shapes.includes(item.shape) || !Object.hasOwn(colors, item.color))) ||
       (item.shape !== undefined && (!shapes.includes(item.shape) || !Object.hasOwn(colors, item.color))) ||
-      !Number.isSafeInteger(item.issue) ||
-      !Number.isSafeInteger(item.authorId) ||
+      (item.source === "anonymous" ? (!anonymousIdPattern.test(item.id) || !objectIds.includes(item.asset) || item.issue !== undefined || item.authorId !== undefined) :
+        (item.source !== undefined || !Number.isSafeInteger(item.issue) || !Number.isSafeInteger(item.authorId))) ||
       !Number.isFinite(Date.parse(item.createdAt))
     )
       throw new Error("Invalid artwork");

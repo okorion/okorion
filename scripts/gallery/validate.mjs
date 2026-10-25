@@ -9,6 +9,7 @@ assert.ok(variants.includes(config.variant));
 assert.ok(stylesFor(config.variant).includes(config.style));
 assert.equal(typeof config.showSectionLabels, "boolean");
 assert.equal(config.portfolioUrl, "https://okorion.github.io/");
+assert.equal(config.anonymousGuestbookUrl, "https://okorion-guestbook.ok-or-orion.workers.dev/");
 assert.equal(config.maxVisitors, 6);
 assert.equal(config.retentionDays, 3);
 assert.equal(config.orientation, "portrait");
@@ -55,6 +56,7 @@ if (config.variant === "archive") {
   assert.equal((readme.match(/<picture>/g) || []).length, 2);
   assert.ok(readme.includes("### 소품으로 인사 남기기"));
   assert.ok(readme.includes("### 프로젝트"));
+  assert.ok(readme.includes(config.anonymousGuestbookUrl));
   assert.ok(!readme.includes("포트폴리오"));
   assert.ok(readme.includes("작성 시각 (KST)"));
   assert.ok(readme.includes("README 갱신:"));

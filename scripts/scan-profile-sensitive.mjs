@@ -32,7 +32,8 @@ const allowedEmails = new Set([
 async function collectFiles(directory, files) {
   // eslint-disable-next-line security/detect-non-literal-fs-filename -- Recursive paths originate from the fixed repository root.
   for (const entry of await readdir(directory, { withFileTypes: true })) {
-    if (entry.name === ".git" || entry.name === "node_modules" || entry.name === ".gallery-work") {
+    if (entry.name === ".git" || entry.name === "node_modules" || entry.name === ".gallery-work" ||
+      (relative(repositoryRoot, directory).split(sep).join("/") === "guestbook" && [".wrangler", "dist"].includes(entry.name))) {
       continue;
     }
     const filePath = join(directory, entry.name);

@@ -29,6 +29,8 @@ if (config.variant === "archive") {
   const data = validateData(JSON.parse(await readFile("assets/gallery/data.json", "utf8")));
   const labels = new Map(objects.map((object) => [object.id, object.label]));
   const active = activeArtworks(data.artworks, Date.parse(source.renderedAt));
+  const guestbookUrl = config.anonymousGuestbookUrl || "https://github.com/okorion/okorion/issues/new?template=gallery.yml";
+  if (!["https://okorion-guestbook.ok-or-orion.workers.dev/", "https://github.com/okorion/okorion/issues/new?template=gallery.yml"].includes(guestbookUrl)) throw new Error("Unapproved guestbook link");
   const times = active.length ? `| 소품 | 작성 시각 (KST) | 표시 종료 (KST) |\n| --- | --- | --- |\n${active.map((artwork) => `| ${labels.get(assetForArtwork(artwork))} | ${formatKoreanTime(artwork.createdAt)} | ${formatKoreanTime(artworkExpiresAt(artwork))} |`).join("\n")}` : "최근 3일 이내 남겨진 인사가 없습니다. 작성 시각 (KST)은 새 인사가 등록되면 표시합니다.";
   const picture = (part, alt) => `<picture>
     <source media="(prefers-color-scheme: dark) and (max-width: 600px)" srcset="./assets/gallery/archive-${part}-mobile-dark.png" />
@@ -46,13 +48,14 @@ if (config.variant === "archive") {
 
 ### 소품으로 인사 남기기
 
-<a href="https://github.com/okorion/okorion/issues/new?template=gallery.yml">
+<a href="${guestbookUrl}">
   ${picture("guestbook", "최근 3일의 인사만 소품으로 표시하는 유리 진열장 6칸")}
 </a>
 
-소품 9종 중 하나로 인사를 남겨 주세요. 최근 6명의 인사를 작성 후 3일 동안 표시하며, 인사가 없는 진열장은 비워 둡니다.
+소품 9종 중 하나로 인사를 남겨 주세요. 최근 인사 6개를 작성 후 3일 동안 표시하며, 인사가 없는 진열장은 비워 둡니다.
 
-[소품 고르고 인사 남기기 ↗](https://github.com/okorion/okorion/issues/new?template=gallery.yml) · [소품 출처·사용 안내](./docs/gallery.md)
+[${config.anonymousGuestbookUrl ? "이름·계정 없이 소품 고르기" : "소품 고르고 인사 남기기"} ↗](${guestbookUrl}) · [소품 출처·사용 안내](./docs/gallery.md)
+${config.anonymousGuestbookUrl ? "\n[GitHub 방식으로 남기기 ↗](https://github.com/okorion/okorion/issues/new?template=gallery.yml)\n" : ""}
 
 <details>
 <summary>인사 작성 시각 확인</summary>
