@@ -30,7 +30,7 @@ const colorChoices = new Map([
   ["흰색 (white)", "white"],
 ]);
 const objectChoices = new Map(objects.map(({ id, label }) => [`${label} (${id})`, id]));
-export const assetForArtwork = (artwork) => artwork.asset || legacyObjectMap[artwork.shape];
+export const assetForArtwork = (artwork) => artwork.asset || legacyObjectMap.get(artwork.shape);
 
 export function parseArtwork(issue) {
   if (
@@ -64,7 +64,7 @@ export function parseArtwork(issue) {
     authorId: issue.user.id,
     shape,
     color,
-    asset: legacyObjectMap[shape],
+    asset: legacyObjectMap.get(shape),
     createdAt: issue.created_at,
   };
 }

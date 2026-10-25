@@ -11,10 +11,10 @@ export const objects = [
 ];
 export const objectIds = objects.map((object) => object.id);
 // Historical issue choices remain intact; only their displayed prop changes.
-export const legacyObjectMap = {
-  sphere: "rubber_duck_toy", cube: "gamepad", torus: "lambis_shell",
-  arch: "horse_head", pyramid: "chess_set",
-};
+export const legacyObjectMap = new Map([
+  ["sphere", "rubber_duck_toy"], ["cube", "gamepad"], ["torus", "lambis_shell"],
+  ["arch", "horse_head"], ["pyramid", "chess_set"],
+]);
 export const archiveParts = ["portfolio", "guestbook"];
 export const archiveImageSize = (part, mobile) => ({
   width: mobile ? 700 : 1200,

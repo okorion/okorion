@@ -187,7 +187,7 @@ try {
     await page.setViewportSize({ width: 390, height: 760 });
     await page.goto(config.portfolioUrl, { waitUntil: "networkidle", timeout: 60000 });
     await page.locator('[data-default-view="portfolio"]').waitFor();
-    const mobileHashes = {};
+    const mobileHashes = new Map();
     for (const theme of ["light", "dark"]) {
       const view = page.locator('[data-default-view="portfolio"]');
       if ((await view.getAttribute("data-theme")) !== theme) await page.locator(".theme-toggle").click();
@@ -195,13 +195,13 @@ try {
       await page.evaluate(async () => { await document.fonts.ready; await document.fonts.load('600 24px "Pretendard Variable"', "포트폴리오 프로젝트"); });
       await page.waitForFunction(() => [...document.images].every((image) => image.complete && image.naturalWidth > 0));
       const filename = `assets/gallery/portfolio-mobile${theme === "dark" ? "-dark" : ""}.png`;
-      await page.screenshot({ path: filename, animations: "disabled", style: "*{scrollbar-width:none!important}::-webkit-scrollbar{display:none!important}" });
-      mobileHashes[theme] = createHash("sha256").update(await readFile(filename)).digest("hex");
+      const png = await page.screenshot({ path: filename, animations: "disabled", style: "*{scrollbar-width:none!important}::-webkit-scrollbar{display:none!important}" });
+      mobileHashes.set(theme, createHash("sha256").update(png).digest("hex"));
     }
     const source = JSON.parse(await readFile("assets/gallery/source.json", "utf8"));
     source.mobileViewport = { width: 390, height: 760 };
-    source.mobileSha256 = mobileHashes.light;
-    source.mobileDarkSha256 = mobileHashes.dark;
+    source.mobileSha256 = mobileHashes.get("light");
+    source.mobileDarkSha256 = mobileHashes.get("dark");
     await writeFile("assets/gallery/source.json", JSON.stringify(source, null, 2) + "\n");
   }
   const errors = [];

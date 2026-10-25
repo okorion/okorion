@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { variants, stylesFor, assetName, imageSize, validateData } from "./model.mjs";
 import { objects, archiveParts, archiveImageSize } from "./catalog.mjs";
+import { readArchiveImage, readLicensedObjectFile } from "./licensed-files.mjs";
 const config = JSON.parse(await readFile("config/gallery.json", "utf8"));
 assert.ok(variants.includes(config.variant));
 assert.ok(stylesFor(config.variant).includes(config.style));
@@ -42,7 +43,7 @@ const readme = await readFile("README.md", "utf8");
 if (config.variant === "archive") {
   for (const part of archiveParts) for (const theme of ["light", "dark"]) for (const mobile of [false, true]) {
     const filename = `archive-${part}${mobile ? "-mobile" : ""}-${theme}.png`;
-    const bytes = await readFile(`assets/gallery/${filename}`);
+    const bytes = await readArchiveImage(`assets/gallery/${filename}`);
     const size = archiveImageSize(part, mobile);
     assert.equal(bytes.subarray(0, 8).toString("hex"), "89504e470d0a1a0a", filename);
     assert.equal(bytes.readUInt32BE(16), size.width, filename);
@@ -53,20 +54,23 @@ if (config.variant === "archive") {
   assert.equal((readme.match(/<picture>/g) || []).length, 2);
   assert.ok(readme.includes("### 소품으로 인사 남기기"));
   assert.ok(!readme.includes("GitHub 활동"));
-  for (const [filename, key] of [["portfolio-mobile.png", "mobileSha256"], ["portfolio-mobile-dark.png", "mobileDarkSha256"]]) {
-    assert.equal(createHash("sha256").update(await readFile(`assets/gallery/${filename}`)).digest("hex"), source[key]);
-  }
+  const mobileCapture = await readFile("assets/gallery/portfolio-mobile.png");
+  assert.equal(createHash("sha256").update(mobileCapture).digest("hex"), source.mobileSha256);
+  const mobileDarkCapture = await readFile("assets/gallery/portfolio-mobile-dark.png");
+  assert.equal(createHash("sha256").update(mobileDarkCapture).digest("hex"), source.mobileDarkSha256);
+  await assert.rejects(readLicensedObjectFile("../package.json"), /Unapproved model file/);
+  await assert.rejects(readArchiveImage("assets/gallery/../package.json"), /Unknown archive image/);
   const sources = JSON.parse(await readFile("assets/gallery/objects/sources.json", "utf8"));
   assert.deepEqual(sources.map((asset) => asset.id), objects.map((asset) => asset.id));
   for (const asset of sources) {
     assert.equal(asset.license, "CC0-1.0");
     assert.equal(asset.source, `https://polyhaven.com/a/${asset.id}`);
-    const model = await readFile(`assets/gallery/objects/${asset.id}/${asset.id}.gltf`);
+    const model = await readLicensedObjectFile(`assets/gallery/objects/${asset.id}/${asset.id}.gltf`);
     assert.equal(createHash("sha256").update(model).digest("hex"), asset.sha256, asset.id);
     const gltf = JSON.parse(model);
     for (const dependency of asset.dependencies) {
       assert.ok(/^[A-Za-z0-9_./-]+$/.test(dependency.path) && !dependency.path.includes(".."));
-      const bytes = await readFile(`assets/gallery/objects/${asset.id}/${dependency.path}`);
+      const bytes = await readLicensedObjectFile(`assets/gallery/objects/${asset.id}/${dependency.path}`);
       assert.equal(createHash("sha256").update(bytes).digest("hex"), dependency.sha256, dependency.path);
     }
     for (const reference of [...(gltf.buffers || []), ...(gltf.images || [])]) {
