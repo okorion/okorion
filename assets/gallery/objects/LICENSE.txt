@@ -1,0 +1,12 @@
+Model assets: CC0 1.0 Universal (CC0-1.0)
+
+These nine models and their original material textures were published by
+Poly Haven under CC0. They may be used, modified, and redistributed,
+including commercially. Attribution is appreciated but not required.
+
+License: https://creativecommons.org/publicdomain/zero/1.0/
+Publisher policy: https://polyhaven.com/license
+
+Per-model authors, original download URLs, and SHA-256 hashes are recorded
+in sources.json. The models are stored locally for reproducible builds.
+The profile images are rendered from these model files.

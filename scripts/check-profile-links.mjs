@@ -1,4 +1,4 @@
-import { readFile } from "node:fs/promises";
+import { readFile, access } from "node:fs/promises";
 
 // eslint-disable-next-line security/detect-non-literal-fs-filename -- This is a fixed repository-local file URL.
 const readme = await readFile(new URL("../README.md", import.meta.url), "utf8");
@@ -29,6 +29,12 @@ for (const link of links) {
     if (!headings.has(link.slice(1))) {
       throw new Error(`README.md: local anchor does not resolve (${link})`);
     }
+    continue;
+  }
+  if (link.startsWith("./")) {
+    const target = new URL(link, new URL("../README.md", import.meta.url));
+    if (!target.href.startsWith(new URL("../", import.meta.url).href)) throw new Error("Link outside repository");
+    await access(target);
     continue;
   }
   const parsed = new URL(link);

@@ -1,6 +1,7 @@
 import { readdir, readFile } from "node:fs/promises";
 import { extname, join, relative, sep } from "node:path";
 import { fileURLToPath } from "node:url";
+import { licensedObjectFilePaths } from "./gallery/licensed-files.mjs";
 
 const repositoryRoot = fileURLToPath(new URL("../", import.meta.url));
 const scannerPath = "scripts/scan-profile-sensitive.mjs";
@@ -53,6 +54,7 @@ for (const filePath of await collectFiles(repositoryRoot, [])) {
   if (
     relativePath === scannerPath ||
     relativePath === "assets/fonts/PretendardVariable.woff2" ||
+    (extname(relativePath) === ".bin" && licensedObjectFilePaths.has(relativePath)) ||
     skippedBinaryExtensions.has(extname(relativePath).toLowerCase())
   ) {
     continue;

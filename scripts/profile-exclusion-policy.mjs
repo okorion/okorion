@@ -7,6 +7,7 @@ import {
 } from "./profile-markdown-policy.mjs";
 import { normalizeProfileSurface } from "./profile-surface-normalization.mjs";
 import { careerExclusionCatalog } from "./career-exclusion-catalog.mjs";
+import { licensedObjectFilePaths } from "./gallery/licensed-files.mjs";
 import {
   collectCareerExclusionAliases,
   collectCareerExclusionDerivedUrls,
@@ -59,7 +60,7 @@ export const blockedPrivateRepositoryUrls = [
 ];
 
 const textExtensions = new Set(
-  ".adoc .asciidoc .cjs .css .cts .htm .html .js .json .jsx .md .mjs .mts .ps1 .py .rst .sh .svg .toml .ts .tsx .txt .xml .yaml .yml".split(
+  ".adoc .asciidoc .cjs .css .cts .gltf .htm .html .js .json .jsx .md .mjs .mts .ps1 .py .rst .sh .svg .toml .ts .tsx .txt .xml .yaml .yml".split(
     " ",
   ),
 );
@@ -85,6 +86,10 @@ const allowedProfileImageTargets = new Set(
 // The gallery contains only a fixed public-site capture and generated scenes.
 export const galleryImagePaths = ["assets/gallery/portfolio.png", "assets/gallery/portfolio-dark.png", ...["wall", "gallery", "island", "wall-advanced", "gallery-advanced", "island-advanced", "pavilion"].flatMap(variant =>
   ["light", "dark"].flatMap(theme => [`assets/gallery/${variant}-${theme}.png`, `assets/gallery/${variant}-mobile-${theme}.png`]))];
+galleryImagePaths.push("assets/gallery/portfolio-mobile.png", "assets/gallery/portfolio-mobile-dark.png",
+  ...["portfolio", "guestbook"].flatMap(part => ["light", "dark"].flatMap(theme => [
+    `assets/gallery/archive-${part}-${theme}.png`, `assets/gallery/archive-${part}-mobile-${theme}.png`,
+  ])));
 for (const path of galleryImagePaths) allowedProfileImageTargets.add(path);
 
 export { normalizeProfileSurface };
@@ -242,6 +247,7 @@ export function classifyProfileSurfacePath(candidatePath) {
     return githubClassification;
   }
   if (galleryImagePaths.includes(relativePath)) return "generated-gallery-image";
+  if (licensedObjectFilePaths.has(relativePath)) return "licensed-gallery-model";
   if (relativePath === "assets/fonts/PretendardVariable.woff2") return "licensed-gallery-font";
   if (!textExtensions.has(extname(relativePath).toLocaleLowerCase("en-US"))) {
     throw new Error(`active profile surface type is unsupported (${relativePath})`);
