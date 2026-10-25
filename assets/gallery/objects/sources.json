@@ -1,0 +1,479 @@
+[
+  {
+    "id": "Camera_01",
+    "label": "빈티지 카메라",
+    "group": "플레이 & 크리에이트",
+    "name": "Camera 01",
+    "authors": [
+      "Rajil Jose Macatangay"
+    ],
+    "source": "https://polyhaven.com/a/Camera_01",
+    "license": "CC0-1.0",
+    "licenseUrl": "https://polyhaven.com/license",
+    "polycount": 26987,
+    "textureResolution": "1K preview",
+    "checkedAt": "2026-10-25T03:33:42.388Z",
+    "model": "assets/gallery/objects/Camera_01/Camera_01.gltf",
+    "sha256": "9c5ca3104579c84ffcebdee5c6e5e09821fe8d4a5cd9ce95ed32d81507450ee3",
+    "dependencies": [
+      {
+        "path": "textures/Camera_01_lens_body_arm_1k.jpg",
+        "bytes": 163109,
+        "sha256": "6fef8a44334428a8f095315fa8043678994abcc671473cf43f7ca63ec10eb98f",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/Camera_01/Camera_01_lens_body_arm_1k.jpg"
+      },
+      {
+        "path": "textures/Camera_01_body_diff_1k.jpg",
+        "bytes": 175778,
+        "sha256": "89b77ec525e933f9f2702e2ccb0c8ba32ecef31dac241bc034e3eddc9481f4f7",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/Camera_01/Camera_01_body_diff_1k.jpg"
+      },
+      {
+        "path": "textures/Camera_01_strap_arm_1k.jpg",
+        "bytes": 159433,
+        "sha256": "17beca6e0542a1a28146b52cff06aad2e404541359e452deca83b74d01505c50",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/Camera_01/Camera_01_strap_arm_1k.jpg"
+      },
+      {
+        "path": "textures/Camera_01_lens_body_nor_gl_1k.jpg",
+        "bytes": 147816,
+        "sha256": "3d5e695a57ce38f0e35558f43f30497fff2f8cc844c903c95462d105b58cb333",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/Camera_01/Camera_01_lens_body_nor_gl_1k.jpg"
+      },
+      {
+        "path": "Camera_01.bin",
+        "bytes": 845028,
+        "sha256": "d3d2c78458a4823bc9821c2ba3994c95d15b044c7a1444ba089b163f74c3fcf2",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/Camera_01/Camera_01.bin"
+      },
+      {
+        "path": "textures/Camera_01_lens_body_diff_1k.jpg",
+        "bytes": 106198,
+        "sha256": "aafa05c5b106b960b21547ef9d4662083dfc7138261cbab1f10e143afe046b68",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/Camera_01/Camera_01_lens_body_diff_1k.jpg"
+      },
+      {
+        "path": "textures/Camera_01_body_nor_gl_1k.jpg",
+        "bytes": 271892,
+        "sha256": "c7ec0d96ae9b5f16559069f1a4c9a006f3ec1d49a7707269a280fe23786db144",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/Camera_01/Camera_01_body_nor_gl_1k.jpg"
+      },
+      {
+        "path": "textures/Camera_01_body_arm_1k.jpg",
+        "bytes": 228449,
+        "sha256": "a3b1928d258fdb23687fb005a3d764b008475abb13b47a2bb87ed81200274635",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/Camera_01/Camera_01_body_arm_1k.jpg"
+      },
+      {
+        "path": "textures/Camera_01_strap_diff_1k.jpg",
+        "bytes": 132449,
+        "sha256": "3d4c9cb463b330b7ea4fc713f6dc90a0c5e6d9d3ba707b6921fe0a2d1f9ab146",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/Camera_01/Camera_01_strap_diff_1k.jpg"
+      },
+      {
+        "path": "textures/Camera_01_strap_nor_gl_1k.jpg",
+        "bytes": 199844,
+        "sha256": "5d4d99d5b1640d5a4d3c2227c264c232279773b5c92e4a6c50d2f34217880202",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/Camera_01/Camera_01_strap_nor_gl_1k.jpg"
+      }
+    ]
+  },
+  {
+    "id": "gamepad",
+    "label": "레트로 게임패드",
+    "group": "플레이 & 크리에이트",
+    "name": "Gamepad",
+    "authors": [
+      "Josh Dean"
+    ],
+    "source": "https://polyhaven.com/a/gamepad",
+    "license": "CC0-1.0",
+    "licenseUrl": "https://polyhaven.com/license",
+    "polycount": 9546,
+    "textureResolution": "1K preview",
+    "checkedAt": "2026-10-25T03:33:44.074Z",
+    "model": "assets/gallery/objects/gamepad/gamepad.gltf",
+    "sha256": "30eabe08b4c76013efb27322ef8834ba915dd0ff46950ebf69390e7fbeef3dea",
+    "dependencies": [
+      {
+        "path": "textures/gamepad_diff_1k.jpg",
+        "bytes": 309469,
+        "sha256": "d66b82f9790c304efaae5b0dc45a1dffd57ff64ec57d57d7e5a2fe1b1b067b5c",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/gamepad/gamepad_diff_1k.jpg"
+      },
+      {
+        "path": "gamepad.bin",
+        "bytes": 256796,
+        "sha256": "f1bf4c355880932ae321d0ee7221767d0f9b9a0f3d00522424847ce21462b701",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/4k/gamepad/gamepad.bin"
+      },
+      {
+        "path": "textures/gamepad_nor_gl_1k.jpg",
+        "bytes": 241556,
+        "sha256": "90b7eb4ce8578797c2e5386f979c306a247a8a280ba980eb5380828dcb42edd8",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/gamepad/gamepad_nor_gl_1k.jpg"
+      },
+      {
+        "path": "textures/gamepad_arm_1k.jpg",
+        "bytes": 510273,
+        "sha256": "cb5481bb081c12a92213a5decbe41112788896fe4e1810ee74f086e45e4cf5f1",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/gamepad/gamepad_arm_1k.jpg"
+      }
+    ]
+  },
+  {
+    "id": "rubber_duck_toy",
+    "label": "러버덕",
+    "group": "플레이 & 크리에이트",
+    "name": "Rubber Duck Toy",
+    "authors": [
+      "Plat251"
+    ],
+    "source": "https://polyhaven.com/a/rubber_duck_toy",
+    "license": "CC0-1.0",
+    "licenseUrl": "https://polyhaven.com/license",
+    "polycount": 4288,
+    "textureResolution": "1K preview",
+    "checkedAt": "2026-10-25T03:33:45.544Z",
+    "model": "assets/gallery/objects/rubber_duck_toy/rubber_duck_toy.gltf",
+    "sha256": "dcf036297843dad2775841fc41208fae8c776066848d3f6e26efa42eb98d5016",
+    "dependencies": [
+      {
+        "path": "textures/rubber_duck_toy_diff_1k.jpg",
+        "bytes": 231027,
+        "sha256": "c968d6185c3ec57a430818e6af85c2ba2880c7ee19ccb1a0171730926175cfd6",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/rubber_duck_toy/rubber_duck_toy_diff_1k.jpg"
+      },
+      {
+        "path": "rubber_duck_toy.bin",
+        "bytes": 105376,
+        "sha256": "381e1373b99a4ff23d5ee02cb66bfb5e7d897eaa280581f19b652c38ffd83314",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/4k/rubber_duck_toy/rubber_duck_toy.bin"
+      },
+      {
+        "path": "textures/rubber_duck_toy_arm_1k.jpg",
+        "bytes": 346707,
+        "sha256": "07df1a805350811e8522dafce6133b98ce2f191326e7256315a15dfaaa4193a0",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/rubber_duck_toy/rubber_duck_toy_arm_1k.jpg"
+      },
+      {
+        "path": "textures/rubber_duck_toy_nor_gl_1k.jpg",
+        "bytes": 48768,
+        "sha256": "fc00541d9708328f383498914a5ed9935231a87f15ec002d5675af3f2347b544",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/rubber_duck_toy/rubber_duck_toy_nor_gl_1k.jpg"
+      }
+    ]
+  },
+  {
+    "id": "boombox",
+    "label": "붐박스",
+    "group": "레트로 컬렉션",
+    "name": "Boombox",
+    "authors": [
+      "Thomas Paul Mouilleron"
+    ],
+    "source": "https://polyhaven.com/a/boombox",
+    "license": "CC0-1.0",
+    "licenseUrl": "https://polyhaven.com/license",
+    "polycount": 10168,
+    "textureResolution": "1K preview",
+    "checkedAt": "2026-10-25T03:33:48.493Z",
+    "model": "assets/gallery/objects/boombox/boombox.gltf",
+    "sha256": "8f5851b81d0d0b16fadf9ca89133b59ee48718ed8d9f8244b87e4d293755d2d3",
+    "dependencies": [
+      {
+        "path": "textures/boombox_nor_gl_1k.jpg",
+        "bytes": 491377,
+        "sha256": "684211254308ea8c8235852dc93b5c22dc80f62f2acfa83f71cf083076ab00cd",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/boombox/boombox_nor_gl_1k.jpg"
+      },
+      {
+        "path": "textures/boombox_speakers_arm_1k.jpg",
+        "bytes": 717847,
+        "sha256": "00d7de33b77f5c8f7386679dfcc9daad3f5ca124ced0021f641ecb6739364443",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/boombox/boombox_speakers_arm_1k.jpg"
+      },
+      {
+        "path": "textures/boombox_diff_1k.jpg",
+        "bytes": 471435,
+        "sha256": "8ad03125524ecc218810f2b100dc047958184b3e98c6c2d89854fd7ec88be981",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/boombox/boombox_diff_1k.jpg"
+      },
+      {
+        "path": "boombox.bin",
+        "bytes": 328752,
+        "sha256": "2579a18ff22b3c3466cd557ce3e4bbe517091bb7158172bdf9371ca993f9c49f",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/4k/boombox/boombox.bin"
+      },
+      {
+        "path": "textures/boombox_speakers_diff_1k.jpg",
+        "bytes": 638537,
+        "sha256": "4240a5bbbed85dab19e10c753aa6022a9d5e8d3d1c3ff05620b8e62459dcd1b3",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/boombox/boombox_speakers_diff_1k.jpg"
+      },
+      {
+        "path": "textures/boombox_arm_1k.jpg",
+        "bytes": 415692,
+        "sha256": "8fa0c9a71c2606a9acea192763adc733298267243a3abae75c75a2477f42cbf6",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/boombox/boombox_arm_1k.jpg"
+      }
+    ]
+  },
+  {
+    "id": "pocket_watch",
+    "label": "회중시계",
+    "group": "레트로 컬렉션",
+    "name": "Pocket Watch",
+    "authors": [
+      "PierreB3D"
+    ],
+    "source": "https://polyhaven.com/a/pocket_watch",
+    "license": "CC0-1.0",
+    "licenseUrl": "https://polyhaven.com/license",
+    "polycount": 15615,
+    "textureResolution": "1K preview",
+    "checkedAt": "2026-10-25T03:33:50.602Z",
+    "model": "assets/gallery/objects/pocket_watch/pocket_watch.gltf",
+    "sha256": "36e1fcf52643f83429b893a897e4751f8820a8996e5d92c206594b2857e4262d",
+    "dependencies": [
+      {
+        "path": "textures/pocket_watch_nor_gl_1k.jpg",
+        "bytes": 301185,
+        "sha256": "abf421a4989a6f68b4971421ad8e026b8eaa7eb33e7a36d512afdb8eccc717f4",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/pocket_watch/pocket_watch_nor_gl_1k.jpg"
+      },
+      {
+        "path": "textures/pocket_watch_diff_1k.jpg",
+        "bytes": 623303,
+        "sha256": "246b9ed33d4438075f03dd652b23b23137b3d5bea6e01a04a66e4a17d1d8449c",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/pocket_watch/pocket_watch_diff_1k.jpg"
+      },
+      {
+        "path": "textures/pocket_watch_arm_1k.jpg",
+        "bytes": 439443,
+        "sha256": "f7bf56c1c6d665fd388d3bc1c024663de83d21f53f164602cf063a0978359d3a",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/pocket_watch/pocket_watch_arm_1k.jpg"
+      },
+      {
+        "path": "textures/pocket_watch_glass_rough_1k.jpg",
+        "bytes": 281914,
+        "sha256": "e7646d2b5a53539b0c68f7391c20683792228dda6b7c801e5868752619b923d3",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/pocket_watch/pocket_watch_glass_rough_1k.jpg"
+      },
+      {
+        "path": "pocket_watch.bin",
+        "bytes": 419168,
+        "sha256": "95a268728180a2616ecc65b9b63f6b89404b68a0fcac8071ba969d6b77c2ff0e",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/4k/pocket_watch/pocket_watch.bin"
+      }
+    ]
+  },
+  {
+    "id": "chess_set",
+    "label": "대리석 체스",
+    "group": "레트로 컬렉션",
+    "name": "Chess Set",
+    "authors": [
+      "Riley Queen"
+    ],
+    "source": "https://polyhaven.com/a/chess_set",
+    "license": "CC0-1.0",
+    "licenseUrl": "https://polyhaven.com/license",
+    "polycount": 76920,
+    "textureResolution": "1K preview",
+    "checkedAt": "2026-10-25T03:33:56.04Z",
+    "model": "assets/gallery/objects/chess_set/chess_set.gltf",
+    "sha256": "3e21ecd0c2ffb703dfdb3f3ea7a379c1dbd4ec513ba2cb8e6cb1e5f276d7eb91",
+    "dependencies": [
+      {
+        "path": "textures/chess_set_pieces_white_nor_gl_1k.jpg",
+        "bytes": 443642,
+        "sha256": "51c31dc44d1d0f01c10b759be7903bea9d5b04781b63dc45738dd70a6e31dd6c",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/chess_set/chess_set_pieces_white_nor_gl_1k.jpg"
+      },
+      {
+        "path": "textures/chess_set_pieces_black_nor_gl_1k.jpg",
+        "bytes": 421230,
+        "sha256": "b92343bba552e82f271f86def504e806e73c6f5dfc4469a90fa5b4f66013bfcd",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/chess_set/chess_set_pieces_black_nor_gl_1k.jpg"
+      },
+      {
+        "path": "textures/chess_set_pieces_black_arm_1k.jpg",
+        "bytes": 833327,
+        "sha256": "e0413b36e970c645bd9b6192bfe788b318d9bd9f4f3746cf137552bfee118982",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/chess_set/chess_set_pieces_black_arm_1k.jpg"
+      },
+      {
+        "path": "textures/chess_set_board_diff_1k.jpg",
+        "bytes": 602985,
+        "sha256": "cca44d214f48ebe2205362a3996265d1fed727e094835bec2c873e91c653eaa5",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/chess_set/chess_set_board_diff_1k.jpg"
+      },
+      {
+        "path": "textures/chess_set_board_nor_gl_1k.jpg",
+        "bytes": 227381,
+        "sha256": "bc5657ec58e0e04a2e8fa6d50ec0f6e3009b1c22b8391ccdde1a4d5d9db30d4d",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/chess_set/chess_set_board_nor_gl_1k.jpg"
+      },
+      {
+        "path": "textures/chess_set_board_arm_1k.jpg",
+        "bytes": 756404,
+        "sha256": "67387308ce3a6424a1666e742c6556853344c01fbfcda8453b6e2e2f62bc6d30",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/chess_set/chess_set_board_arm_1k.jpg"
+      },
+      {
+        "path": "chess_set.bin",
+        "bytes": 1732220,
+        "sha256": "c73476fd032a2cb4a9c256f70573eed260708132fdc42fec161c6216711560b3",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/chess_set/chess_set.bin"
+      },
+      {
+        "path": "textures/chess_set_pieces_white_arm_1k.jpg",
+        "bytes": 841156,
+        "sha256": "9604c461ee6d5d4f5937891b0468ff7efd354299074b139d04029b03c326e434",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/chess_set/chess_set_pieces_white_arm_1k.jpg"
+      },
+      {
+        "path": "textures/chess_set_pieces_black_diff_1k.jpg",
+        "bytes": 480796,
+        "sha256": "74471018f96f197c963cc89e7dae19960b03bc2e4bf448e4b0beb51bfee5b85d",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/chess_set/chess_set_pieces_black_diff_1k.jpg"
+      },
+      {
+        "path": "textures/chess_set_pieces_white_diff_1k.jpg",
+        "bytes": 590948,
+        "sha256": "d9e06002509d73c3f343e1643f0c89ef84e24602f1f6858b5628e8f3e55ae77d",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/chess_set/chess_set_pieces_white_diff_1k.jpg"
+      }
+    ]
+  },
+  {
+    "id": "carved_wooden_elephant",
+    "label": "목조 코끼리",
+    "group": "조각 & 자연",
+    "name": "Carved Wooden Elephant",
+    "authors": [
+      "Greg Zaal"
+    ],
+    "source": "https://polyhaven.com/a/carved_wooden_elephant",
+    "license": "CC0-1.0",
+    "licenseUrl": "https://polyhaven.com/license",
+    "polycount": 2752,
+    "textureResolution": "1K preview",
+    "checkedAt": "2026-10-25T03:33:58.331Z",
+    "model": "assets/gallery/objects/carved_wooden_elephant/carved_wooden_elephant.gltf",
+    "sha256": "c2378354ecd283c5c8d9459b6829ef7e61bdefd6d0f7a6b2d628362bd9bbef25",
+    "dependencies": [
+      {
+        "path": "textures/carved_wooden_elephant_nor_gl_1k.jpg",
+        "bytes": 564625,
+        "sha256": "df066417c37f224d8d0acef8f221cc243ffcf4d8a4501aa0b8c0b82b4054c996",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/carved_wooden_elephant/carved_wooden_elephant_nor_gl_1k.jpg"
+      },
+      {
+        "path": "textures/carved_wooden_elephant_rough_1k.jpg",
+        "bytes": 648726,
+        "sha256": "b9d04ca7311882c05c4f1f5a94cbaacd1e0b935d844de7acd56d845d4331370b",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/carved_wooden_elephant/carved_wooden_elephant_rough_1k.jpg"
+      },
+      {
+        "path": "textures/carved_wooden_elephant_diff_1k.jpg",
+        "bytes": 578022,
+        "sha256": "420392c3087c709a7f1e0dd09042f1f194eb7edcb7551d124d6464f572d7f610",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/carved_wooden_elephant/carved_wooden_elephant_diff_1k.jpg"
+      },
+      {
+        "path": "carved_wooden_elephant.bin",
+        "bytes": 69760,
+        "sha256": "b732bc38c4e57c8630acfe8c9f1bd7623e1ba49b0c488863e13546171f283618",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/4k/carved_wooden_elephant/carved_wooden_elephant.bin"
+      }
+    ]
+  },
+  {
+    "id": "horse_head",
+    "label": "말 조각",
+    "group": "조각 & 자연",
+    "name": "Horse Head",
+    "authors": [
+      "Tina"
+    ],
+    "source": "https://polyhaven.com/a/horse_head",
+    "license": "CC0-1.0",
+    "licenseUrl": "https://polyhaven.com/license",
+    "polycount": 12068,
+    "textureResolution": "1K preview",
+    "checkedAt": "2026-10-25T03:34:00.139Z",
+    "model": "assets/gallery/objects/horse_head/horse_head.gltf",
+    "sha256": "bb46cbabf202aa1af209678619f912c5605477fa098a46c238cdc46b3696bb0d",
+    "dependencies": [
+      {
+        "path": "textures/horse_head_nor_gl_1k.jpg",
+        "bytes": 437446,
+        "sha256": "903f946c7978dd5d11281dc4e35853f8ab7f4e9a51248fc48f83af8c4bc156e0",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/horse_head/horse_head_nor_gl_1k.jpg"
+      },
+      {
+        "path": "textures/horse_head_diff_1k.jpg",
+        "bytes": 511649,
+        "sha256": "bc7409baf955bc970d7397314f2f126862aef5b8c076167902df7b5742694435",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/horse_head/horse_head_diff_1k.jpg"
+      },
+      {
+        "path": "textures/horse_head_arm_1k.jpg",
+        "bytes": 520190,
+        "sha256": "a7ebc06bb771f2e17652880dac6d3dff36abcbda5c2c5004f1caa90e46a44264",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/horse_head/horse_head_arm_1k.jpg"
+      },
+      {
+        "path": "horse_head.bin",
+        "bytes": 293272,
+        "sha256": "e56c0a19bc3aaf859612634665f17e461156423889e7954d72b949211a37b10b",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/horse_head/horse_head.bin"
+      }
+    ]
+  },
+  {
+    "id": "lambis_shell",
+    "label": "조개",
+    "group": "조각 & 자연",
+    "name": "Lambis Shell",
+    "authors": [
+      "Kuutti Siitonen"
+    ],
+    "source": "https://polyhaven.com/a/lambis_shell",
+    "license": "CC0-1.0",
+    "licenseUrl": "https://polyhaven.com/license",
+    "polycount": 12498,
+    "textureResolution": "1K preview",
+    "checkedAt": "2026-10-25T03:34:02.218Z",
+    "model": "assets/gallery/objects/lambis_shell/lambis_shell.gltf",
+    "sha256": "3fbfbe990b12f33af079671bc9ea9b1dd46b50f823692b72aa0d89fe850328e3",
+    "dependencies": [
+      {
+        "path": "lambis_shell.bin",
+        "bytes": 310540,
+        "sha256": "3129e3a175dbeba8375b21b8f5dec3b559a173f116dc4c402d79afd8751df7aa",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/lambis_shell/lambis_shell.bin"
+      },
+      {
+        "path": "textures/lambis_shell_diff_1k.jpg",
+        "bytes": 785669,
+        "sha256": "0b9296a51b8a157fff2245fced2a7723db9db4c7ea3e976802e1f9d3f93b7cc8",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/lambis_shell/lambis_shell_diff_1k.jpg"
+      },
+      {
+        "path": "textures/lambis_shell_arm_1k.jpg",
+        "bytes": 567463,
+        "sha256": "360e5e637404cd8999914ba679d4bcc726b73016b69697631ba7ab33b31b4d2c",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/lambis_shell/lambis_shell_arm_1k.jpg"
+      },
+      {
+        "path": "textures/lambis_shell_nor_gl_1k.jpg",
+        "bytes": 582208,
+        "sha256": "285344a5bd1ea5710fdd0447be0fb7b86bd2b5a8d67f1c93d01d4201d8f3e369",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/lambis_shell/lambis_shell_nor_gl_1k.jpg"
+      }
+    ]
+  }
+]

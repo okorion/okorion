@@ -1,11 +1,12 @@
-export const variants = ["wall", "gallery", "island", "pavilion"];
+import { objectIds, objects, legacyObjectMap } from "./catalog.mjs";
+export const variants = ["wall", "gallery", "island", "pavilion", "archive"];
 export const styles = ["simple", "advanced"];
 export const imageSize = (variant, mobile) =>
   mobile
     ? { width: 900, height: variant === "wall" ? 1400 : 900 }
     : { width: 1600, height: 700 };
 export const stylesFor = (variant) =>
-  variant === "pavilion" ? ["advanced"] : styles;
+  ["pavilion", "archive"].includes(variant) ? ["advanced"] : styles;
 export const assetName = (variant, style) =>
   `${variant}${variant !== "pavilion" && style === "advanced" ? "-advanced" : ""}`;
 export const shapes = ["sphere", "cube", "torus", "arch", "pyramid"];
@@ -28,6 +29,8 @@ const colorChoices = new Map([
   ["보라 (violet)", "violet"],
   ["흰색 (white)", "white"],
 ]);
+const objectChoices = new Map(objects.map(({ id, label }) => [`${label} (${id})`, id]));
+export const assetForArtwork = (artwork) => artwork.asset || legacyObjectMap[artwork.shape];
 
 export function parseArtwork(issue) {
   if (
@@ -41,6 +44,12 @@ export function parseArtwork(issue) {
     return null;
   if (typeof issue.body !== "string" || issue.body.length > 2000) return null;
   const body = issue.body.replaceAll("\r\n", "\n").trim();
+  if (!Number.isFinite(Date.parse(issue.created_at))) return null;
+  const selected = /^### 소품\n\n([^\n]+)\n\n### 공개 안내\n\n- \[[xX]\] 선택한 소품이 공개 README에 표시되는 데 동의합니다\.?$/.exec(body);
+  if (selected) {
+    const asset = objectChoices.get(selected[1]);
+    return asset ? { issue: issue.number, authorId: issue.user.id, asset, createdAt: issue.created_at } : null;
+  }
   const match =
     /^### 도형\n\n([^\n]+)\n\n### 색상\n\n([^\n]+)\n\n### 공개 안내\n\n- \[[xX]\] 선택한 도형과 색상이 공개 README에 표시되는 데 동의합니다\.?$/.exec(
       body,
@@ -55,6 +64,7 @@ export function parseArtwork(issue) {
     authorId: issue.user.id,
     shape,
     color,
+    asset: legacyObjectMap[shape],
     createdAt: issue.created_at,
   };
 }
@@ -108,8 +118,8 @@ export function validateData(data) {
         throw new Error("Invalid contribution count");
   for (const item of data.artworks)
     if (
-      !shapes.includes(item.shape) ||
-      !Object.hasOwn(colors, item.color) ||
+      (item.asset ? !objectIds.includes(item.asset) : (!shapes.includes(item.shape) || !Object.hasOwn(colors, item.color))) ||
+      (item.shape !== undefined && (!shapes.includes(item.shape) || !Object.hasOwn(colors, item.color))) ||
       !Number.isSafeInteger(item.issue) ||
       !Number.isSafeInteger(item.authorId)
     )

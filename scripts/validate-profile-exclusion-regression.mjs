@@ -18,6 +18,7 @@ import {
   catalogBlockedProfileAliases,
   catalogDerivedProfileUrls,
   loadProfileSurfaces,
+  classifyProfileSurfacePath,
   profileEvidenceDirectory,
   retainedCleanPortfolioUrls,
 } from "./profile-exclusion-policy.mjs";
@@ -52,6 +53,14 @@ function percentEncode(value) {
     .map((byte) => `%${byte.toString(16).padStart(2, "0")}`)
     .join("");
 }
+expectRejected(
+  () => classifyProfileSurfacePath("assets/gallery/objects/Camera_01/unapproved.bin"),
+  "unapproved model buffer",
+);
+await expectDiscoveredSurfaceRejected(
+  { virtualFiles: new Map([["assets/gallery/objects/untrusted.gltf", JSON.stringify({ extras: { text: catalogBlockedProfileAliases[0] } })]]) },
+  "blocked content in model metadata",
+);
 
 function cssHexEscapeFirstCharacter(value) {
   const [firstCharacter, ...rest] = [...value];

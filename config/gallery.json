@@ -1,9 +1,8 @@
 {
-  "variant": "wall",
+  "variant": "archive",
   "portfolioUrl": "https://okorion.github.io/",
   "maxVisitors": 9,
-  "contributionWeeks": 26,
-  "style": "simple",
+  "style": "advanced",
   "orientation": "portrait",
   "showSectionLabels": false
 }

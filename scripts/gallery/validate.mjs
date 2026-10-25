@@ -2,15 +2,16 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { variants, stylesFor, assetName, imageSize, validateData } from "./model.mjs";
+import { objects, archiveParts, archiveImageSize } from "./catalog.mjs";
 const config = JSON.parse(await readFile("config/gallery.json", "utf8"));
 assert.ok(variants.includes(config.variant));
 assert.ok(stylesFor(config.variant).includes(config.style));
 assert.equal(typeof config.showSectionLabels, "boolean");
 assert.equal(config.portfolioUrl, "https://okorion.github.io/");
 assert.equal(config.maxVisitors, 9);
-assert.equal(config.contributionWeeks, 26);
+assert.equal(config.orientation, "portrait");
 validateData(JSON.parse(await readFile("assets/gallery/data.json", "utf8")));
-for (const variant of variants)
+for (const variant of variants.filter((variant) => variant !== "archive"))
   for (const style of stylesFor(variant))
     for (const theme of ["light", "dark"])
       for (const mobile of [false, true]) {
@@ -38,6 +39,41 @@ assert.equal(
   source.darkSha256,
 );
 const readme = await readFile("README.md", "utf8");
+if (config.variant === "archive") {
+  for (const part of archiveParts) for (const theme of ["light", "dark"]) for (const mobile of [false, true]) {
+    const filename = `archive-${part}${mobile ? "-mobile" : ""}-${theme}.png`;
+    const bytes = await readFile(`assets/gallery/${filename}`);
+    const size = archiveImageSize(part, mobile);
+    assert.equal(bytes.subarray(0, 8).toString("hex"), "89504e470d0a1a0a", filename);
+    assert.equal(bytes.readUInt32BE(16), size.width, filename);
+    assert.equal(bytes.readUInt32BE(20), size.height, filename);
+    assert.ok(bytes.length > 10000 && bytes.length < 3000000, filename);
+    assert.ok(readme.includes(`./assets/gallery/${filename}`));
+  }
+  assert.equal((readme.match(/<picture>/g) || []).length, 2);
+  assert.ok(readme.includes("### 소품으로 인사 남기기"));
+  assert.ok(!readme.includes("GitHub 활동"));
+  for (const [filename, key] of [["portfolio-mobile.png", "mobileSha256"], ["portfolio-mobile-dark.png", "mobileDarkSha256"]]) {
+    assert.equal(createHash("sha256").update(await readFile(`assets/gallery/${filename}`)).digest("hex"), source[key]);
+  }
+  const sources = JSON.parse(await readFile("assets/gallery/objects/sources.json", "utf8"));
+  assert.deepEqual(sources.map((asset) => asset.id), objects.map((asset) => asset.id));
+  for (const asset of sources) {
+    assert.equal(asset.license, "CC0-1.0");
+    assert.equal(asset.source, `https://polyhaven.com/a/${asset.id}`);
+    const model = await readFile(`assets/gallery/objects/${asset.id}/${asset.id}.gltf`);
+    assert.equal(createHash("sha256").update(model).digest("hex"), asset.sha256, asset.id);
+    const gltf = JSON.parse(model);
+    for (const dependency of asset.dependencies) {
+      assert.ok(/^[A-Za-z0-9_./-]+$/.test(dependency.path) && !dependency.path.includes(".."));
+      const bytes = await readFile(`assets/gallery/objects/${asset.id}/${dependency.path}`);
+      assert.equal(createHash("sha256").update(bytes).digest("hex"), dependency.sha256, dependency.path);
+    }
+    for (const reference of [...(gltf.buffers || []), ...(gltf.images || [])]) {
+      assert.ok(asset.dependencies.some((dependency) => dependency.path === reference.uri));
+    }
+  }
+} else {
 const portrait = config.orientation === "portrait" && config.variant === "wall";
 const suffixes = portrait
   ? ["mobile-light", "mobile-dark"]
@@ -55,8 +91,9 @@ if (portrait) {
     readme.includes(`media="(prefers-color-scheme: dark)" srcset="./assets/gallery/${v}-mobile-dark.png"`),
   );
 }
+}
 assert.ok(readme.includes("issues/new?template=gallery.yml"));
-assert.ok(readme.length < 1700);
+assert.ok(readme.length < 2800);
 assert.equal(source.typography?.family, "Pretendard Variable");
 assert.equal(source.typography.sampleSelector, ".hero__summary");
 assert.ok(
@@ -66,5 +103,5 @@ assert.ok(
     ),
 );
 console.log(
-  `Gallery data, source typography, ${variants.reduce((n, v) => n + stylesFor(v).length, 0) * 4} rendered assets and README verified`,
+  "Gallery data, source typography, licensed model hashes, rendered images and README verified",
 );

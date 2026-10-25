@@ -3,14 +3,14 @@ on:
   workflow_dispatch:
     inputs:
       variant:
-        description: "Layout: C wall, A gallery, B island, D pavilion"
+        description: "Selected layout: split object archive"
         type: choice
-        options: [keep, wall, gallery, island, pavilion]
+        options: [keep, archive]
         default: keep
       style:
-        description: "Finish: simple or advanced (D always advanced)"
+        description: "Finish: archive glass display"
         type: choice
-        options: [keep, simple, advanced]
+        options: [keep, advanced]
         default: keep
   issues:
     types: [opened, edited, closed, reopened, deleted]
@@ -39,7 +39,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
-      - name: Collect bounded public data
+      - name: Collect bounded public guestbook entries
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: npm run gallery:collect
@@ -52,7 +52,7 @@ jobs:
         run: npx playwright install --with-deps chromium
       - if: steps.changes.outputs.changed == 'true'
         run: sudo apt-get install -y fonts-noto-cjk
-      - name: Render all themes and layouts
+      - name: Render selected layout in both themes and sizes
         if: steps.changes.outputs.changed == 'true'
         run: npm run gallery:render
       - name: Select layout

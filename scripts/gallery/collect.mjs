@@ -1,10 +1,10 @@
 import { readFile, mkdir, writeFile } from "node:fs/promises";
-import { normalizeCalendar, selectArtworks, validateData } from "./model.mjs";
+import { selectArtworks, validateData } from "./model.mjs";
 
 const token = process.env.GITHUB_TOKEN || process.env.GH_TOKEN;
 if (!token)
   throw new Error(
-    "A GitHub token is required for the public contribution calendar",
+    "A GitHub token is required to read public guestbook issues",
   );
 const config = JSON.parse(await readFile("config/gallery.json", "utf8"));
 async function api(path, options = {}) {
@@ -23,20 +23,8 @@ async function api(path, options = {}) {
   if (!res.ok) throw new Error(`GitHub request failed (${res.status})`);
   return res.json();
 }
-// Query aggregate counts only, never repository names or private project details.
-const response = await api("graphql", {
-  method: "POST",
-  body: JSON.stringify({
-    query:
-      '{ user(login:"okorion") { contributionsCollection { contributionCalendar { weeks { contributionDays { date contributionCount } } } } } }',
-  }),
-});
-if (response.errors?.length)
-  throw new Error("GitHub contribution query failed");
-const weeks = normalizeCalendar(
-  response.data?.user?.contributionsCollection?.contributionCalendar?.weeks,
-  config.contributionWeeks,
-);
+// Activity collection is retired. The empty field keeps historical data readable.
+const weeks = [];
 const issues = [];
 let finished = false;
 for (let page = 1; page <= 20; page++) {
@@ -65,5 +53,5 @@ await writeFile(
   JSON.stringify(data, null, 2) + "\n",
 );
 console.log(
-  `Collected ${weeks.length} contribution weeks and ${data.artworks.length} visitor artworks`,
+  `Collected ${data.artworks.length} recent guestbook entries`,
 );

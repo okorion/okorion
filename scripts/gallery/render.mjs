@@ -3,6 +3,7 @@ import { createServer } from "node:http";
 import { readFile, mkdir, writeFile, copyFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { variants, stylesFor, assetName, imageSize, validateData } from "./model.mjs";
+import { archiveParts, archiveImageSize, objects } from "./catalog.mjs";
 
 const config = JSON.parse(await readFile("config/gallery.json", "utf8"));
 if (config.portfolioUrl !== "https://okorion.github.io/")
@@ -39,6 +40,25 @@ const routes = new Map([
   ["/portfolio.png", ["assets/gallery/portfolio.png", "image/png"]],
   ["/portfolio-dark.png", ["assets/gallery/portfolio-dark.png", "image/png"]],
 ]);
+for (const file of ["archive.html", "archive.mjs", "catalog.mjs", "model.mjs"]) {
+  routes.set(`/${file}`, [`scripts/gallery/${file}`, file.endsWith("html") ? "text/html" : "text/javascript"]);
+}
+for (const file of ["loaders/GLTFLoader.js", "utils/BufferGeometryUtils.js", "utils/SkeletonUtils.js"]) {
+  routes.set(`/addons/${file}`, [`node_modules/three/examples/jsm/${file}`, "text/javascript"]);
+}
+for (const theme of ["", "-dark"]) routes.set(`/portfolio-mobile${theme}.png`, [`assets/gallery/portfolio-mobile${theme}.png`, "image/png"]);
+if (config.variant === "archive") {
+  const sources = JSON.parse(await readFile("assets/gallery/objects/sources.json", "utf8"));
+  for (const object of objects) {
+    const entry = sources.find((source) => source.id === object.id);
+    if (!entry) throw new Error("Missing approved model source");
+    for (const file of [`${object.id}.gltf`, ...entry.dependencies.map((dependency) => dependency.path)]) {
+      if (!/^[A-Za-z0-9_./-]+$/.test(file) || file.includes("..")) throw new Error("Invalid approved asset path");
+      const mime = file.endsWith(".gltf") ? "model/gltf+json" : file.endsWith(".jpg") ? "image/jpeg" : file.endsWith(".png") ? "image/png" : "application/octet-stream";
+      routes.set(`/objects/${object.id}/${file}`, [`assets/gallery/objects/${object.id}/${file}`, mime]);
+    }
+  }
+}
 const server = createServer(async (req, res) => {
   const route = routes.get(new URL(req.url, "http://localhost").pathname);
   if (!route) {
@@ -163,10 +183,44 @@ try {
       ) + "\n",
     );
   }
+  if (config.variant === "archive" && process.env.GALLERY_REUSE_CAPTURE !== "1") {
+    await page.setViewportSize({ width: 390, height: 760 });
+    await page.goto(config.portfolioUrl, { waitUntil: "networkidle", timeout: 60000 });
+    await page.locator('[data-default-view="portfolio"]').waitFor();
+    const mobileHashes = {};
+    for (const theme of ["light", "dark"]) {
+      const view = page.locator('[data-default-view="portfolio"]');
+      if ((await view.getAttribute("data-theme")) !== theme) await page.locator(".theme-toggle").click();
+      await page.locator(`[data-default-view="portfolio"][data-theme="${theme}"]`).waitFor();
+      await page.evaluate(async () => { await document.fonts.ready; await document.fonts.load('600 24px "Pretendard Variable"', "포트폴리오 프로젝트"); });
+      await page.waitForFunction(() => [...document.images].every((image) => image.complete && image.naturalWidth > 0));
+      const filename = `assets/gallery/portfolio-mobile${theme === "dark" ? "-dark" : ""}.png`;
+      await page.screenshot({ path: filename, animations: "disabled", style: "*{scrollbar-width:none!important}::-webkit-scrollbar{display:none!important}" });
+      mobileHashes[theme] = createHash("sha256").update(await readFile(filename)).digest("hex");
+    }
+    const source = JSON.parse(await readFile("assets/gallery/source.json", "utf8"));
+    source.mobileViewport = { width: 390, height: 760 };
+    source.mobileSha256 = mobileHashes.light;
+    source.mobileDarkSha256 = mobileHashes.dark;
+    await writeFile("assets/gallery/source.json", JSON.stringify(source, null, 2) + "\n");
+  }
   const errors = [];
   page.on("pageerror", (e) => errors.push(e.message));
   const layoutAnchors = new Map();
-  for (const variant of variants)
+  if (config.variant === "archive") {
+    for (const part of archiveParts) for (const theme of ["light", "dark"]) for (const mobile of [false, true]) {
+      await page.setViewportSize(archiveImageSize(part, mobile));
+      await page.goto(`http://127.0.0.1:${port}/archive.html?part=${part}&theme=${theme}&mobile=${mobile}`, { waitUntil: "networkidle" });
+      await page.waitForFunction(() => window.galleryReady, {}, { timeout: 60000 });
+      const ready = await page.evaluate(() => window.galleryReady);
+      if (!ready.labelsFit || !ready.contentFits || errors.length) throw new Error(`Archive rendering failed: ${part}/${theme}/${mobile}: ${errors.join("; ")}`);
+      if (part === "guestbook" && JSON.stringify(ready.objects) !== JSON.stringify(objects.map((object) => object.id))) throw new Error("Archive is missing approved models");
+      const filename = `archive-${part}${mobile ? "-mobile" : ""}-${theme}.png`;
+      await page.screenshot({ path: `assets/gallery/${filename}`, animations: "disabled" });
+      console.log(`Rendered ${filename}`);
+    }
+  } else {
+  for (const variant of variants.filter((variant) => variant !== "archive"))
     for (const style of stylesFor(variant))
       for (const theme of ["light", "dark"])
         for (const mobile of [false, true]) {
@@ -223,11 +277,17 @@ try {
   );
   if (restoredLabels.length !== 3 || !restoredLabels.includes("활동 기록"))
     throw new Error("Optional section nameplates could not be restored");
+  }
   // Optional review evidence remains outside the product repository.
   if (process.env.GALLERY_EVIDENCE_DIR) {
     await mkdir(process.env.GALLERY_EVIDENCE_DIR, { recursive: true });
     const { join } = await import("node:path");
-    for (const variant of variants)
+    if (config.variant === "archive") {
+      for (const part of archiveParts) for (const theme of ["light", "dark"]) for (const mobile of [false, true]) {
+        const filename = `archive-${part}${mobile ? "-mobile" : ""}-${theme}.png`;
+        await copyFile(`assets/gallery/${filename}`, join(process.env.GALLERY_EVIDENCE_DIR, filename));
+      }
+    } else for (const variant of variants.filter((variant) => variant !== "archive"))
       for (const style of stylesFor(variant))
         await copyFile(
           `assets/gallery/${assetName(variant, style)}-light.png`,

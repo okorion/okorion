@@ -19,7 +19,7 @@ if (!changed.length) {
   process.exit(0);
 }
 const allowed =
-  /^(?:README\.md|config\/gallery\.json|assets\/gallery\/(?:data\.json|source\.json|portfolio(?:-dark)?\.png|(?:wall|gallery|island|pavilion)(?:-advanced)?(?:-mobile)?-(?:light|dark)\.png))$/;
+  /^(?:README\.md|config\/gallery\.json|assets\/gallery\/(?:data\.json|source\.json|portfolio(?:-mobile)?(?:-dark)?\.png|archive-(?:portfolio|guestbook)(?:-mobile)?-(?:light|dark)\.png|(?:wall|gallery|island|pavilion)(?:-advanced)?(?:-mobile)?-(?:light|dark)\.png))$/;
 if (changed.some((p) => !allowed.test(p)))
   throw new Error("Unexpected modified file; publish stopped");
 async function api(path, method = "GET", body) {
