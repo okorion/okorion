@@ -58,8 +58,10 @@ if (config.variant === "archive") {
   assert.ok(readme.includes("### 프로젝트"));
   assert.ok(readme.includes(config.anonymousGuestbookUrl));
   assert.ok(!readme.includes("포트폴리오"));
-  assert.ok(readme.includes("작성 시각 (KST)"));
-  assert.ok(readme.includes("README 갱신:"));
+  assert.ok(readme.includes("[익명으로 소품 고르기 ↗](https://okorion-guestbook.ok-or-orion.workers.dev/) · [GitHub 방식으로 남기기 ↗](https://github.com/okorion/okorion/issues/new?template=gallery.yml) · [소품 출처·사용 안내](./docs/gallery.md)"));
+  assert.ok(!readme.includes("인사 작성 시각 확인"));
+  assert.ok(!readme.includes("README 갱신:"));
+  assert.ok(!readme.includes("이름·계정 없이 소품 고르기"));
   assert.ok(!readme.includes("GitHub 활동"));
   const mobileCapture = await readFile("assets/gallery/portfolio-mobile.png");
   assert.equal(createHash("sha256").update(mobileCapture).digest("hex"), source.mobileSha256);
