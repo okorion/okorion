@@ -33,10 +33,6 @@ if (config.variant === "archive") {
   </picture>`;
   await writeFile("README.md", `### 프로젝트
 
-<a href="https://okorion.github.io/">
-  ${picture("portfolio", "프로젝트 화면과 썸네일")}
-</a>
-
 [프로젝트 둘러보기 ↗](https://okorion.github.io/)
 
 ### 소품으로 인사 남기기
@@ -49,7 +45,7 @@ if (config.variant === "archive") {
 
 [${config.anonymousGuestbookUrl ? "익명으로 소품 고르기" : "소품 고르고 인사 남기기"} ↗](${guestbookUrl})${config.anonymousGuestbookUrl ? " · [GitHub 방식으로 남기기 ↗](https://github.com/okorion/okorion/issues/new?template=gallery.yml)" : ""} · [소품 출처·사용 안내](./docs/gallery.md)
 `);
-  console.log("README uses split archive portfolio and guestbook");
+  console.log("README uses project link and archive guestbook");
   process.exit(0);
 }
 const defaultImage =

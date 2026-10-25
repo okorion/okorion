@@ -1,14 +1,5 @@
 ### 프로젝트
 
-<a href="https://okorion.github.io/">
-  <picture>
-    <source media="(prefers-color-scheme: dark) and (max-width: 600px)" srcset="./assets/gallery/archive-portfolio-mobile-dark.png" />
-    <source media="(max-width: 600px)" srcset="./assets/gallery/archive-portfolio-mobile-light.png" />
-    <source media="(prefers-color-scheme: dark)" srcset="./assets/gallery/archive-portfolio-dark.png" />
-    <img alt="프로젝트 화면과 썸네일" src="./assets/gallery/archive-portfolio-light.png" width="100%" />
-  </picture>
-</a>
-
 [프로젝트 둘러보기 ↗](https://okorion.github.io/)
 
 ### 소품으로 인사 남기기

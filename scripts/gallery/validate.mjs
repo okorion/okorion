@@ -51,9 +51,12 @@ if (config.variant === "archive") {
     assert.equal(bytes.readUInt32BE(16), size.width, filename);
     assert.equal(bytes.readUInt32BE(20), size.height, filename);
     assert.ok(bytes.length > 10000 && bytes.length < 3000000, filename);
-    assert.ok(readme.includes(`./assets/gallery/${filename}`));
+    assert.equal(readme.includes(`./assets/gallery/${filename}`), part === "guestbook");
   }
-  assert.equal((readme.match(/<picture>/g) || []).length, 2);
+  assert.equal((readme.match(/<picture>/g) || []).length, 1);
+  const projectSection = readme.split("### 소품으로 인사 남기기")[0];
+  assert.ok(projectSection.includes("[프로젝트 둘러보기 ↗](https://okorion.github.io/)"));
+  assert.ok(!/<(?:picture|img)\b/.test(projectSection));
   assert.ok(readme.includes("### 소품으로 인사 남기기"));
   assert.ok(readme.includes("소품 9종(📷 🎮 🦆 📻 ⏱️ ♟️ 🐘 🐴 🐚) 중 하나로 인사를 남겨 주세요. 최근 인사 6개를 표시하며, 하나의 인사는 3일 동안 표시합니다."));
   assert.ok(readme.includes("### 프로젝트"));
