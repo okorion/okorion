@@ -1,12 +1,5 @@
 {
   "version": 1,
   "weeks": [],
-  "artworks": [
-    {
-      "issue": 25,
-      "authorId": 97646070,
-      "asset": "lambis_shell",
-      "createdAt": "2026-10-25T08:13:10Z"
-    }
-  ]
+  "artworks": []
 }
